@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0a0a0f">
+<meta name="apple-mobile-web-app-title" content="Delivery Pro">
+<link rel="manifest" href="manifest-delivery.json">
+<title>Delivery Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0f;
+  --bg2: #111118;
+  --bg3: #18181f;
+  --card: #1c1c25;
+  --border: #2a2a38;
+  --accent: #f59e0b;
+  --accent2: #fb923c;
+  --green: #34d399;
+  --red: #f87171;
+  --blue: #60a5fa;
+  --purple: #a78bfa;
+  --text: #f0f0f8;
+  --muted: #6b6b88;
+  --font: 'DM Sans', sans-serif;
+  --display: 'Syne', sans-serif;
+  --radius: 16px;
+  --radius-sm: 10px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+
+/* NAV */
+.nav { display: flex; background: var(--bg2); border-bottom: 1px solid var(--border); overflow-x: auto; scrollbar-width: none; position: sticky; top: 0; z-index: 100; }
+.nav::-webkit-scrollbar { display: none; }
+.nav-btn { flex: 0 0 auto; padding: 12px 16px; font-size: 11px; font-weight: 600; color: var(--muted); background: none; border: none; cursor: pointer; white-space: nowrap; border-bottom: 2px solid transparent; transition: all .2s; font-family: var(--font); display: flex; flex-direction: column; align-items: center; gap: 3px; letter-spacing: .03em; text-transform: uppercase; }
+.nav-btn .icon { font-size: 20px; }
+.nav-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+/* PAGES */
+.page { display: none; padding: 16px; max-width: 600px; margin: 0 auto; }
+.page.active { display: block; }
+
+/* HEADER */
+.page-header { margin-bottom: 20px; }
+.page-title { font-family: var(--display); font-size: 28px; font-weight: 800; color: var(--text); letter-spacing: -.02em; }
+.page-sub { font-size: 13px; color: var(--muted); margin-top: 3px; }
+
+/* CARDS */
+.card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 12px; }
+.card-title { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 12px; }
+
+/* STAT GRID */
+.stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+.stat-card { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; }
+.stat-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; font-weight: 600; }
+.stat-value { font-family: var(--display); font-size: 20px; font-weight: 700; margin-top: 5px; }
+.stat-value.yellow { color: var(--accent); }
+.stat-value.green { color: var(--green); }
+.stat-value.red { color: var(--red); }
+.stat-value.blue { color: var(--blue); }
+.stat-value.purple { color: var(--purple); }
+
+/* INPUTS */
+input, select, textarea { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text); font-family: var(--font); font-size: 14px; padding: 11px 13px; width: 100%; outline: none; transition: border .2s; }
+input:focus, select:focus { border-color: var(--accent); }
+select option { background: var(--bg3); }
+label { font-size: 11px; color: var(--muted); display: block; margin-bottom: 4px; margin-top: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; }
+
+/* BUTTONS */
+.btn { padding: 12px 20px; border-radius: var(--radius-sm); border: none; font-family: var(--font); font-size: 14px; font-weight: 600; cursor: pointer; transition: all .18s; letter-spacing: .01em; }
+.btn-primary { background: var(--accent); color: #000; }
+.btn-primary:hover { background: #e08e0a; }
+.btn-success { background: var(--green); color: #000; }
+.btn-danger { background: var(--red); color: #fff; font-size: 12px; padding: 7px 12px; }
+.btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--text); }
+.btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+.btn-sm { padding: 6px 12px; font-size: 12px; }
+.btn-full { width: 100%; }
+.btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+
+/* DIAS SEMANA */
+.dias-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.dia-card { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; cursor: pointer; transition: all .2s; }
+.dia-card:hover { border-color: var(--accent); }
+.dia-card.activo { border-color: var(--accent); background: rgba(245,158,11,.08); }
+.dia-nombre { font-family: var(--display); font-size: 14px; font-weight: 700; color: var(--text); }
+.dia-total { font-size: 13px; color: var(--green); font-weight: 600; margin-top: 3px; }
+.dia-gasto { font-size: 11px; color: var(--red); margin-top: 1px; }
+.dia-neto { font-size: 11px; color: var(--muted); margin-top: 1px; }
+
+/* MODAL */
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.8); z-index: 500; align-items: flex-end; }
+.modal-overlay.open { display: flex; }
+.modal { background: var(--bg2); border-top: 1px solid var(--border); border-radius: var(--radius) var(--radius) 0 0; padding: 20px 16px 34px; width: 100%; max-height: 92vh; overflow-y: auto; animation: slideUp .25s ease; }
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.modal-title { font-family: var(--display); font-size: 22px; font-weight: 800; margin-bottom: 16px; }
+.modal-close { float: right; background: none; border: none; color: var(--muted); font-size: 22px; cursor: pointer; margin-top: -4px; }
+
+/* ITEM LIST */
+.item-row { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 11px 13px; margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between; }
+.item-desc { font-size: 13px; flex: 1; }
+.item-monto { font-size: 14px; font-weight: 600; }
+
+/* BADGE */
+.badge { display: inline-block; padding: 3px 10px; border-radius: 99px; font-size: 11px; font-weight: 700; }
+.badge-yellow { background: rgba(245,158,11,.15); color: var(--accent); }
+.badge-green { background: rgba(52,211,153,.15); color: var(--green); }
+.badge-red { background: rgba(248,113,113,.15); color: var(--red); }
+
+/* MOTO */
+.moto-stat { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.moto-stat:last-child { border-bottom: none; }
+.moto-stat-label { font-size: 13px; color: var(--muted); }
+.moto-stat-val { font-size: 14px; font-weight: 700; }
+
+/* PROGRESS BAR */
+.progress-wrap { background: var(--bg3); border-radius: 99px; height: 8px; margin-top: 8px; overflow: hidden; }
+.progress-bar { height: 100%; border-radius: 99px; transition: width .5s ease; }
+
+/* SEMANA SELECTOR */
+.semana-nav { display: flex; align-items: center; justify-content: space-between; background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 14px; margin-bottom: 14px; }
+.semana-nav-btn { background: none; border: none; color: var(--accent); font-size: 20px; cursor: pointer; padding: 0 8px; }
+.semana-nav-label { font-family: var(--display); font-size: 15px; font-weight: 700; }
+
+/* RESUMEN NETO */
+.neto-box { background: linear-gradient(135deg, rgba(245,158,11,.15), rgba(251,146,60,.1)); border: 1px solid rgba(245,158,11,.3); border-radius: var(--radius); padding: 16px; margin-bottom: 12px; }
+.neto-label { font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: .08em; font-weight: 700; }
+.neto-value { font-family: var(--display); font-size: 32px; font-weight: 800; color: var(--accent); margin-top: 4px; }
+.neto-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+/* COMBUSTIBLE */
+.carga-item { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px 14px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; }
+
+/* EMPTY */
+.empty { text-align: center; padding: 30px 20px; color: var(--muted); font-size: 13px; }
+.empty-icon { font-size: 36px; margin-bottom: 8px; }
+
+/* HISTORIAL */
+.mes-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 10px; cursor: pointer; transition: all .2s; }
+.mes-card:hover { border-color: var(--accent); }
+.mes-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.mes-nombre { font-family: var(--display); font-size: 18px; font-weight: 800; }
+.mes-neto { font-family: var(--display); font-size: 20px; font-weight: 800; color: var(--green); }
+.mes-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+.mes-stat { background: var(--bg3); border-radius: var(--radius-sm); padding: 8px; text-align: center; }
+.mes-stat-lbl { font-size: 10px; color: var(--muted); text-transform: uppercase; font-weight: 600; }
+.mes-stat-val { font-size: 13px; font-weight: 700; margin-top: 2px; }
+
+@media print { body { display: none; } }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <button class="nav-btn active" onclick="showPage('dashboard')" id="nav-dashboard">
+    <span class="icon">📊</span>Resumen
+  </button>
+  <button class="nav-btn" onclick="showPage('delivery')" id="nav-delivery">
+    <span class="icon">📦</span>Delivery
+  </button>
+  <button class="nav-btn" onclick="showPage('combustible')" id="nav-combustible">
+    <span class="icon">⛽</span>Combustible
+  </button>
+  <button class="nav-btn" onclick="showPage('moto')" id="nav-moto">
+    <span class="icon">🏍️</span>Moto
+  </button>
+  <button class="nav-btn" onclick="showPage('gastos')" id="nav-gastos">
+    <span class="icon">🔧</span>Gastos
+  </button>
+  <button class="nav-btn" onclick="showPage('historial')" id="nav-historial">
+    <span class="icon">📅</span>Historial
+  </button>
+</nav>
+
+<!-- ========== DASHBOARD ========== -->
+<div class="page active" id="page-dashboard">
+  <div class="page-header">
+    <div class="page-title">Delivery Pro 🚀</div>
+    <div class="page-sub" id="dash-fecha">Cargando...</div>
+  </div>
+
+  <div class="neto-box">
+    <div class="neto-label">Neto del mes (después de gastos)</div>
+    <div class="neto-value" id="dash-neto">₲ 0</div>
+    <div class="neto-sub" id="dash-neto-sub">Bruto: ₲ 0 · Gastos: ₲ 0</div>
+  </div>
+
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="stat-label">Bruto mes</div>
+      <div class="stat-value yellow" id="dash-bruto">₲ 0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Gastos delivery</div>
+      <div class="stat-value red" id="dash-gastos-del">₲ 0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Combustible</div>
+      <div class="stat-value blue" id="dash-combustible">₲ 0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Gastos moto</div>
+      <div class="stat-value purple" id="dash-gastos-moto">₲ 0</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Mi ganancia (10% del neto)</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+      <div style="font-family:var(--display);font-size:26px;font-weight:800;color:var(--green)" id="dash-ganancia">₲ 0</div>
+      <div class="badge badge-green" id="dash-ganancia-pct">10%</div>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-bar" id="dash-progress" style="background:linear-gradient(90deg,var(--green),var(--accent));width:0%"></div>
+    </div>
+    <div style="font-size:11px;color:var(--muted);margin-top:6px" id="dash-progress-label"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🏍️ Estado de la moto</div>
+    <div id="dash-moto-estado"></div>
+  </div>
+</div>
+
+<!-- ========== DELIVERY ========== -->
+<div class="page" id="page-delivery">
+  <div class="page-header">
+    <div class="page-title">📦 Delivery</div>
+    <div class="page-sub">Ingresos y gastos por día</div>
+  </div>
+
+  <div class="semana-nav">
+    <button class="semana-nav-btn" onclick="cambiarSemana(-1)">‹</button>
+    <div class="semana-nav-label" id="semana-label">Semana actual</div>
+    <button class="semana-nav-btn" onclick="cambiarSemana(1)">›</button>
+  </div>
+
+  <div class="stat-grid" style="grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px">
+    <div class="stat-card">
+      <div class="stat-label">Bruto</div>
+      <div class="stat-value yellow" style="font-size:15px" id="sem-bruto">₲ 0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Gastos</div>
+      <div class="stat-value red" style="font-size:15px" id="sem-gastos">₲ 0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Neto</div>
+      <div class="stat-value green" style="font-size:15px" id="sem-neto">₲ 0</div>
+    </div>
+  </div>
+
+  <div class="dias-grid" id="dias-grid"></div>
+</div>
+
+<!-- ========== COMBUSTIBLE ========== -->
+<div class="page" id="page-combustible">
+  <div class="page-header">
+    <div class="page-title">⛽ Combustible</div>
+    <div class="page-sub">Cargas del mes</div>
+  </div>
+
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="stat-label">Total mes</div>
+      <div class="stat-value blue" id="comb-total">₲ 0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Cargas</div>
+      <div class="stat-value" id="comb-count">0</div>
+    </div>
+  </div>
+
+  <button class="btn btn-primary btn-full" onclick="openModal('modal-carga')">+ Registrar carga</button>
+  <br><br>
+
+  <div id="lista-cargas"></div>
+</div>
+
+<!-- ========== MOTO ========== -->
+<div class="page" id="page-moto">
+  <div class="page-header">
+    <div class="page-title">🏍️ Mi Moto</div>
+    <div class="page-sub">Control de kilometraje y mantenimiento</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Kilometraje actual</div>
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+      <div style="font-family:var(--display);font-size:34px;font-weight:800;color:var(--accent)" id="moto-km-display">0 km</div>
+    </div>
+    <button class="btn btn-ghost btn-sm" onclick="openModal('modal-km')">✏️ Actualizar km</button>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Cambio de aceite</div>
+    <div class="moto-stat">
+      <span class="moto-stat-label">Último cambio (km)</span>
+      <span class="moto-stat-val" id="aceite-ultimo">—</span>
+    </div>
+    <div class="moto-stat">
+      <span class="moto-stat-label">Próximo cambio (km)</span>
+      <span class="moto-stat-val" id="aceite-proximo">—</span>
+    </div>
+    <div class="moto-stat">
+      <span class="moto-stat-label">Km restantes</span>
+      <span class="moto-stat-val" id="aceite-restantes" style="color:var(--green)">—</span>
+    </div>
+    <div class="progress-wrap" style="margin-top:12px">
+      <div class="progress-bar" id="aceite-progress" style="width:0%"></div>
+    </div>
+    <div style="font-size:11px;color:var(--muted);margin-top:6px" id="aceite-label"></div>
+    <button class="btn btn-primary btn-sm" style="margin-top:12px" onclick="openModal('modal-aceite')">🔧 Registrar cambio</button>
+  </div>
+</div>
+
+<!-- ========== GASTOS MOTO ========== -->
+<div class="page" id="page-gastos">
+  <div class="page-header">
+    <div class="page-title">🔧 Gastos Moto</div>
+    <div class="page-sub">Mecánico y accesorios</div>
+  </div>
+
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="stat-label">Total mes</div>
+      <div class="stat-value purple" id="gmoto-mes">₲ 0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Total histórico</div>
+      <div class="stat-value" id="gmoto-total">₲ 0</div>
+    </div>
+  </div>
+
+  <button class="btn btn-primary btn-full" onclick="openModal('modal-gasto-moto')">+ Agregar gasto</button>
+  <br><br>
+
+  <div id="lista-gastos-moto"></div>
+</div>
+
+<!-- ========== HISTORIAL ========== -->
+<div class="page" id="page-historial">
+  <div class="page-header">
+    <div class="page-title">📅 Historial</div>
+    <div class="page-sub">Resumen por mes</div>
+  </div>
+  <div id="lista-historial"></div>
+</div>
+
+<!-- ====== MODAL MES HISTORICO ====== -->
+<div class="modal-overlay" id="modal-mes-hist">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-mes-hist')">✕</button>
+    <div class="modal-title" id="modal-mes-hist-title">Mes</div>
+    <div id="modal-mes-hist-content"></div>
+  </div>
+</div>
+
+<!-- ====== MODAL DIA ====== -->
+<div class="modal-overlay" id="modal-dia">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-dia')">✕</button>
+    <div class="modal-title" id="modal-dia-title">Día</div>
+
+    <div class="card-title" style="margin-top:4px">Ingresos del día</div>
+    <div id="modal-ingresos-list"></div>
+    <div style="display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:8px">
+      <input type="text" inputmode="numeric" id="ingreso-monto" placeholder="₲ Monto" oninput="fmtInput(this)" onkeydown="if(event.key==='Enter')agregarIngreso()">
+      <button class="btn btn-primary" onclick="agregarIngreso()">+</button>
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:16px 0">
+
+    <div class="card-title">Gastos del día</div>
+    <div id="modal-gastos-list"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:8px;margin-top:8px">
+      <input type="text" id="gasto-desc" placeholder="Descripción" onkeydown="if(event.key==='Enter')document.getElementById('gasto-monto').focus()">
+      <input type="text" inputmode="numeric" id="gasto-monto" placeholder="₲ Monto" oninput="fmtInput(this)" onkeydown="if(event.key==='Enter')agregarGasto()">
+      <button class="btn btn-danger" onclick="agregarGasto()">+</button>
+    </div>
+
+    <div style="margin-top:16px;padding:12px;background:var(--bg3);border-radius:var(--radius-sm)">
+      <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px">
+        <span style="color:var(--muted)">Bruto</span><span style="color:var(--accent);font-weight:600" id="dia-sum-bruto">₲ 0</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px">
+        <span style="color:var(--muted)">Gastos</span><span style="color:var(--red);font-weight:600" id="dia-sum-gastos">₲ 0</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:14px;font-weight:700;border-top:1px solid var(--border);padding-top:8px;margin-top:4px">
+        <span>Neto del día</span><span style="color:var(--green)" id="dia-sum-neto">₲ 0</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== MODAL CARGA COMBUSTIBLE ====== -->
+<div class="modal-overlay" id="modal-carga">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-carga')">✕</button>
+    <div class="modal-title">⛽ Registrar carga</div>
+    <label>Monto (₲)</label>
+    <input type="text" inputmode="numeric" id="carga-monto" placeholder="0" oninput="fmtInput(this)">
+    <label>Litros (opcional)</label>
+    <input type="text" inputmode="numeric" id="carga-litros" placeholder="0">
+    <label>Fecha</label>
+    <input type="date" id="carga-fecha">
+    <div class="btn-row">
+      <button class="btn btn-primary btn-full" onclick="guardarCarga()">Guardar carga</button>
+    </div>
+  </div>
+</div>
+
+<!-- ====== MODAL KM ====== -->
+<div class="modal-overlay" id="modal-km">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-km')">✕</button>
+    <div class="modal-title">🏍️ Actualizar km</div>
+    <label>Kilometraje actual</label>
+    <input type="text" inputmode="numeric" id="km-valor" placeholder="Ej: 15000" oninput="fmtInput(this)">
+    <div class="btn-row">
+      <button class="btn btn-primary btn-full" onclick="guardarKm()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ====== MODAL ACEITE ====== -->
+<div class="modal-overlay" id="modal-aceite">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-aceite')">✕</button>
+    <div class="modal-title">🔧 Cambio de aceite</div>
+    <label>Km al momento del cambio</label>
+    <input type="text" inputmode="numeric" id="aceite-km" placeholder="Ej: 15000" oninput="fmtInput(this)">
+    <label>Intervalo próximo cambio (km)</label>
+    <input type="text" inputmode="numeric" id="aceite-intervalo" placeholder="Ej: 3000" oninput="fmtInput(this)">
+    <label>Fecha</label>
+    <input type="date" id="aceite-fecha">
+    <div class="btn-row">
+      <button class="btn btn-primary btn-full" onclick="guardarAceite()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ====== MODAL GASTO MOTO ====== -->
+<div class="modal-overlay" id="modal-gasto-moto">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-gasto-moto')">✕</button>
+    <div class="modal-title">🔧 Gasto de moto</div>
+    <label>Descripción</label>
+    <input type="text" id="gmoto-desc" placeholder="Ej: Cambio de pastillas, cadena...">
+    <label>Categoría</label>
+    <select id="gmoto-cat">
+      <option value="mecanico">🔧 Mecánico</option>
+      <option value="accesorio">🛒 Accesorio</option>
+      <option value="aceite">🛢️ Aceite</option>
+      <option value="otro">📦 Otro</option>
+    </select>
+    <label>Monto (₲)</label>
+    <input type="text" inputmode="numeric" id="gmoto-monto" placeholder="0" oninput="fmtInput(this)">
+    <label>Fecha</label>
+    <input type="date" id="gmoto-fecha">
+    <div class="btn-row">
+      <button class="btn btn-primary btn-full" onclick="guardarGastoMoto()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ========== DATA ==========
+const MESES_NOMBRES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+
+// Clave del mes actual: "2026-03"
+function getMesKey(offset = 0) {
+  const d = new Date();
+  d.setMonth(d.getMonth() + offset);
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
+}
+
+function getMesLabel(key) {
+  const [anio, mes] = key.split('-');
+  return MESES_NOMBRES[parseInt(mes)-1] + ' ' + anio;
+}
+
+// DB del mes activo
+let DB = {
+  semanas: {},
+  cargas: [],
+  gastosMoto: []
+};
+
+// Datos que persisten entre meses (la moto)
+let MOTO = { km: 0, aceite: { kmCambio: 0, intervalo: 3000, fecha: '' } };
+
+let mesActual = getMesKey();
+
+const DIAS = ['lunes','martes','miercoles','jueves','viernes','sabado','domingo'];
+const DIAS_LABEL = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
+const DIAS_EMOJI = ['💼','💼','💼','💼','💼','🎉','😴'];
+
+let semanaOffset = 0;
+let diaActual = null;
+
+// ========== STORAGE ==========
+function getMesData(key) {
+  const raw = localStorage.getItem('delivery-mes-' + key);
+  if(raw) return JSON.parse(raw);
+  return { semanas: {}, cargas: [], gastosMoto: [] };
+}
+
+function saveMes(key, data) {
+  localStorage.setItem('delivery-mes-' + key, JSON.stringify(data));
+}
+
+function saveMoto() {
+  localStorage.setItem('delivery-moto', JSON.stringify(MOTO));
+}
+
+function loadMoto() {
+  const raw = localStorage.getItem('delivery-moto');
+  if(raw) MOTO = JSON.parse(raw);
+}
+
+function save() {
+  saveMes(mesActual, DB);
+}
+
+function load() {
+  DB = getMesData(mesActual);
+  loadMoto();
+  // Verificar si hay que arrancar nuevo mes
+  checkNuevoMes();
+}
+
+function checkNuevoMes() {
+  const keyActual = getMesKey();
+  if(mesActual !== keyActual) {
+    mesActual = keyActual;
+    DB = getMesData(mesActual);
+  }
+}
+
+function getAllMeses() {
+  // Buscar todas las claves de meses guardados
+  const keys = [];
+  for(let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if(k && k.startsWith('delivery-mes-')) {
+      keys.push(k.replace('delivery-mes-',''));
+    }
+  }
+  return keys.sort((a,b) => b.localeCompare(a));
+}
+
+function getTotalesDeMes(key) {
+  const data = getMesData(key);
+  let bruto = 0, gastosDel = 0;
+  Object.keys(data.semanas).forEach(sk => {
+    const sem = data.semanas[sk];
+    DIAS.forEach(dia => {
+      if(sem[dia]) {
+        sem[dia].ingresos.forEach(v => bruto += v);
+        sem[dia].gastos.forEach(g => gastosDel += g.monto);
+      }
+    });
+  });
+  const combustible = (data.cargas||[]).reduce((a,c) => a + c.monto, 0);
+  const gastosMoto = (data.gastosMoto||[]).reduce((a,g) => a + g.monto, 0);
+  const totalGastos = gastosDel + combustible + gastosMoto;
+  const neto = bruto - totalGastos;
+  const ganancia = neto * 0.10;
+  return { bruto, gastosDel, combustible, gastosMoto, totalGastos, neto, ganancia };
+}
+
+// ========== FORMAT ==========
+function fmt(n) { return '₲ ' + Math.round(n||0).toLocaleString('es-PY'); }
+function fmtNum(n) { return Math.round(n||0).toLocaleString('es-PY'); }
+function fmtInput(el) {
+  const raw = el.value.replace(/\D/g,'');
+  el.value = raw ? parseInt(raw).toLocaleString('es-PY') : '';
+}
+function parseInput(id) {
+  const v = document.getElementById(id).value.replace(/\./g,'').replace(/,/g,'').trim();
+  return parseFloat(v) || 0;
+}
+
+// ========== SEMANA KEY ==========
+function getWeekKey(offset) {
+  const now = new Date();
+  now.setDate(now.getDate() + offset * 7);
+  const jan1 = new Date(now.getFullYear(), 0, 1);
+  const wk = Math.ceil(((now - jan1) / 86400000 + jan1.getDay() + 1) / 7);
+  return now.getFullYear() + '-W' + String(wk).padStart(2,'0');
+}
+
+function getWeekLabel(offset) {
+  const now = new Date();
+  now.setDate(now.getDate() + offset * 7);
+  // Get monday of that week
+  const day = now.getDay() || 7;
+  const monday = new Date(now);
+  monday.setDate(now.getDate() - day + 1);
+  const sunday = new Date(monday);
+  sunday.setDate(monday.getDate() + 6);
+  const fmt2 = d => d.getDate() + '/' + (d.getMonth()+1);
+  const label = fmt2(monday) + ' — ' + fmt2(sunday);
+  if(offset === 0) return 'Esta semana · ' + label;
+  if(offset === -1) return 'Semana pasada · ' + label;
+  return label;
+}
+
+function getSemana(key) {
+  if(!DB.semanas[key]) {
+    DB.semanas[key] = {};
+    DIAS.forEach(d => { DB.semanas[key][d] = { ingresos: [], gastos: [] }; });
+  }
+  return DB.semanas[key];
+}
+
+// ========== NAV ==========
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  document.getElementById('nav-' + id).classList.add('active');
+  if(id === 'dashboard') renderDashboard();
+  if(id === 'delivery') renderDelivery();
+  if(id === 'combustible') renderCombustible();
+  if(id === 'moto') renderMoto();
+  if(id === 'gastos') renderGastosMoto();
+  if(id === 'historial') renderHistorial();
+}
+
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(m => {
+  m.addEventListener('click', e => { if(e.target === m) m.classList.remove('open'); });
+});
+
+// ========== DELIVERY ==========
+function cambiarSemana(dir) {
+  semanaOffset += dir;
+  renderDelivery();
+}
+
+function renderDelivery() {
+  const key = getWeekKey(semanaOffset);
+  document.getElementById('semana-label').textContent = getWeekLabel(semanaOffset);
+  const sem = getSemana(key);
+
+  let brutoTotal = 0, gastosTotal = 0;
+  const grid = document.getElementById('dias-grid');
+  grid.innerHTML = DIAS.map((dia, i) => {
+    const d = sem[dia];
+    const bruto = d.ingresos.reduce((a,v) => a + v, 0);
+    const gastos = d.gastos.reduce((a,v) => a + v.monto, 0);
+    const neto = bruto - gastos;
+    brutoTotal += bruto;
+    gastosTotal += gastos;
+    const tieneData = bruto > 0 || gastos > 0;
+    return `<div class="dia-card ${tieneData ? 'activo' : ''}" onclick="abrirDia('${dia}', ${i})">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div class="dia-nombre">${DIAS_LABEL[i]}</div>
+        <div style="font-size:18px">${tieneData ? '✅' : '⬜'}</div>
+      </div>
+      <div class="dia-total">${bruto > 0 ? fmt(bruto) : '—'}</div>
+      ${gastos > 0 ? `<div class="dia-gasto">− ${fmt(gastos)}</div>` : ''}
+      ${tieneData ? `<div class="dia-neto">Neto: ${fmt(neto)}</div>` : ''}
+    </div>`;
+  }).join('');
+
+  document.getElementById('sem-bruto').textContent = fmt(brutoTotal);
+  document.getElementById('sem-gastos').textContent = fmt(gastosTotal);
+  document.getElementById('sem-neto').textContent = fmt(brutoTotal - gastosTotal);
+}
+
+function abrirDia(dia, idx) {
+  diaActual = { dia, key: getWeekKey(semanaOffset) };
+  document.getElementById('modal-dia-title').textContent = DIAS_EMOJI[idx] + ' ' + DIAS_LABEL[idx];
+  renderModalDia();
+  openModal('modal-dia');
+}
+
+function renderModalDia() {
+  if(!diaActual) return;
+  const sem = getSemana(diaActual.key);
+  const d = sem[diaActual.dia];
+
+  // Ingresos
+  const inEl = document.getElementById('modal-ingresos-list');
+  if(!d.ingresos.length) {
+    inEl.innerHTML = '<div class="empty" style="padding:10px">Sin ingresos aún</div>';
+  } else {
+    inEl.innerHTML = d.ingresos.map((v,i) => `
+      <div class="item-row">
+        <span class="item-desc">Ingreso ${i+1}</span>
+        <span class="item-monto" style="color:var(--green)">${fmt(v)}</span>
+        <button class="btn btn-danger btn-sm" style="margin-left:8px" onclick="eliminarIngreso(${i})">✕</button>
+      </div>`).join('');
+  }
+
+  // Gastos
+  const gEl = document.getElementById('modal-gastos-list');
+  if(!d.gastos.length) {
+    gEl.innerHTML = '<div class="empty" style="padding:10px">Sin gastos aún</div>';
+  } else {
+    gEl.innerHTML = d.gastos.map((g,i) => `
+      <div class="item-row">
+        <span class="item-desc">${g.desc || 'Gasto'}</span>
+        <span class="item-monto" style="color:var(--red)">${fmt(g.monto)}</span>
+        <button class="btn btn-danger btn-sm" style="margin-left:8px" onclick="eliminarGastoDia(${i})">✕</button>
+      </div>`).join('');
+  }
+
+  // Totales
+  const bruto = d.ingresos.reduce((a,v) => a+v, 0);
+  const gastos = d.gastos.reduce((a,v) => a+v.monto, 0);
+  document.getElementById('dia-sum-bruto').textContent = fmt(bruto);
+  document.getElementById('dia-sum-gastos').textContent = fmt(gastos);
+  document.getElementById('dia-sum-neto').textContent = fmt(bruto - gastos);
+}
+
+function agregarIngreso() {
+  const monto = parseInput('ingreso-monto');
+  if(!monto) { alert('Ingresá un monto'); return; }
+  const sem = getSemana(diaActual.key);
+  sem[diaActual.dia].ingresos.push(monto);
+  save();
+  document.getElementById('ingreso-monto').value = '';
+  renderModalDia();
+  renderDelivery();
+}
+
+function agregarGasto() {
+  const monto = parseInput('gasto-monto');
+  const desc = document.getElementById('gasto-desc').value.trim() || 'Gasto';
+  if(!monto) { alert('Ingresá un monto'); return; }
+  const sem = getSemana(diaActual.key);
+  sem[diaActual.dia].gastos.push({ desc, monto });
+  save();
+  document.getElementById('gasto-desc').value = '';
+  document.getElementById('gasto-monto').value = '';
+  renderModalDia();
+  renderDelivery();
+}
+
+function eliminarIngreso(idx) {
+  const sem = getSemana(diaActual.key);
+  sem[diaActual.dia].ingresos.splice(idx, 1);
+  save(); renderModalDia(); renderDelivery();
+}
+
+function eliminarGastoDia(idx) {
+  const sem = getSemana(diaActual.key);
+  sem[diaActual.dia].gastos.splice(idx, 1);
+  save(); renderModalDia(); renderDelivery();
+}
+
+// ========== COMBUSTIBLE ==========
+function renderCombustible() {
+  const mes = new Date().getMonth();
+  const anio = new Date().getFullYear();
+  const delMes = DB.cargas.filter(c => {
+    const d = new Date(c.fecha);
+    return d.getMonth() === mes && d.getFullYear() === anio;
+  });
+  const total = delMes.reduce((a,c) => a + c.monto, 0);
+  document.getElementById('comb-total').textContent = fmt(total);
+  document.getElementById('comb-count').textContent = delMes.length;
+
+  const lista = document.getElementById('lista-cargas');
+  if(!DB.cargas.length) {
+    lista.innerHTML = '<div class="empty"><div class="empty-icon">⛽</div>Sin cargas registradas</div>';
+    return;
+  }
+  lista.innerHTML = [...DB.cargas].reverse().map((c,i) => `
+    <div class="carga-item">
+      <div>
+        <div style="font-weight:600;font-size:14px">${fmt(c.monto)}</div>
+        <div style="font-size:12px;color:var(--muted)">${c.fecha}${c.litros ? ' · ' + c.litros + ' lts' : ''}</div>
+      </div>
+      <button class="btn btn-danger btn-sm" onclick="eliminarCarga(${DB.cargas.length-1-i})">✕</button>
+    </div>`).join('');
+}
+
+function guardarCarga() {
+  const monto = parseInput('carga-monto');
+  if(!monto) { alert('Ingresá el monto'); return; }
+  const litros = parseInput('carga-litros') || null;
+  const fecha = document.getElementById('carga-fecha').value || new Date().toISOString().split('T')[0];
+  DB.cargas.push({ monto, litros, fecha });
+  save();
+  closeModal('modal-carga');
+  document.getElementById('carga-monto').value = '';
+  document.getElementById('carga-litros').value = '';
+  renderCombustible();
+}
+
+function eliminarCarga(idx) {
+  if(!confirm('¿Eliminar esta carga?')) return;
+  DB.cargas.splice(idx, 1);
+  save(); renderCombustible();
+}
+
+// ========== MOTO ==========
+function renderMoto() {
+  document.getElementById('moto-km-display').textContent = fmtNum(MOTO.km) + ' km';
+  const a = MOTO.aceite;
+  document.getElementById('aceite-ultimo').textContent = a.kmCambio ? fmtNum(a.kmCambio) + ' km' : '—';
+  const proximo = a.kmCambio + a.intervalo;
+  document.getElementById('aceite-proximo').textContent = a.kmCambio ? fmtNum(proximo) + ' km' : '—';
+  const restantes = proximo - MOTO.km;
+  const restEl = document.getElementById('aceite-restantes');
+  const progEl = document.getElementById('aceite-progress');
+  const labelEl = document.getElementById('aceite-label');
+  if(a.kmCambio) {
+    const pct = Math.min(100, ((MOTO.km - a.kmCambio) / a.intervalo) * 100);
+    restEl.textContent = restantes > 0 ? fmtNum(restantes) + ' km' : '⚠️ VENCIDO';
+    restEl.style.color = restantes < 500 ? 'var(--red)' : restantes < 1000 ? 'var(--accent)' : 'var(--green)';
+    progEl.style.width = pct + '%';
+    progEl.style.background = pct > 85 ? 'var(--red)' : pct > 65 ? 'var(--accent)' : 'var(--green)';
+    labelEl.textContent = Math.round(pct) + '% del intervalo recorrido';
+  }
+}
+
+function guardarKm() {
+  const km = parseInput('km-valor');
+  if(!km) { alert('Ingresá el kilometraje'); return; }
+  MOTO.km = km;
+  saveMoto();
+  closeModal('modal-km');
+  document.getElementById('km-valor').value = '';
+  renderMoto();
+}
+
+function guardarAceite() {
+  const km = parseInput('aceite-km');
+  const intervalo = parseInput('aceite-intervalo') || 3000;
+  const fecha = document.getElementById('aceite-fecha').value;
+  if(!km) { alert('Ingresá el km del cambio'); return; }
+  MOTO.aceite = { kmCambio: km, intervalo, fecha };
+  if(km > MOTO.km) MOTO.km = km;
+  saveMoto();
+  closeModal('modal-aceite');
+  document.getElementById('aceite-km').value = '';
+  document.getElementById('aceite-intervalo').value = '';
+  renderMoto();
+}
+
+// ========== GASTOS MOTO ==========
+const CAT_ICONS = { mecanico:'🔧', accesorio:'🛒', aceite:'🛢️', otro:'📦' };
+const CAT_LABELS = { mecanico:'Mecánico', accesorio:'Accesorio', aceite:'Aceite', otro:'Otro' };
+
+function renderGastosMoto() {
+  const mes = new Date().getMonth();
+  const anio = new Date().getFullYear();
+  const delMes = DB.gastosMoto.filter(g => {
+    const d = new Date(g.fecha);
+    return d.getMonth() === mes && d.getFullYear() === anio;
+  });
+  const totalMes = delMes.reduce((a,g) => a + g.monto, 0);
+  const totalHist = DB.gastosMoto.reduce((a,g) => a + g.monto, 0);
+  document.getElementById('gmoto-mes').textContent = fmt(totalMes);
+  document.getElementById('gmoto-total').textContent = fmt(totalHist);
+
+  const lista = document.getElementById('lista-gastos-moto');
+  if(!DB.gastosMoto.length) {
+    lista.innerHTML = '<div class="empty"><div class="empty-icon">🔧</div>Sin gastos registrados</div>';
+    return;
+  }
+  lista.innerHTML = [...DB.gastosMoto].reverse().map((g,i) => `
+    <div class="carga-item">
+      <div>
+        <div style="font-weight:600;font-size:14px">${CAT_ICONS[g.cat]} ${g.desc}</div>
+        <div style="font-size:12px;color:var(--muted)">${g.fecha} · <span class="badge badge-yellow">${CAT_LABELS[g.cat]}</span></div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-weight:700;color:var(--purple)">${fmt(g.monto)}</div>
+        <button class="btn btn-danger btn-sm" style="margin-top:4px" onclick="eliminarGastoMoto(${DB.gastosMoto.length-1-i})">✕</button>
+      </div>
+    </div>`).join('');
+}
+
+function guardarGastoMoto() {
+  const desc = document.getElementById('gmoto-desc').value.trim();
+  const monto = parseInput('gmoto-monto');
+  const cat = document.getElementById('gmoto-cat').value;
+  const fecha = document.getElementById('gmoto-fecha').value || new Date().toISOString().split('T')[0];
+  if(!desc || !monto) { alert('Completá descripción y monto'); return; }
+  DB.gastosMoto.push({ desc, monto, cat, fecha });
+  save();
+  closeModal('modal-gasto-moto');
+  document.getElementById('gmoto-desc').value = '';
+  document.getElementById('gmoto-monto').value = '';
+  renderGastosMoto();
+}
+
+function eliminarGastoMoto(idx) {
+  if(!confirm('¿Eliminar este gasto?')) return;
+  DB.gastosMoto.splice(idx, 1);
+  save(); renderGastosMoto();
+}
+
+// ========== DASHBOARD ==========
+function getTotalesMes() {
+  return getTotalesDeMes(mesActual);
+}
+
+function renderDashboard() {
+  checkNuevoMes();
+  document.getElementById('dash-fecha').textContent = getMesLabel(mesActual);
+  const t = getTotalesMes();
+  document.getElementById('dash-neto').textContent = fmt(t.neto);
+  document.getElementById('dash-neto-sub').textContent = `Bruto: ${fmt(t.bruto)} · Gastos: ${fmt(t.totalGastos)}`;
+  document.getElementById('dash-bruto').textContent = fmt(t.bruto);
+  document.getElementById('dash-gastos-del').textContent = fmt(t.gastosDel);
+  document.getElementById('dash-combustible').textContent = fmt(t.combustible);
+  document.getElementById('dash-gastos-moto').textContent = fmt(t.gastosMoto);
+  document.getElementById('dash-ganancia').textContent = fmt(t.ganancia);
+  const pct = t.bruto > 0 ? Math.min(100, (t.neto / t.bruto) * 100) : 0;
+  document.getElementById('dash-progress').style.width = pct + '%';
+  document.getElementById('dash-progress-label').textContent = t.bruto > 0 ? `${Math.round(pct)}% del bruto queda como neto` : 'Sin datos aún';
+
+  // Estado moto
+  const a = MOTO.aceite;
+  const restantes = (a.kmCambio + a.intervalo) - MOTO.km;
+  const estadoEl = document.getElementById('dash-moto-estado');
+  if(!a.kmCambio) {
+    estadoEl.innerHTML = '<div style="color:var(--muted);font-size:13px">Sin datos de aceite configurados</div>';
+  } else {
+    const color = restantes < 500 ? 'var(--red)' : restantes < 1000 ? 'var(--accent)' : 'var(--green)';
+    estadoEl.innerHTML = `
+      <div class="moto-stat"><span class="moto-stat-label">Km actuales</span><span class="moto-stat-val">${fmtNum(MOTO.km)} km</span></div>
+      <div class="moto-stat"><span class="moto-stat-label">Próximo aceite</span><span class="moto-stat-val" style="color:${color}">${restantes > 0 ? fmtNum(restantes) + ' km restantes' : '⚠️ CAMBIAR YA'}</span></div>`;
+  }
+}
+
+// ========== HISTORIAL ==========
+function renderHistorial() {
+  const lista = document.getElementById('lista-historial');
+  const meses = getAllMeses();
+  if(!meses.length) {
+    lista.innerHTML = '<div class="empty"><div class="empty-icon">📅</div>Sin historial aún. Los datos se van guardando mes a mes.</div>';
+    return;
+  }
+  lista.innerHTML = meses.map(key => {
+    const t = getTotalesDeMes(key);
+    const esMesActual = key === mesActual;
+    return `<div class="mes-card" onclick="verDetallesMes('${key}')">
+      <div class="mes-card-header">
+        <div>
+          <div class="mes-nombre">${getMesLabel(key)}</div>
+          ${esMesActual ? '<span class="badge badge-yellow" style="font-size:10px">MES ACTUAL</span>' : ''}
+        </div>
+        <div class="mes-neto">${fmt(t.neto)}</div>
+      </div>
+      <div class="mes-stats">
+        <div class="mes-stat">
+          <div class="mes-stat-lbl">Bruto</div>
+          <div class="mes-stat-val" style="color:var(--accent)">${fmt(t.bruto)}</div>
+        </div>
+        <div class="mes-stat">
+          <div class="mes-stat-lbl">Gastos</div>
+          <div class="mes-stat-val" style="color:var(--red)">${fmt(t.totalGastos)}</div>
+        </div>
+        <div class="mes-stat">
+          <div class="mes-stat-lbl">Mi 10%</div>
+          <div class="mes-stat-val" style="color:var(--green)">${fmt(t.ganancia)}</div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function verDetallesMes(key) {
+  const t = getTotalesDeMes(key);
+  const data = getMesData(key);
+  document.getElementById('modal-mes-hist-title').textContent = '📅 ' + getMesLabel(key);
+
+  // Desglose por semana
+  const semanas = Object.keys(data.semanas).sort((a,b) => b.localeCompare(a));
+  const semanasHTML = semanas.map(sk => {
+    const sem = data.semanas[sk];
+    let bruto = 0, gastos = 0;
+    DIAS.forEach(dia => {
+      if(sem[dia]) {
+        sem[dia].ingresos.forEach(v => bruto += v);
+        sem[dia].gastos.forEach(g => gastos += g.monto);
+      }
+    });
+    const parts = sk.split('-W');
+    return `<div style="display:flex;justify-content:space-between;font-size:13px;padding:8px 0;border-bottom:1px solid var(--border)">
+      <span style="color:var(--muted)">Semana ${parts[1]}</span>
+      <span style="color:var(--green);font-weight:600">${fmt(bruto - gastos)}</span>
+    </div>`;
+  }).join('');
+
+  document.getElementById('modal-mes-hist-content').innerHTML = `
+    <div class="neto-box" style="margin-bottom:14px">
+      <div class="neto-label">Neto del mes</div>
+      <div class="neto-value">${fmt(t.neto)}</div>
+      <div class="neto-sub">Mi ganancia (10%): <strong style="color:var(--green)">${fmt(t.ganancia)}</strong></div>
+    </div>
+    <div class="stat-grid">
+      <div class="stat-card"><div class="stat-label">Bruto</div><div class="stat-value yellow" style="font-size:16px">${fmt(t.bruto)}</div></div>
+      <div class="stat-card"><div class="stat-label">Gastos delivery</div><div class="stat-value red" style="font-size:16px">${fmt(t.gastosDel)}</div></div>
+      <div class="stat-card"><div class="stat-label">Combustible</div><div class="stat-value blue" style="font-size:16px">${fmt(t.combustible)}</div></div>
+      <div class="stat-card"><div class="stat-label">Gastos moto</div><div class="stat-value purple" style="font-size:16px">${fmt(t.gastosMoto)}</div></div>
+    </div>
+    ${semanas.length ? `<div class="card"><div class="card-title">Desglose por semana</div>${semanasHTML}</div>` : ''}
+  `;
+  openModal('modal-mes-hist');
+}
+
+// ========== INIT ==========
+load();
+
+const hoy = new Date().toISOString().split('T')[0];
+['carga-fecha','aceite-fecha','gmoto-fecha'].forEach(id => {
+  const el = document.getElementById(id);
+  if(el) el.value = hoy;
+});
+
+renderDashboard();
+renderDelivery();
+
+// ========== SERVICE WORKER ==========
+if('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw-delivery.js')
+      .then(() => console.log('SW Delivery registrado ✅'))
+      .catch(e => console.log('SW error:', e));
+  });
+}
+</script>
+</body>
+</html>
