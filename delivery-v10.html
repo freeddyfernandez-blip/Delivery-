@@ -1,0 +1,4015 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#070711">
+<title>Delivery Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+/* ═══════════════════════════════════════════
+   DESIGN SYSTEM
+═══════════════════════════════════════════ */
+:root {
+  --bg:        #070711;
+  --bg1:       #0c0c1a;
+  --bg2:       #111124;
+  --bg3:       #181830;
+  --card:      #141428;
+  --border:    rgba(255,255,255,0.07);
+  --border-hi: rgba(255,255,255,0.13);
+
+  --gold:      #f5a623;
+  --gold-dim:  rgba(245,166,35,0.12);
+  --gold-glow: rgba(245,166,35,0.25);
+  --green:     #2dd4a4;
+  --green-dim: rgba(45,212,164,0.10);
+  --red:       #ff6b6b;
+  --red-dim:   rgba(255,107,107,0.10);
+  --blue:      #60a5fa;
+  --blue-dim:  rgba(96,165,250,0.10);
+  --purple:    #a78bfa;
+  --purple-dim:rgba(167,139,250,0.10);
+
+  --text:      #eeeeff;
+  --text2:     #9999bb;
+  --text3:     #55556a;
+
+  --ff-display: 'Plus Jakarta Sans', sans-serif;
+  --ff-body:    'DM Sans', sans-serif;
+  --ff-mono:    'DM Mono', monospace;
+
+  --r:    18px;
+  --r-sm: 12px;
+  --r-xs:  8px;
+
+  --nav-h: 68px;
+  --header-h: 56px;
+}
+
+/* ── LIGHT MODE ── */
+body.light {
+  --bg:        #f4f5f7;
+  --bg1:       #ecedf0;
+  --bg2:       #e4e5e9;
+  --bg3:       #d8d9de;
+  --card:      #ffffff;
+  --border:    rgba(0,0,0,0.08);
+  --border-hi: rgba(0,0,0,0.14);
+
+  --gold:      #d97706;
+  --gold-dim:  rgba(217,119,6,0.10);
+  --gold-glow: rgba(217,119,6,0.20);
+  --green:     #059669;
+  --green-dim: rgba(5,150,105,0.10);
+  --red:       #dc2626;
+  --red-dim:   rgba(220,38,38,0.08);
+  --blue:      #2563eb;
+  --blue-dim:  rgba(37,99,235,0.10);
+  --purple:    #7c3aed;
+  --purple-dim:rgba(124,58,237,0.10);
+
+  --text:      #111827;
+  --text2:     #4b5563;
+  --text3:     #9ca3af;
+}
+
+/* ── DIM MODE (intermedio, amigable para los ojos) ── */
+body.dim {
+  --bg:        #1e1f2e;
+  --bg1:       #252638;
+  --bg2:       #2c2d42;
+  --bg3:       #33354c;
+  --card:      #2a2b40;
+  --border:    rgba(255,255,255,0.08);
+  --border-hi: rgba(255,255,255,0.14);
+
+  --gold:      #e8a020;
+  --gold-dim:  rgba(232,160,32,0.13);
+  --gold-glow: rgba(232,160,32,0.22);
+  --green:     #34c48a;
+  --green-dim: rgba(52,196,138,0.12);
+  --red:       #f07070;
+  --red-dim:   rgba(240,112,112,0.10);
+  --blue:      #7ab4f5;
+  --blue-dim:  rgba(122,180,245,0.12);
+  --purple:    #b09af5;
+  --purple-dim:rgba(176,154,245,0.12);
+
+  --text:      #d8d9e8;
+  --text2:     #9899b8;
+  --text3:     #5e6080;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+html { height: 100%; overscroll-behavior: none; }
+
+body {
+  font-family: var(--ff-body);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100%;
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+}
+
+/* ═══ SCROLLBAR ═══ */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-hi); border-radius: 99px; }
+
+/* ═══════════════════════════════════════════
+   LOGIN SCREEN
+═══════════════════════════════════════════ */
+#login-screen {
+  position: fixed; inset: 0; z-index: 9999;
+  background: var(--bg);
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px;
+  overflow: hidden;
+}
+#login-screen::before {
+  content: '';
+  position: absolute;
+  width: 400px; height: 400px;
+  background: radial-gradient(ellipse, rgba(245,166,35,0.12) 0%, transparent 70%);
+  top: -100px; left: 50%; transform: translateX(-50%);
+  pointer-events: none;
+}
+#login-screen.hidden { display: none; }
+
+.login-card {
+  width: 100%; max-width: 360px;
+  background: var(--card);
+  border: 1px solid var(--border-hi);
+  border-radius: 24px;
+  padding: 36px 28px;
+  position: relative;
+  overflow: hidden;
+}
+.login-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(245,166,35,0.5), transparent);
+}
+
+.login-logo-wrap {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 8px;
+}
+.login-logo-icon {
+  width: 44px; height: 44px;
+  background: linear-gradient(135deg, var(--gold), #fb923c);
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; box-shadow: 0 0 20px var(--gold-glow);
+}
+.login-logo-text {
+  font-family: var(--ff-display);
+  font-size: 22px; font-weight: 800;
+  color: var(--text);
+}
+.login-tagline {
+  font-size: 13px; color: var(--text3);
+  margin-bottom: 32px;
+}
+.login-error {
+  background: rgba(255,107,107,0.1);
+  border: 1px solid rgba(255,107,107,0.25);
+  color: var(--red);
+  font-size: 13px; padding: 10px 14px;
+  border-radius: var(--r-xs); margin-top: 12px;
+  display: none;
+}
+.login-error.show { display: block; }
+
+/* ═══════════════════════════════════════════
+   APP SHELL
+═══════════════════════════════════════════ */
+#app-shell {
+  display: none;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+#app-shell.visible { display: flex; }
+
+/* ═══ HEADER BAR ═══ */
+.app-header {
+  height: var(--header-h);
+  background: rgba(7,7,17,0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 16px;
+  flex-shrink: 0;
+  position: relative; z-index: 50;
+}
+.app-header-brand {
+  display: flex; align-items: center; gap: 10px;
+}
+.app-header-icon {
+  width: 32px; height: 32px;
+  background: linear-gradient(135deg, var(--gold), #fb923c);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+}
+.app-header-title {
+  font-family: var(--ff-display);
+  font-size: 17px; font-weight: 800;
+  color: var(--text);
+}
+.app-header-right {
+  display: flex; align-items: center; gap: 10px;
+}
+.save-pill {
+  font-size: 11px; font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 99px;
+  background: var(--green-dim);
+  color: var(--green);
+  border: 1px solid rgba(45,212,164,0.2);
+  display: none;
+}
+.save-pill.show { display: block; }
+.user-chip {
+  display: flex; align-items: center; gap: 6px;
+  background: var(--bg3);
+  border: 1px solid var(--border-hi);
+  border-radius: 99px;
+  padding: 4px 12px 4px 6px;
+  cursor: pointer;
+  transition: all .2s;
+}
+.user-chip:active { opacity: .7; }
+.user-chip-avatar {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold), #fb923c);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; color: #000;
+}
+.user-chip-name {
+  font-size: 12px; font-weight: 600; color: var(--text);
+  max-width: 80px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+/* ═══ PAGES AREA ═══ */
+.pages-area {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+.page {
+  display: none;
+  position: absolute; inset: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+  padding: 16px 16px calc(var(--nav-h) + 16px);
+}
+.page.active {
+  display: block;
+  animation: pgIn .22s ease;
+}
+@keyframes pgIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ═══ BOTTOM NAV ═══ */
+.bottom-nav {
+  height: var(--nav-h);
+  background: rgba(11,11,28,0.92);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-top: 1px solid var(--border);
+  display: flex; align-items: center;
+  flex-shrink: 0;
+  padding: 0 4px;
+  position: relative; z-index: 50;
+}
+.nav-item {
+  flex: 1;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 4px;
+  padding: 8px 4px;
+  cursor: pointer;
+  border: none; background: none;
+  transition: all .2s;
+  border-radius: 12px;
+  position: relative;
+  min-width: 0;
+}
+.nav-item:active { transform: scale(.9); }
+.nav-item svg { width: 22px; height: 22px; stroke: var(--text3); fill: none; stroke-width: 1.8; transition: all .2s; stroke-linecap: round; stroke-linejoin: round; }
+.nav-item span { font-size: 9.5px; font-weight: 600; color: var(--text3); letter-spacing: .02em; text-transform: uppercase; transition: all .2s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.nav-item.active svg { stroke: var(--gold); filter: drop-shadow(0 0 6px var(--gold-glow)); }
+.nav-item.active span { color: var(--gold); }
+.nav-indicator {
+  position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%);
+  width: 4px; height: 4px; border-radius: 50%;
+  background: var(--gold);
+  opacity: 0; transition: opacity .2s;
+  box-shadow: 0 0 8px var(--gold);
+}
+.nav-item.active .nav-indicator { opacity: 1; }
+
+/* ═══════════════════════════════════════════
+   SHARED COMPONENTS
+═══════════════════════════════════════════ */
+
+/* Section header */
+.sec-head {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  margin-bottom: 16px;
+}
+.sec-title {
+  font-family: var(--ff-display);
+  font-size: 22px; font-weight: 800; color: var(--text);
+  letter-spacing: -.02em;
+}
+.sec-sub {
+  font-size: 12px; color: var(--text3); margin-top: 2px;
+}
+
+/* Cards */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 16px;
+  margin-bottom: 12px;
+  position: relative;
+  overflow: hidden;
+}
+.card-shine {
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-hi), transparent);
+}
+.card-label {
+  font-size: 10px; font-weight: 700;
+  color: var(--text3);
+  text-transform: uppercase; letter-spacing: .1em;
+  margin-bottom: 12px;
+  transition: color .2s;
+}
+.card-label:hover { color: var(--gold); }
+.section-body {
+  margin-top: 4px;
+  transition: all .2s;
+}
+.mes-stat-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 6px; margin-top: 10px; }
+
+/* Stat grid */
+.stat-row {
+  display: grid; gap: 10px;
+  margin-bottom: 12px;
+}
+.stat-row.cols-2 { grid-template-columns: 1fr 1fr; }
+.stat-row.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+.stat-row.cols-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+
+.stat-tile {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 12px;
+}
+.stat-tile-label {
+  font-size: 10px; font-weight: 600;
+  color: var(--text3);
+  text-transform: uppercase; letter-spacing: .06em;
+  margin-bottom: 6px;
+}
+.stat-tile-val {
+  font-family: var(--ff-display);
+  font-size: 17px; font-weight: 700;
+  letter-spacing: -.01em;
+}
+.stat-tile-val.gold   { color: var(--gold); }
+.stat-tile-val.green  { color: var(--green); }
+.stat-tile-val.red    { color: var(--red); }
+.stat-tile-val.blue   { color: var(--blue); }
+.stat-tile-val.purple { color: var(--purple); }
+
+/* Hero neto card */
+.hero-neto {
+  background: linear-gradient(135deg, rgba(245,166,35,0.12) 0%, rgba(251,146,60,0.06) 100%);
+  border: 1px solid rgba(245,166,35,0.22);
+  border-radius: 20px;
+  padding: 20px;
+  margin-bottom: 12px;
+  position: relative; overflow: hidden;
+}
+.hero-neto::before {
+  content: '';
+  position: absolute; top: -60px; right: -60px;
+  width: 180px; height: 180px;
+  background: radial-gradient(ellipse, rgba(245,166,35,0.15) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-label {
+  font-size: 10px; font-weight: 700;
+  color: var(--gold);
+  text-transform: uppercase; letter-spacing: .12em;
+  margin-bottom: 8px;
+}
+.hero-amount {
+  font-family: var(--ff-display);
+  font-size: 38px; font-weight: 800;
+  color: var(--gold);
+  letter-spacing: -.03em;
+  line-height: 1;
+}
+.hero-amount.negative { color: var(--red); }
+.hero-sub {
+  font-size: 12px; color: var(--text3); margin-top: 6px;
+}
+
+/* Progress bar */
+.prog-wrap {
+  background: var(--bg3);
+  border-radius: 99px; height: 6px;
+  overflow: hidden; margin-top: 8px;
+}
+.prog-bar {
+  height: 100%; border-radius: 99px;
+  transition: width .6s cubic-bezier(.4,0,.2,1);
+}
+.prog-bar.gold   { background: linear-gradient(90deg, var(--gold), #fb923c); box-shadow: 0 0 8px rgba(245,166,35,0.4); }
+.prog-bar.green  { background: linear-gradient(90deg, var(--green), #34d399); box-shadow: 0 0 8px rgba(45,212,164,0.4); }
+.prog-bar.red    { background: var(--red); }
+.prog-bar.mixed  { background: linear-gradient(90deg, var(--green), var(--gold)); }
+
+/* Badge */
+.badge {
+  display: inline-flex; align-items: center;
+  padding: 3px 9px;
+  border-radius: 99px;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: .03em;
+}
+.badge.gold   { background: var(--gold-dim); color: var(--gold); border: 1px solid rgba(245,166,35,0.2); }
+.badge.green  { background: var(--green-dim); color: var(--green); border: 1px solid rgba(45,212,164,0.2); }
+.badge.red    { background: var(--red-dim); color: var(--red); border: 1px solid rgba(255,107,107,0.2); }
+.badge.purple { background: var(--purple-dim); color: var(--purple); border: 1px solid rgba(167,139,250,0.2); }
+.badge.blue   { background: var(--blue-dim); color: var(--blue); border: 1px solid rgba(96,165,250,0.2); }
+
+/* Inputs */
+.field { margin-bottom: 14px; }
+.field-label {
+  font-size: 11px; font-weight: 600;
+  color: var(--text3);
+  text-transform: uppercase; letter-spacing: .06em;
+  margin-bottom: 6px; display: block;
+}
+.field input, .field select, .field textarea {
+  width: 100%;
+  background: var(--bg3);
+  border: 1px solid var(--border-hi);
+  border-radius: var(--r-sm);
+  color: var(--text);
+  font-family: var(--ff-body);
+  font-size: 15px; padding: 13px 14px;
+  outline: none;
+  transition: border-color .18s, box-shadow .18s;
+  -webkit-appearance: none;
+}
+.field input:focus, .field select:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px var(--gold-dim);
+}
+.field select option { background: var(--bg2); }
+input, select, textarea { -webkit-appearance: none; }
+
+/* Buttons */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 13px 20px;
+  border-radius: var(--r-sm);
+  border: none; cursor: pointer;
+  font-family: var(--ff-body);
+  font-size: 14px; font-weight: 600;
+  transition: all .18s;
+  -webkit-tap-highlight-color: transparent;
+  letter-spacing: .01em;
+}
+.btn:active { transform: scale(.96); }
+.btn-full { width: 100%; }
+
+.btn-gold {
+  background: linear-gradient(135deg, var(--gold), #fb923c);
+  color: #000;
+  box-shadow: 0 4px 16px rgba(245,166,35,0.3);
+}
+.btn-gold:active { box-shadow: 0 2px 8px rgba(245,166,35,0.2); }
+
+.btn-ghost {
+  background: var(--bg3);
+  border: 1px solid var(--border-hi);
+  color: var(--text);
+}
+.btn-ghost:active { background: var(--bg2); }
+
+.btn-danger {
+  background: rgba(255,107,107,0.12);
+  border: 1px solid rgba(255,107,107,0.2);
+  color: var(--red);
+  padding: 6px 12px;
+  font-size: 12px; border-radius: var(--r-xs);
+}
+.btn-green {
+  background: linear-gradient(135deg, #2dd4a4, #34d399);
+  color: #000;
+  box-shadow: 0 4px 16px rgba(45,212,164,0.25);
+}
+.btn-sm { padding: 7px 14px; font-size: 12px; }
+
+/* ═══ MODAL ═══ */
+.modal-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.75);
+  z-index: 500;
+  align-items: flex-end;
+  backdrop-filter: blur(4px);
+}
+.modal-overlay.open { display: flex; }
+
+.modal-sheet {
+  background: var(--bg1);
+  border-top: 1px solid var(--border-hi);
+  border-radius: 24px 24px 0 0;
+  padding: 0 0 env(safe-area-inset-bottom, 16px);
+  width: 100%;
+  max-height: 92vh;
+  overflow-y: auto;
+  animation: sheetUp .28s cubic-bezier(.2,.8,.4,1);
+}
+@keyframes sheetUp {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+.modal-handle {
+  width: 36px; height: 4px;
+  background: var(--border-hi);
+  border-radius: 99px;
+  margin: 12px auto 0;
+}
+.modal-body { padding: 16px 20px 20px; }
+.modal-title {
+  font-family: var(--ff-display);
+  font-size: 20px; font-weight: 800;
+  color: var(--text); margin-bottom: 20px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.modal-close {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  width: 32px; height: 32px;
+  color: var(--text2); font-size: 16px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: all .18s;
+  flex-shrink: 0;
+}
+.modal-close:active { background: var(--bg2); }
+
+/* ═══ EMPTY STATE ═══ */
+.empty-state {
+  text-align: center; padding: 40px 20px;
+  color: var(--text3); font-size: 13px;
+}
+.empty-icon {
+  font-size: 40px; margin-bottom: 10px; opacity: .6;
+}
+
+/* ═══ LIST ITEMS ═══ */
+.list-item {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 12px 14px;
+  margin-bottom: 8px;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px;
+}
+.list-item-left { flex: 1; min-width: 0; }
+.list-item-desc { font-size: 14px; font-weight: 500; color: var(--text); }
+.list-item-meta { font-size: 11px; color: var(--text3); margin-top: 2px; }
+.list-item-val { font-size: 15px; font-weight: 700; white-space: nowrap; }
+
+/* ═══ DIVIDER ═══ */
+.divider { height: 1px; background: var(--border); margin: 14px 0; }
+
+/* ═══ ROW SUMMARY ═══ */
+.sum-row {
+  background: var(--bg3);
+  border-radius: var(--r-sm);
+  padding: 12px 14px;
+}
+.sum-line {
+  display: flex; justify-content: space-between;
+  font-size: 13px; padding: 4px 0;
+}
+.sum-line.total {
+  font-size: 15px; font-weight: 700;
+  border-top: 1px solid var(--border);
+  padding-top: 10px; margin-top: 6px;
+}
+
+/* ═══════════════════════════════════════════
+   DASHBOARD PAGE
+═══════════════════════════════════════════ */
+.dash-greeting {
+  font-size: 13px; color: var(--text3); margin-bottom: 4px;
+}
+.dash-month {
+  font-family: var(--ff-display);
+  font-size: 26px; font-weight: 800; color: var(--text);
+  letter-spacing: -.02em; margin-bottom: 16px;
+}
+
+.ganancia-card {
+  background: linear-gradient(135deg, rgba(45,212,164,0.1) 0%, rgba(52,211,153,0.05) 100%);
+  border: 1px solid rgba(45,212,164,0.18);
+  border-radius: 16px; padding: 12px 14px;
+  margin-bottom: 12px;
+}
+.ganancia-top {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 6px;
+}
+.ganancia-label {
+  font-size: 10px; font-weight: 700;
+  color: var(--green); text-transform: uppercase; letter-spacing: .1em;
+}
+.ganancia-val {
+  font-family: var(--ff-display);
+  font-size: 20px; font-weight: 800; color: var(--green);
+  letter-spacing: -.02em;
+}
+
+.dep-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px; padding: 12px 14px;
+  margin-bottom: 12px;
+}
+.dep-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 8px;
+}
+.dep-title {
+  font-size: 10px; font-weight: 700; color: var(--text3);
+  text-transform: uppercase; letter-spacing: .08em;
+}
+.dep-btn {
+  background: var(--gold-dim);
+  border: 1px solid rgba(245,166,35,0.25);
+  color: var(--gold);
+  font-size: 11px; font-weight: 700;
+  padding: 4px 12px; border-radius: 99px;
+  cursor: pointer; font-family: var(--ff-body);
+  transition: all .18s;
+}
+.dep-btn:active { opacity: .7; }
+.dep-mini-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+  margin-bottom: 10px;
+}
+.dep-mini {
+  background: var(--bg3); border-radius: var(--r-xs); padding: 8px 10px;
+}
+.dep-mini-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: .05em; }
+.dep-mini-val {
+  font-family: var(--ff-display);
+  font-size: 14px; font-weight: 700; margin-top: 2px;
+}
+.dep-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 7px 0; border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+.dep-item:last-child { border-bottom: none; }
+
+.moto-dash-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 16px; padding: 14px; margin-bottom: 12px;
+}
+.moto-dash-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 0; border-bottom: 1px solid var(--border);
+}
+.moto-dash-row:last-child { border-bottom: none; }
+.moto-dash-label { font-size: 13px; color: var(--text3); }
+.moto-dash-val { font-size: 14px; font-weight: 700; }
+
+/* ═══════════════════════════════════════════
+   DELIVERY PAGE
+═══════════════════════════════════════════ */
+.week-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px; padding: 10px 14px;
+  margin-bottom: 14px;
+}
+.week-btn {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  width: 34px; height: 34px;
+  color: var(--gold); font-size: 18px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: all .18s;
+}
+.week-btn:active { background: var(--gold-dim); }
+.week-label {
+  font-family: var(--ff-display);
+  font-size: 14px; font-weight: 700; color: var(--text);
+  text-align: center; flex: 1;
+}
+.week-sub { font-size: 10px; color: var(--text3); font-weight: 400; }
+
+.dias-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 10px; margin-bottom: 12px;
+}
+.dia-tile {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px; padding: 14px;
+  cursor: pointer;
+  transition: all .2s;
+  position: relative; overflow: hidden;
+}
+.dia-tile:active { transform: scale(.97); }
+.dia-tile.has-data {
+  border-color: rgba(245,166,35,0.25);
+  background: linear-gradient(135deg, rgba(245,166,35,0.06), var(--card));
+}
+.dia-tile.today {
+  border-color: rgba(96,165,250,0.35);
+}
+.dia-today-badge {
+  font-size: 9px; font-weight: 700; color: var(--blue);
+  text-transform: uppercase; letter-spacing: .06em;
+  margin-bottom: 2px; display: block;
+}
+.dia-tile-head {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 8px;
+}
+.dia-name {
+  font-family: var(--ff-display);
+  font-size: 14px; font-weight: 700; color: var(--text);
+}
+.dia-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--border-hi);
+}
+.dia-dot.active { background: var(--green); box-shadow: 0 0 6px rgba(45,212,164,0.5); }
+.dia-bruto { font-size: 15px; font-weight: 700; color: var(--green); }
+.dia-gastos { font-size: 11px; color: var(--red); margin-top: 1px; }
+.dia-neto { font-size: 11px; color: var(--text3); margin-top: 1px; }
+.dia-empty { font-size: 12px; color: var(--text3); }
+
+/* ═══════════════════════════════════════════
+   MOTO PAGE
+═══════════════════════════════════════════ */
+.moto-km-hero {
+  background: linear-gradient(135deg, rgba(96,165,250,0.1), rgba(96,165,250,0.04));
+  border: 1px solid rgba(96,165,250,0.2);
+  border-radius: 20px; padding: 20px;
+  margin-bottom: 12px; text-align: center;
+}
+.moto-km-label { font-size: 11px; color: var(--blue); text-transform: uppercase; letter-spacing: .1em; font-weight: 700; }
+.moto-km-val {
+  font-family: var(--ff-mono);
+  font-size: 42px; font-weight: 500; color: var(--blue);
+  letter-spacing: .02em; margin: 8px 0;
+}
+.moto-km-sub { font-size: 12px; color: var(--text3); }
+
+.maintenance-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 16px; padding: 16px; margin-bottom: 12px;
+}
+.maintenance-title {
+  font-size: 11px; font-weight: 700; color: var(--text3);
+  text-transform: uppercase; letter-spacing: .08em; margin-bottom: 14px;
+}
+.maint-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 9px 0; border-bottom: 1px solid var(--border);
+}
+.maint-row:last-child { border-bottom: none; }
+.maint-label { font-size: 13px; color: var(--text2); }
+.maint-val { font-size: 14px; font-weight: 700; }
+
+/* Alert banner */
+.alert-banner {
+  display: flex; align-items: center; gap: 10px;
+  border-radius: 12px; padding: 12px 14px;
+  margin-bottom: 12px; font-size: 13px; font-weight: 500;
+}
+.alert-banner.warn { background: rgba(245,166,35,0.1); border: 1px solid rgba(245,166,35,0.2); color: var(--gold); }
+.alert-banner.danger { background: rgba(255,107,107,0.1); border: 1px solid rgba(255,107,107,0.2); color: var(--red); }
+.alert-banner.ok { background: rgba(45,212,164,0.1); border: 1px solid rgba(45,212,164,0.2); color: var(--green); }
+
+/* ═══════════════════════════════════════════
+   GASTOS FIJOS PAGE
+═══════════════════════════════════════════ */
+.fijo-item {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 14px; padding: 14px;
+  margin-bottom: 8px; transition: all .2s;
+}
+.fijo-item.pagado {
+  border-color: rgba(45,212,164,0.2);
+  background: rgba(45,212,164,0.04);
+}
+.fijo-top { display: flex; align-items: center; gap: 10px; }
+.fijo-check {
+  width: 28px; height: 28px; border-radius: 50%;
+  border: 2px solid var(--border-hi);
+  background: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; flex-shrink: 0; transition: all .2s;
+}
+.fijo-check.done { background: var(--green); border-color: var(--green); color: #000; }
+.fijo-info { flex: 1; min-width: 0; }
+.fijo-nombre { font-weight: 600; font-size: 14px; }
+.fijo-item.pagado .fijo-nombre { text-decoration: line-through; color: var(--text3); }
+.fijo-meta { font-size: 11px; color: var(--text3); margin-top: 2px; }
+.fijo-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+.fijo-monto { font-family: var(--ff-display); font-size: 16px; font-weight: 700; color: var(--gold); }
+.fijo-item.pagado .fijo-monto { color: var(--green); }
+.fijo-actions { display: flex; gap: 6px; }
+.icon-btn {
+  background: none; border: none; cursor: pointer;
+  font-size: 15px; padding: 2px;
+  opacity: .5; transition: opacity .18s;
+}
+.icon-btn:active { opacity: 1; }
+
+/* Fijos progress hero */
+.fijos-hero {
+  border-radius: 18px; padding: 18px;
+  margin-bottom: 14px;
+  background: var(--card); border: 1px solid var(--border);
+}
+.fijos-pct-row {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 10px;
+}
+.fijos-pct-label { font-size: 12px; color: var(--text3); }
+.fijos-pct-val { font-family: var(--ff-mono); font-size: 14px; font-weight: 500; color: var(--green); }
+
+/* ═══════════════════════════════════════════
+   HISTORIAL PAGE
+═══════════════════════════════════════════ */
+.mes-tile {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 16px; padding: 16px;
+  margin-bottom: 10px; cursor: pointer;
+  transition: all .2s;
+}
+.mes-tile:active { transform: scale(.98); border-color: var(--border-hi); }
+.mes-tile-head {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  margin-bottom: 12px;
+}
+.mes-nombre { font-family: var(--ff-display); font-size: 17px; font-weight: 800; color: var(--text); }
+.mes-neto { font-family: var(--ff-display); font-size: 20px; font-weight: 800; color: var(--green); }
+.mes-neto.negative { color: var(--red); }
+.mes-stat-row {
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px;
+}
+.mes-stat-tile { background: var(--bg3); border-radius: 8px; padding: 7px; text-align: center; }
+.mes-stat-lbl { font-size: 9px; color: var(--text3); text-transform: uppercase; letter-spacing: .05em; font-weight: 600; }
+.mes-stat-val { font-size: 13px; font-weight: 700; margin-top: 2px; }
+
+/* ═══════════════════════════════════════════
+   MODAL DIA — QUICK ENTRY
+═══════════════════════════════════════════ */
+.quick-entry {
+  display: grid; gap: 8px; margin-top: 8px;
+}
+.quick-row {
+  display: flex; gap: 8px;
+}
+.quick-row input { flex: 1; }
+.quick-row .btn { flex-shrink: 0; padding: 13px 16px; }
+
+/* ═══════════════════════════════════════════
+   COMBUSTIBLE PAGE
+═══════════════════════════════════════════ */
+.carga-tile {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 12px; padding: 12px 14px;
+  margin-bottom: 8px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.carga-info-val { font-size: 16px; font-weight: 700; color: var(--blue); }
+.carga-info-meta { font-size: 11px; color: var(--text3); margin-top: 2px; }
+
+/* ═══ CHART CANVAS ═══ */
+.chart-wrap { position: relative; height: 140px; margin-top: 8px; }
+canvas { display: block; }
+
+/* ═══ PULSE ANIMATION ═══ */
+@keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:.5; } }
+.pulse { animation: pulse 2s ease-in-out infinite; }
+
+/* ═══ UTIL ═══ */
+.mt-8 { margin-top: 8px; }
+.mt-12 { margin-top: 12px; }
+.mt-16 { margin-top: 16px; }
+.flex-between { display:flex; align-items:center; justify-content:space-between; }
+.text-muted { color: var(--text3); }
+.text-gold { color: var(--gold); }
+.text-green { color: var(--green); }
+.text-red { color: var(--red); }
+.text-blue { color: var(--blue); }
+.text-purple { color: var(--purple); }
+.fw7 { font-weight: 700; }
+.fs-13 { font-size: 13px; }
+
+/* ═══════════════════════════════════════════
+   RIPPLE EFFECT
+═══════════════════════════════════════════ */
+.ripple-host { position: relative; overflow: hidden; }
+.ripple-wave {
+  position: absolute; border-radius: 50%;
+  background: rgba(245,166,35,0.18);
+  transform: scale(0); animation: rippleAnim .5s linear;
+  pointer-events: none;
+}
+@keyframes rippleAnim {
+  to { transform: scale(4); opacity: 0; }
+}
+
+/* ═══════════════════════════════════════════
+   SKELETON LOADER
+═══════════════════════════════════════════ */
+.skeleton {
+  background: linear-gradient(90deg, var(--bg3) 25%, var(--bg2) 50%, var(--bg3) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+  border-radius: 8px;
+}
+@keyframes shimmer { to { background-position: -200% 0; } }
+.skel-text  { height: 14px; margin-bottom: 8px; }
+.skel-value { height: 32px; width: 60%; margin-bottom: 4px; }
+.skel-card  { height: 90px; border-radius: var(--r); margin-bottom: 12px; }
+
+/* ═══════════════════════════════════════════
+   STATISTICS PAGE
+═══════════════════════════════════════════ */
+.stats-tab-bar {
+  display: flex; gap: 6px;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 12px; padding: 4px;
+  margin-bottom: 16px;
+}
+.stats-tab {
+  flex: 1; padding: 8px 6px;
+  border-radius: 9px; border: none; background: none;
+  font-family: var(--ff-body); font-size: 12px; font-weight: 600;
+  color: var(--text3); cursor: pointer; transition: all .2s;
+  white-space: nowrap;
+}
+.stats-tab.active {
+  background: var(--card); color: var(--gold);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.stats-panel { display: none; }
+.stats-panel.active { display: block; animation: pgIn .2s ease; }
+
+.chart-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 16px;
+  margin-bottom: 12px;
+}
+.chart-card-title {
+  font-size: 11px; font-weight: 700; color: var(--text3);
+  text-transform: uppercase; letter-spacing: .08em;
+  margin-bottom: 14px;
+}
+.chart-box { position: relative; height: 160px; }
+
+/* Insight cards */
+.insight-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+.insight-tile {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 14px; padding: 14px;
+}
+.insight-emoji { font-size: 22px; margin-bottom: 6px; }
+.insight-val {
+  font-family: var(--ff-display); font-size: 18px; font-weight: 800;
+  letter-spacing: -.01em; margin-bottom: 3px;
+}
+.insight-label { font-size: 11px; color: var(--text3); }
+
+/* Trend indicator */
+.trend {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 11px; font-weight: 700; padding: 2px 8px;
+  border-radius: 99px;
+}
+.trend.up   { background: var(--green-dim); color: var(--green); }
+.trend.down { background: var(--red-dim); color: var(--red); }
+.trend.flat { background: var(--gold-dim); color: var(--gold); }
+
+/* Horizontal bar chart (custom) */
+.hbar-wrap { margin-top: 4px; }
+.hbar-row { margin-bottom: 10px; }
+.hbar-meta { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px; }
+.hbar-label { color: var(--text2); }
+.hbar-val { font-weight: 700; }
+.hbar-bg { background: var(--bg3); border-radius: 99px; height: 7px; overflow: hidden; }
+.hbar-fill { height: 100%; border-radius: 99px; transition: width .8s cubic-bezier(.4,0,.2,1); }
+
+/* ═══════════════════════════════════════════
+   FLOATING ACTION BUTTON (FAB)
+═══════════════════════════════════════════ */
+.fab {
+  position: fixed;
+  bottom: calc(var(--nav-h) + 16px);
+  right: 16px;
+  width: 52px; height: 52px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--gold), #fb923c);
+  border: none; cursor: pointer;
+  display: none;
+  align-items: center; justify-content: center;
+  font-size: 24px;
+  box-shadow: 0 6px 20px rgba(245,166,35,0.4);
+  z-index: 40;
+  transition: all .2s;
+}
+.fab:active { transform: scale(.92); }
+.fab.visible { display: flex; }
+
+/* ═══════════════════════════════════════════
+   ENHANCED CARD HOVER / PRESS STATES
+═══════════════════════════════════════════ */
+.mes-tile { cursor: pointer; user-select: none; }
+.dia-tile  { user-select: none; }
+
+/* ═══════════════════════════════════════════
+   SCROLL HEADER FADE
+═══════════════════════════════════════════ */
+.page-fade-top {
+  position: sticky; top: 0; left: 0; right: 0; height: 20px;
+  background: linear-gradient(to bottom, var(--bg), transparent);
+  pointer-events: none; z-index: 5; margin-bottom: -20px;
+}
+
+/* ═══════════════════════════════════════════
+   TOAST NOTIFICATION
+═══════════════════════════════════════════ */
+.toast-container {
+  position: fixed; bottom: calc(var(--nav-h) + 12px); left: 50%;
+  transform: translateX(-50%);
+  z-index: 999; pointer-events: none;
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+}
+.toast {
+  background: var(--bg2); border: 1px solid var(--border-hi);
+  color: var(--text); font-size: 13px; font-weight: 500;
+  padding: 10px 18px; border-radius: 99px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+  animation: toastIn .3s cubic-bezier(.2,.8,.4,1) forwards;
+  white-space: nowrap;
+}
+@keyframes toastIn {
+  from { opacity:0; transform:translateY(12px) scale(.92); }
+  to   { opacity:1; transform:translateY(0) scale(1); }
+}
+@keyframes toastOut {
+  to { opacity:0; transform:translateY(-8px) scale(.95); }
+}
+
+/* ═══════════════════════════════════════════
+   DASHBOARD MINI CHART
+═══════════════════════════════════════════ */
+.dash-chart-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 16px; padding: 14px; margin-bottom: 12px;
+}
+.dash-chart-head {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 10px;
+}
+.dash-chart-title { font-size: 11px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: .08em; }
+.dash-chart-val { font-family: var(--ff-display); font-size: 16px; font-weight: 800; }
+.mini-chart-box { height: 80px; position: relative; }
+
+/* ═══════════════════════════════════════════
+   BEST DAY BADGE
+═══════════════════════════════════════════ */
+.best-day-card {
+  background: linear-gradient(135deg, rgba(45,212,164,0.1), rgba(45,212,164,0.04));
+  border: 1px solid rgba(45,212,164,0.18);
+  border-radius: 14px; padding: 14px;
+  display: flex; align-items: center; gap: 14px;
+  margin-bottom: 12px;
+}
+.best-day-icon { font-size: 32px; }
+.best-day-info { flex: 1; }
+.best-day-label { font-size: 10px; font-weight: 700; color: var(--green); text-transform: uppercase; letter-spacing: .1em; }
+.best-day-name  { font-family: var(--ff-display); font-size: 18px; font-weight: 800; color: var(--text); }
+.best-day-val   { font-size: 13px; color: var(--text3); margin-top: 2px; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════
+     LOGIN
+═══════════════════════════════════════ -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo-wrap">
+      <div class="login-logo-icon">🚀</div>
+      <div class="login-logo-text">Delivery Pro</div>
+    </div>
+    <div class="login-tagline">Tu control financiero de delivery</div>
+
+    <div class="field">
+      <label class="field-label">Usuario</label>
+      <input type="text" id="login-user" placeholder="Nombre de usuario" autocomplete="username">
+    </div>
+    <div class="field">
+      <label class="field-label">Contraseña</label>
+      <input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password"
+             onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <button class="btn btn-gold btn-full" onclick="doLogin()" id="login-btn">Ingresar →</button>
+    <div class="login-error" id="login-err">Usuario o contraseña incorrectos.</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     APP SHELL
+═══════════════════════════════════════ -->
+<div id="app-shell">
+  <!-- Header -->
+  <div class="app-header">
+    <div class="app-header-brand">
+      <div class="app-header-icon">🚀</div>
+      <div class="app-header-title">Delivery Pro</div>
+    </div>
+    <div class="app-header-right">
+      <div class="save-pill" id="save-pill">✓ Guardado</div>
+      <button id="theme-btn" onclick="toggleTheme()" style="background:none;border:none;cursor:pointer;font-size:20px;padding:4px 6px;border-radius:10px;transition:all .2s;line-height:1" title="Cambiar tema">🌙</button>
+      <div class="user-chip" onclick="promptLogout()">
+        <div class="user-chip-avatar" id="user-avatar-initial">U</div>
+        <div class="user-chip-name" id="user-chip-name">—</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pages -->
+  <div class="pages-area">
+
+    <!-- ═══ DASHBOARD ═══ -->
+    <div class="page active" id="page-dashboard">
+      <div class="dash-greeting" id="dash-greeting">Hola 👋</div>
+      <div class="dash-month" id="dash-month">Cargando...</div>
+
+      <div class="hero-neto" id="dash-hero">
+        <div class="hero-label">Neto del mes</div>
+        <div class="hero-amount" id="dash-neto">₲ 0</div>
+        <div class="hero-sub" id="dash-neto-sub">Bruto: ₲ 0 · Gastos: ₲ 0</div>
+        <div class="prog-wrap mt-8">
+          <div class="prog-bar mixed" id="dash-progress" style="width:0%"></div>
+        </div>
+        <div style="font-size:11px;color:var(--text3);margin-top:5px" id="dash-prog-label"></div>
+      </div>
+
+      <div class="stat-row cols-2">
+        <div class="stat-tile">
+          <div class="stat-tile-label">Bruto mes</div>
+          <div class="stat-tile-val gold" id="dash-bruto">₲ 0</div>
+        </div>
+        <div class="stat-tile">
+          <div class="stat-tile-label">Gastos</div>
+          <div class="stat-tile-val red" id="dash-total-gastos">₲ 0</div>
+        </div>
+        <div class="stat-tile">
+          <div class="stat-tile-label">Combustible</div>
+          <div class="stat-tile-val blue" id="dash-combustible">₲ 0</div>
+        </div>
+        <div class="stat-tile">
+          <div class="stat-tile-label">Gastos moto</div>
+          <div class="stat-tile-val purple" id="dash-gastos-moto">₲ 0</div>
+        </div>
+      </div>
+
+      <div class="stat-row cols-2" style="margin-bottom:12px">
+        <div class="stat-tile" style="border-color:rgba(45,212,164,0.2);background:linear-gradient(135deg,rgba(45,212,164,0.08),var(--bg2))">
+          <div class="stat-tile-label" style="color:var(--green)">10%</div>
+          <div class="stat-tile-val green" id="dash-ganancia">₲ 0</div>
+          <div class="prog-wrap" style="margin-top:8px">
+            <div class="prog-bar green" id="dash-ganancia-prog" style="width:0%"></div>
+          </div>
+        </div>
+        <div class="stat-tile">
+          <div class="stat-tile-label" style="display:flex;justify-content:space-between;align-items:center">
+            <span>Depósitos</span>
+            <button class="dep-btn" onclick="openModal('modal-deposito')" style="font-size:10px;padding:2px 8px">+ Dep.</button>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:4px">
+            <div>
+              <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em">Depositado</div>
+              <div class="stat-tile-val green" style="font-size:14px" id="dash-depositado">₲ 0</div>
+            </div>
+            <div>
+              <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em">Falta</div>
+              <div class="stat-tile-val red" style="font-size:14px" id="dash-falta">₲ 0</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="dash-depositos-lista" style="margin-bottom:12px"></div>
+
+      <div class="moto-dash-card">
+        <div class="maintenance-title">🏍️ Estado de la moto</div>
+        <div id="dash-moto-estado"><div class="text-muted fs-13">Sin datos configurados</div></div>
+      </div>
+
+      <!-- Mini chart últimas semanas -->
+      <div class="dash-chart-card">
+        <div class="dash-chart-head">
+          <div class="dash-chart-title">Neto — últimas 5 semanas</div>
+          <div class="dash-chart-val text-green" id="dash-mini-avg">₲ 0</div>
+        </div>
+        <div class="mini-chart-box"><canvas id="chart-dash-mini"></canvas></div>
+      </div>
+
+      <!-- Mejor día del mes -->
+      <div id="dash-best-day"></div>
+
+      <!-- Promedio diario -->
+      <div id="dash-avg-dia"></div>
+    </div>
+
+    <!-- ═══ DELIVERY ═══ -->
+    <div class="page" id="page-delivery">
+      <div class="sec-head">
+        <div>
+          <div class="sec-title">Delivery</div>
+          <div class="sec-sub">Ingresos y gastos por día</div>
+        </div>
+      </div>
+
+      <div class="week-nav">
+        <button class="week-btn" onclick="cambiarSemana(-1)">‹</button>
+        <div style="text-align:center">
+          <div class="week-label" id="semana-label">Esta semana</div>
+          <div class="week-sub" id="semana-dates">—</div>
+        </div>
+        <button class="week-btn" onclick="cambiarSemana(1)">›</button>
+      </div>
+
+      <div class="stat-row cols-3" style="margin-bottom:14px">
+        <div class="stat-tile">
+          <div class="stat-tile-label">Bruto</div>
+          <div class="stat-tile-val gold" style="font-size:14px" id="sem-bruto">₲ 0</div>
+        </div>
+        <div class="stat-tile">
+          <div class="stat-tile-label">Gastos</div>
+          <div class="stat-tile-val red" style="font-size:14px" id="sem-gastos">₲ 0</div>
+        </div>
+        <div class="stat-tile">
+          <div class="stat-tile-label">Neto</div>
+          <div class="stat-tile-val green" style="font-size:14px" id="sem-neto">₲ 0</div>
+        </div>
+      </div>
+
+      <div class="dias-grid" id="dias-grid"></div>
+    </div>
+
+    <!-- ═══ COMBUSTIBLE ═══ -->
+    <div class="page" id="page-combustible">
+      <div class="sec-head">
+        <div>
+          <div class="sec-title">Combustible</div>
+          <div class="sec-sub">Cargas del mes</div>
+        </div>
+        <button class="btn btn-gold btn-sm" onclick="openModal('modal-carga')">+ Carga</button>
+      </div>
+
+      <div class="stat-row cols-2">
+        <div class="stat-tile">
+          <div class="stat-tile-label">Total mes</div>
+          <div class="stat-tile-val blue" id="comb-total">₲ 0</div>
+        </div>
+        <div class="stat-tile">
+          <div class="stat-tile-label">Cargas</div>
+          <div class="stat-tile-val" id="comb-count">0</div>
+        </div>
+      </div>
+
+      <div id="lista-cargas"></div>
+    </div>
+
+    <!-- ═══ MOTO ═══ -->
+    <div class="page" id="page-moto">
+      <div class="sec-head">
+        <div>
+          <div class="sec-title">Mi Moto</div>
+          <div class="sec-sub">Mantenimiento y control</div>
+        </div>
+      </div>
+
+      <div id="moto-alert-banner"></div>
+
+      <div class="moto-km-hero">
+        <div class="moto-km-label">Kilometraje actual</div>
+        <div class="moto-km-val" id="moto-km-display">0 km</div>
+        <button class="btn btn-ghost btn-sm" onclick="openModal('modal-km')">✏️ Actualizar km</button>
+      </div>
+
+      <div class="maintenance-card">
+        <div class="maintenance-title">🛢️ Aceite — Estado</div>
+        <div class="maint-row">
+          <div class="maint-label">Último cambio (km)</div>
+          <div class="maint-val" id="aceite-ultimo">—</div>
+        </div>
+        <div class="maint-row">
+          <div class="maint-label">Próximo cambio (km)</div>
+          <div class="maint-val" id="aceite-proximo">—</div>
+        </div>
+        <div class="maint-row">
+          <div class="maint-label">Km restantes</div>
+          <div class="maint-val" id="aceite-restantes">—</div>
+        </div>
+        <div class="maint-row">
+          <div class="maint-label">Último cambio</div>
+          <div style="text-align:right">
+            <div class="maint-val" id="aceite-fecha-display">—</div>
+            <div id="aceite-elapsed" style="font-size:11px;color:var(--text3);margin-top:2px"></div>
+          </div>
+        </div>
+        <div class="prog-wrap mt-12">
+          <div class="prog-bar" id="aceite-progress" style="width:0%"></div>
+        </div>
+        <div style="font-size:11px;color:var(--text3);margin-top:5px" id="aceite-label"></div>
+        <button class="btn btn-gold btn-sm mt-12" onclick="openModal('modal-aceite')">🔧 Registrar cambio de aceite</button>
+      </div>
+
+      <!-- TRANSMISIÓN CARD -->
+      <div class="maintenance-card">
+        <div class="maintenance-title">⚙️ Transmisión — Estado</div>
+        <div id="transmision-alert" style="margin-bottom:10px"></div>
+        <div class="maint-row">
+          <div class="maint-label">Último cambio (km)</div>
+          <div class="maint-val" id="trans-ultimo">—</div>
+        </div>
+        <div class="maint-row">
+          <div class="maint-label">Próximo cambio (km)</div>
+          <div class="maint-val" id="trans-proximo">—</div>
+        </div>
+        <div class="maint-row">
+          <div class="maint-label">Km restantes</div>
+          <div class="maint-val" id="trans-restantes">—</div>
+        </div>
+        <div class="maint-row">
+          <div class="maint-label">Último cambio</div>
+          <div style="text-align:right">
+            <div class="maint-val" id="trans-fecha-display">—</div>
+            <div id="trans-elapsed" style="font-size:11px;color:var(--text3);margin-top:2px"></div>
+          </div>
+        </div>
+        <div class="prog-wrap mt-12">
+          <div class="prog-bar" id="trans-progress" style="width:0%"></div>
+        </div>
+        <div style="font-size:11px;color:var(--text3);margin-top:5px" id="trans-label"></div>
+        <button class="btn btn-gold btn-sm mt-12" onclick="openModal('modal-transmision')">⚙️ Registrar cambio de transmisión</button>
+      </div>
+    </div>
+
+    <!-- ═══ GASTOS MOTO ═══ -->
+    <div class="page" id="page-gastos">
+      <div class="sec-head">
+        <div>
+          <div class="sec-title">Gastos Moto</div>
+          <div class="sec-sub">Mecánico y accesorios</div>
+        </div>
+        <button class="btn btn-gold btn-sm" onclick="openModal('modal-gasto-moto')">+ Gasto</button>
+      </div>
+
+      <div class="stat-row cols-2">
+        <div class="stat-tile">
+          <div class="stat-tile-label">Total mes</div>
+          <div class="stat-tile-val purple" id="gmoto-mes">₲ 0</div>
+        </div>
+        <div class="stat-tile">
+          <div class="stat-tile-label">Histórico</div>
+          <div class="stat-tile-val" id="gmoto-total">₲ 0</div>
+        </div>
+      </div>
+
+      <div id="lista-gastos-moto"></div>
+    </div>
+
+    <!-- ═══ GASTOS PERSONALES ═══ -->
+    <div class="page" id="page-gastos-personales">
+      <div class="sec-head">
+        <div>
+          <div class="sec-title">Gastos</div>
+          <div class="sec-sub" id="gp-sub">Gastos del mes</div>
+        </div>
+        <button class="btn btn-gold btn-sm" onclick="openModal('modal-nuevo-gasto-personal')">+ Gasto</button>
+      </div>
+
+      <!-- Resumen hero -->
+      <div class="maintenance-card" style="background:linear-gradient(135deg,rgba(255,107,107,.08),rgba(255,107,107,.03));border-color:rgba(255,107,107,.2)">
+        <div class="maintenance-title" style="color:var(--red)">Total del mes</div>
+        <div style="font-family:var(--ff-display);font-size:34px;font-weight:800;color:var(--red);letter-spacing:-.02em;margin-bottom:4px" id="gp-total-mes">₲ 0</div>
+        <div style="font-size:12px;color:var(--text3)" id="gp-descuento-label">Descuenta de tu neto mensual</div>
+        <div class="prog-wrap" style="margin-top:10px">
+          <div class="prog-bar red" id="gp-prog-bar" style="width:0%"></div>
+        </div>
+      </div>
+
+      <!-- Stats categorias -->
+      <div class="stat-row cols-3" id="gp-cats-stats" style="margin-bottom:12px"></div>
+
+      <!-- Lista -->
+      <div id="lista-gastos-personales"></div>
+    </div>
+
+    <!-- ═══ HISTORIAL ═══ -->
+    <div class="page" id="page-historial">
+      <div class="sec-head">
+        <div>
+          <div class="sec-title">Historial</div>
+          <div class="sec-sub">Resumen por mes</div>
+        </div>
+      </div>
+      <div id="lista-historial"></div>
+    </div>
+
+    <!-- ═══ GASTOS FIJOS ═══ -->
+    <div class="page" id="page-fijos">
+      <div class="sec-head">
+        <div>
+          <div class="sec-title">Gastos Fijos</div>
+          <div class="sec-sub">Pagos mensuales y cuotas</div>
+        </div>
+        <button class="btn btn-gold btn-sm" onclick="openModal('modal-nuevo-fijo')">+ Agregar</button>
+      </div>
+
+      <div class="fijos-hero">
+        <div class="flex-between" style="margin-bottom:6px">
+          <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em">Progreso del mes</div>
+          <div class="stat-tile-val green" style="font-size:15px" id="fijos-pagado">₲ 0</div>
+        </div>
+        <div class="prog-wrap" style="margin-bottom:12px">
+          <div class="prog-bar green" id="fijos-prog-bar" style="width:0%"></div>
+        </div>
+        <div class="fijos-pct-row">
+          <div class="fijos-pct-label">Pendiente</div>
+          <div class="fijos-pct-val" id="fijos-pct-label">0%</div>
+        </div>
+        <div class="stat-row cols-2" style="margin-bottom:0;margin-top:10px">
+          <div class="stat-tile">
+            <div class="stat-tile-label">Total</div>
+            <div class="stat-tile-val gold" style="font-size:15px" id="fijos-total">₲ 0</div>
+          </div>
+          <div class="stat-tile">
+            <div class="stat-tile-label">Pendiente</div>
+            <div class="stat-tile-val red" style="font-size:15px" id="fijos-pendiente">₲ 0</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="lista-fijos"></div>
+    </div>
+
+    <!-- ═══ ESTADÍSTICAS ═══ -->
+    <div class="page" id="page-stats">
+      <div class="sec-head">
+        <div>
+          <div class="sec-title">Estadísticas</div>
+          <div class="sec-sub">Análisis inteligente</div>
+        </div>
+      </div>
+
+      <!-- Tab bar -->
+      <div class="stats-tab-bar">
+        <button class="stats-tab active" onclick="switchStatsTab('semana',this)">Semana</button>
+        <button class="stats-tab" onclick="switchStatsTab('mes',this)">Mes</button>
+        <button class="stats-tab" onclick="switchStatsTab('insights',this)">Insights</button>
+      </div>
+
+      <!-- Panel: Semana -->
+      <div class="stats-panel active" id="stats-semana">
+        <div class="chart-card">
+          <div class="chart-card-title">Neto por día (semana actual)</div>
+          <div class="chart-box"><canvas id="chart-semana-neto"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-card-title">Bruto vs Gastos — semana actual</div>
+          <div class="chart-box"><canvas id="chart-semana-compare"></canvas></div>
+        </div>
+        <div id="stats-best-day-sem"></div>
+      </div>
+
+      <!-- Panel: Mes -->
+      <div class="stats-panel" id="stats-mes">
+        <div class="chart-card">
+          <div class="chart-card-title">Neto por semana (mes actual)</div>
+          <div class="chart-box"><canvas id="chart-mes-semanas"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-card-title">Distribución de gastos</div>
+          <div id="chart-gastos-breakdown"></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-card-title">Evolución mensual (últimos meses)</div>
+          <div class="chart-box"><canvas id="chart-evolucion"></canvas></div>
+        </div>
+      </div>
+
+      <!-- Panel: Insights -->
+      <div class="stats-panel" id="stats-insights">
+        <div id="insights-content"></div>
+      </div>
+    </div>
+
+  </div><!-- /pages-area -->
+
+  <!-- Bottom Nav -->
+  <nav class="bottom-nav">
+    <button class="nav-item active" id="nav-dashboard" onclick="showPage('dashboard')">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      <span>Resumen</span>
+      <div class="nav-indicator"></div>
+    </button>
+    <button class="nav-item" id="nav-delivery" onclick="showPage('delivery')">
+      <svg viewBox="0 0 24 24"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>
+      <span>Delivery</span>
+      <div class="nav-indicator"></div>
+    </button>
+    <button class="nav-item" id="nav-combustible" onclick="showPage('combustible')">
+      <svg viewBox="0 0 24 24"><path d="M4 4h10v14H4V4z"/><path d="M14 8l4 2v4h-4"/><path d="M8 4v4"/><path d="M6 10h4"/></svg>
+      <span>Combustible</span>
+      <div class="nav-indicator"></div>
+    </button>
+    <button class="nav-item" id="nav-moto" onclick="showPage('moto')">
+      <svg viewBox="0 0 24 24"><circle cx="6" cy="17" r="3"/><circle cx="18" cy="17" r="3"/><path d="M6 17L9 7h6l2 4h2"/><path d="M12 7l2 4"/></svg>
+      <span>Moto</span>
+      <div class="nav-indicator"></div>
+    </button>
+    <button class="nav-item" id="nav-gastos" onclick="showPage('gastos')">
+      <svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
+      <span>Moto $</span>
+      <div class="nav-indicator"></div>
+    </button>
+    <button class="nav-item" id="nav-gastos-personales" onclick="showPage('gastos-personales')">
+      <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M3 9h18M9 21V9" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+      <span>Gastos</span>
+      <div class="nav-indicator"></div>
+    </button>
+    <button class="nav-item" id="nav-historial" onclick="showPage('historial')">
+      <svg viewBox="0 0 24 24"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="9"/></svg>
+      <span>Historial</span>
+      <div class="nav-indicator"></div>
+    </button>
+    <button class="nav-item" id="nav-fijos" onclick="showPage('fijos')">
+      <svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+      <span>Fijos</span>
+      <div class="nav-indicator"></div>
+    </button>
+    <button class="nav-item" id="nav-stats" onclick="showPage('stats')">
+      <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      <span>Stats</span>
+      <div class="nav-indicator"></div>
+    </button>
+  </nav>
+</div><!-- /app-shell -->
+
+<!-- FAB -->
+<button class="fab" id="fab" onclick="fabAction()">+</button>
+
+<!-- Toast container -->
+<div class="toast-container" id="toast-container"></div>
+
+<!-- ══════════════════════════════════════════
+     MODALS
+══════════════════════════════════════════ -->
+
+<!-- Modal DÍA -->
+<div class="modal-overlay" id="modal-dia">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-body">
+      <div class="modal-title">
+        <span id="modal-dia-title">Día</span>
+        <button class="modal-close" onclick="closeModal('modal-dia')">✕</button>
+      </div>
+
+      <div class="card-label">Ingresos del día</div>
+      <div id="modal-ingresos-list"></div>
+      <div class="quick-entry">
+        <div class="quick-row">
+          <div class="field" style="margin:0;flex:1">
+            <input type="text" inputmode="numeric" id="ingreso-monto" placeholder="₲ Monto"
+                   oninput="fmtInput(this)" onkeydown="if(event.key==='Enter')agregarIngreso()">
+          </div>
+          <button class="btn btn-green" onclick="agregarIngreso()" style="padding:13px 18px">+</button>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="card-label">Gastos del día</div>
+      <div id="modal-gastos-list"></div>
+      <div class="quick-entry">
+        <div class="quick-row">
+          <div class="field" style="margin:0;flex:1">
+            <input type="text" id="gasto-desc" placeholder="Descripción"
+                   onkeydown="if(event.key==='Enter')document.getElementById('gasto-monto').focus()">
+          </div>
+          <div class="field" style="margin:0;flex:1">
+            <input type="text" inputmode="numeric" id="gasto-monto" placeholder="₲ Monto"
+                   oninput="fmtInput(this)" onkeydown="if(event.key==='Enter')agregarGasto()">
+          </div>
+          <button class="btn btn-danger" onclick="agregarGasto()" style="padding:13px 14px;font-size:14px">+</button>
+        </div>
+      </div>
+
+      <div class="sum-row mt-12">
+        <div class="sum-line">
+          <span class="text-muted">Bruto</span>
+          <span class="text-gold fw7" id="dia-sum-bruto">₲ 0</span>
+        </div>
+        <div class="sum-line">
+          <span class="text-muted">Gastos</span>
+          <span class="text-red fw7" id="dia-sum-gastos">₲ 0</span>
+        </div>
+        <div class="sum-line total">
+          <span>Neto del día</span>
+          <span class="text-green fw7" id="dia-sum-neto">₲ 0</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal CARGA COMBUSTIBLE -->
+<div class="modal-overlay" id="modal-carga">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-body">
+      <div class="modal-title">
+        <span>⛽ Registrar carga</span>
+        <button class="modal-close" onclick="closeModal('modal-carga')">✕</button>
+      </div>
+      <div class="field"><label class="field-label">Monto (₲)</label>
+        <input type="text" inputmode="numeric" id="carga-monto" placeholder="0" oninput="fmtInput(this)"></div>
+      <div class="field"><label class="field-label">Litros (opcional)</label>
+        <input type="text" inputmode="numeric" id="carga-litros" placeholder="0"></div>
+      <div class="field"><label class="field-label">Fecha</label>
+        <input type="date" id="carga-fecha"></div>
+      <button class="btn btn-gold btn-full" onclick="guardarCarga()">Guardar carga</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal KM -->
+<div class="modal-overlay" id="modal-km">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-body">
+      <div class="modal-title">
+        <span>🏍️ Actualizar km</span>
+        <button class="modal-close" onclick="closeModal('modal-km')">✕</button>
+      </div>
+      <div class="field"><label class="field-label">Kilometraje actual</label>
+        <input type="text" inputmode="numeric" id="km-valor" placeholder="Ej: 15000" oninput="fmtInput(this)"></div>
+      <button class="btn btn-gold btn-full" onclick="guardarKm()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal ACEITE -->
+<div class="modal-overlay" id="modal-aceite">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-body">
+      <div class="modal-title">
+        <span>🔧 Cambio de aceite</span>
+        <button class="modal-close" onclick="closeModal('modal-aceite')">✕</button>
+      </div>
+      <div class="field"><label class="field-label">Km al momento del cambio</label>
+        <input type="text" inputmode="numeric" id="aceite-km" placeholder="Ej: 15000" oninput="fmtInput(this)"></div>
+      <div class="field"><label class="field-label">Intervalo próximo cambio (km)</label>
+        <input type="text" inputmode="numeric" id="aceite-intervalo" placeholder="Ej: 3000" oninput="fmtInput(this)"></div>
+      <div class="field"><label class="field-label">Fecha</label>
+        <input type="date" id="aceite-fecha"></div>
+      <button class="btn btn-gold btn-full" onclick="guardarAceite()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal TRANSMISIÓN -->
+<div class="modal-overlay" id="modal-transmision">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-body">
+      <div class="modal-title">
+        <span>⚙️ Cambio de transmisión</span>
+        <button class="modal-close" onclick="closeModal('modal-transmision')">✕</button>
+      </div>
+      <div class="field"><label class="field-label">Km al momento del cambio</label>
+        <input type="text" inputmode="numeric" id="trans-km" placeholder="Ej: 15000" oninput="fmtInput(this)"></div>
+      <div class="field"><label class="field-label">Intervalo próximo cambio (km)</label>
+        <input type="text" inputmode="numeric" id="trans-intervalo" placeholder="Ej: 5000" oninput="fmtInput(this)"></div>
+      <div class="field"><label class="field-label">Fecha</label>
+        <input type="date" id="trans-fecha"></div>
+      <button class="btn btn-gold btn-full" onclick="guardarTransmision()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal NUEVO GASTO PERSONAL -->
+<div class="modal-overlay" id="modal-nuevo-gasto-personal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-body">
+      <div class="modal-title">
+        <span>💸 Nuevo gasto</span>
+        <button class="modal-close" onclick="closeModal('modal-nuevo-gasto-personal')">✕</button>
+      </div>
+      <div class="field"><label class="field-label">Descripción</label>
+        <input type="text" id="gp-desc" placeholder="Ej: Super, nafta, comida, luz..."></div>
+      <div class="field"><label class="field-label">Categoría</label>
+        <select id="gp-cat">
+          <option value="super">🛒 Supermercado</option>
+          <option value="combustible">⛽ Combustible personal</option>
+          <option value="comida">🍔 Comida / Restaurant</option>
+          <option value="casa">🏠 Casa / Hogar</option>
+          <option value="cuentas">💡 Cuentas / Servicios</option>
+          <option value="salud">💊 Salud / Farmacia</option>
+          <option value="transporte">🚌 Transporte</option>
+          <option value="ropa">👕 Ropa / Calzado</option>
+          <option value="entretenimiento">🎮 Entretenimiento</option>
+          <option value="otro">📦 Otro</option>
+        </select></div>
+      <div class="field"><label class="field-label">Monto (₲)</label>
+        <input type="text" inputmode="numeric" id="gp-monto" placeholder="0" oninput="fmtInput(this)"></div>
+      <div class="field"><label class="field-label">Fecha</label>
+        <input type="date" id="gp-fecha"></div>
+      <button class="btn btn-gold btn-full" onclick="guardarGastoPersonal()">Guardar gasto</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal EDITAR GASTO PERSONAL -->
+<div class="modal-overlay" id="modal-editar-gasto-personal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-body">
+      <div class="modal-title">
+        <span>✏️ Editar gasto</span>
+        <button class="modal-close" onclick="closeModal('modal-editar-gasto-personal')">✕</button>
+      </div>
+      <input type="hidden" id="gp-edit-idx">
+      <div class="field"><label class="field-label">Descripción</label>
+        <input type="text" id="gp-edit-desc" placeholder="Descripción"></div>
+      <div class="field"><label class="field-label">Categoría</label>
+        <select id="gp-edit-cat">
+          <option value="super">🛒 Supermercado</option>
+          <option value="combustible">⛽ Combustible personal</option>
+          <option value="comida">🍔 Comida / Restaurant</option>
+          <option value="casa">🏠 Casa / Hogar</option>
+          <option value="cuentas">💡 Cuentas / Servicios</option>
+          <option value="salud">💊 Salud / Farmacia</option>
+          <option value="transporte">🚌 Transporte</option>
+          <option value="ropa">👕 Ropa / Calzado</option>
+          <option value="entretenimiento">🎮 Entretenimiento</option>
+          <option value="otro">📦 Otro</option>
+        </select></div>
+      <div class="field"><label class="field-label">Monto (₲)</label>
+        <input type="text" inputmode="numeric" id="gp-edit-monto" placeholder="0" oninput="fmtInput(this)"></div>
+      <div class="field"><label class="field-label">Fecha</label>
+        <input type="date" id="gp-edit-fecha"></div>
+      <button class="btn btn-gold btn-full" onclick="guardarEdicionGastoPersonal()">Guardar cambios</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal GASTO MOTO -->
+<div class="modal-overlay" id="modal-gasto-moto">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-body">
+      <div class="modal-title">
+        <span>🔧 Gasto de moto</span>
+        <button class="modal-close" onclick="closeModal('modal-gasto-moto')">✕</button>
+      </div>
+      <div class="field"><label class="field-label">Descripción</label>
+        <input type="text" id="gmoto-desc" placeholder="Ej: Cambio de pastillas, cadena..."></div>
+      <div class="field"><label class="field-label">Categoría</label>
+        <select id="gmoto-cat">
+          <option value="mecanico">🔧 Mecánico</option>
+          <option value="accesorio">🛒 Accesorio</option>
+          <option value="aceite">🛢️ Aceite</option>
+          <option value="otro">📦 Otro</option>
+        </select>
+      </div>
+      <div class="field"><label class="field-label">Monto (₲)</label>
+        <input type="text" inputmode="numeric" id="gmoto-monto" placeholder="0" oninput="fmtInput(this)"></div>
+      <div class="field"><label class="field-label">Fecha</label>
+        <input type="date" id="gmoto-fecha"></div>
+      <button class="btn btn-gold btn-full" onclick="guardarGastoMoto()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal NUEVO GASTO FIJO -->
+<div class="modal-overlay" id="modal-nuevo-fijo">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-body">
+      <div class="modal-title">
+        <span>💳 Nuevo gasto fijo</span>
+        <button class="modal-close" onclick="closeModal('modal-nuevo-fijo')">✕</button>
+      </div>
+      <div class="field"><label class="field-label">Nombre</label>
+        <input type="text" id="fijo-nombre" placeholder="Ej: Spotify, Wifi, Cuota..."></div>
+      <div class="field"><label class="field-label">Monto mensual (₲)</label>
+        <input type="text" inputmode="numeric" id="fijo-monto" placeholder="0" oninput="fmtInput(this)"></div>
+      <div class="field"><label class="field-label">Vencimiento (día del mes)</label>
+        <input type="number" id="fijo-vence" placeholder="Ej: 15" min="1" max="31"></div>
+      <div class="field"><label class="field-label">Cuotas restantes (vacío = indefinido)</label>
+        <input type="number" id="fijo-cuotas" placeholder="Ej: 12"></div>
+      <button class="btn btn-gold btn-full" onclick="guardarGastoFijo()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal EDITAR GASTO FIJO -->
+<div class="modal-overlay" id="modal-editar-fijo">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-body">
+      <div class="modal-title">
+        <span>✏️ Editar gasto fijo</span>
+        <button class="modal-close" onclick="closeModal('modal-editar-fijo')">✕</button>
+      </div>
+      <input type="hidden" id="edit-fijo-id">
+      <div class="field"><label class="field-label">Nombre</label>
+        <input type="text" id="edit-fijo-nombre" placeholder="Nombre"></div>
+      <div class="field"><label class="field-label">Monto mensual (₲)</label>
+        <input type="text" inputmode="numeric" id="edit-fijo-monto" placeholder="0" oninput="fmtInput(this)"></div>
+      <div class="field"><label class="field-label">Vencimiento (día del mes)</label>
+        <input type="number" id="edit-fijo-vence" placeholder="Ej: 15" min="1" max="31"></div>
+      <div class="field"><label class="field-label">Cuotas restantes</label>
+        <input type="number" id="edit-fijo-cuotas" placeholder="Ej: 12"></div>
+      <button class="btn btn-gold btn-full" onclick="guardarEdicionFijo()">Guardar cambios</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal DEPOSITO -->
+<div class="modal-overlay" id="modal-deposito">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-body">
+      <div class="modal-title">
+        <span>💰 Registrar depósito</span>
+        <button class="modal-close" onclick="_depMesKey=null;closeModal('modal-deposito')">✕</button>
+      </div>
+      <div class="field"><label class="field-label">Monto depositado (₲)</label>
+        <input type="text" inputmode="numeric" id="dep-monto" placeholder="0" oninput="fmtInput(this)"></div>
+      <div class="field"><label class="field-label">Nota (opcional)</label>
+        <input type="text" id="dep-nota" placeholder="Ej: Depósito parcial, banco..."></div>
+      <button class="btn btn-gold btn-full" id="dep-submit-btn" onclick="submitDeposito()">Guardar depósito</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal HISTORIAL MES -->
+<div class="modal-overlay" id="modal-mes-hist">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-body">
+      <div class="modal-title">
+        <span id="modal-mes-hist-title">Mes</span>
+        <button class="modal-close" onclick="closeModal('modal-mes-hist')">✕</button>
+      </div>
+      <div id="modal-mes-hist-content"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════
+   SUPABASE
+═══════════════════════════════════════════ */
+const SUPA_URL = 'https://ictognjxntmklzhkronv.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImljdG9nbmp4bnRta2x6aGtyb252Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1MTA2ODgsImV4cCI6MjA4OTA4NjY4OH0.utxIgFu6GJjmwlUrKtSYogBCpaTZN4ZafaUG4A40rV0';
+
+async function dbGet(table, filters) {
+  let url = SUPA_URL + '/rest/v1/' + table + '?';
+  for (const [k,v] of Object.entries(filters)) url += k + '=eq.' + encodeURIComponent(v) + '&';
+  url += 'limit=1';
+  const r = await fetch(url, { headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY }});
+  const data = await r.json();
+  return Array.isArray(data) ? data[0] : null;
+}
+
+/* ═══════════════════════════════════════════
+   AUTH
+═══════════════════════════════════════════ */
+let currentUser = null;
+
+async function doLogin() {
+  const user = document.getElementById('login-user').value.trim().toLowerCase();
+  const pass = document.getElementById('login-pass').value;
+  const errEl = document.getElementById('login-err');
+  const btn = document.getElementById('login-btn');
+  if (!user || !pass) { errEl.textContent = 'Completá todos los campos.'; errEl.classList.add('show'); return; }
+  btn.textContent = 'Cargando...'; btn.disabled = true;
+  try {
+    const data = await dbGet('usuarios', { username: user });
+    if (!data || data.password !== btoa(pass)) {
+      errEl.textContent = 'Usuario o contraseña incorrectos.'; errEl.classList.add('show');
+    } else {
+      errEl.classList.remove('show');
+      await loginSuccess(user);
+    }
+  } catch(e) {
+    errEl.textContent = 'Error de conexión: ' + e.message; errEl.classList.add('show');
+  }
+  btn.textContent = 'Ingresar →'; btn.disabled = false;
+}
+
+async function loginSuccess(user) {
+  currentUser = user;
+  document.getElementById('login-screen').classList.add('hidden');
+  document.getElementById('app-shell').classList.add('visible');
+  document.getElementById('user-chip-name').textContent = user;
+  document.getElementById('user-avatar-initial').textContent = user[0].toUpperCase();
+  document.getElementById('login-user').value = '';
+  document.getElementById('login-pass').value = '';
+  await load();
+  checkNuevoMes(); // Verificar cambio de mes al entrar
+  const hoy = new Date().toISOString().split('T')[0];
+  ['carga-fecha','aceite-fecha','gmoto-fecha','trans-fecha','gp-fecha','gp-edit-fecha'].forEach(id => {
+    const el = document.getElementById(id); if(el) el.value = hoy;
+  });
+  showPage('dashboard');
+  setTimeout(() => showToast('👋 Bienvenido, ' + user), 400);
+}
+
+/* ── THEME ── */
+const THEMES = ['dark', 'dim', 'light'];
+const THEME_ICONS = { dark: '🌙', dim: '🌤️', light: '☀️' };
+const THEME_LABELS = { dark: 'Oscuro', dim: 'Intermedio', light: 'Claro' };
+
+function applyTheme(theme) {
+  document.body.classList.remove('light', 'dim');
+  if (theme === 'light') document.body.classList.add('light');
+  if (theme === 'dim')   document.body.classList.add('dim');
+  const btn = document.getElementById('theme-btn');
+  if (btn) {
+    btn.textContent = THEME_ICONS[theme];
+    btn.title = THEME_LABELS[theme];
+  }
+  localStorage.setItem('dp_theme', theme);
+}
+
+function toggleTheme() {
+  const current = localStorage.getItem('dp_theme') || 'dark';
+  const idx = THEMES.indexOf(current);
+  const next = THEMES[(idx + 1) % THEMES.length];
+  applyTheme(next);
+  showToast(THEME_ICONS[next] + ' Modo ' + THEME_LABELS[next]);
+}
+
+function initTheme() {
+  const saved = localStorage.getItem('dp_theme') || 'dark';
+  applyTheme(saved);
+}
+
+function promptLogout() {
+  if (confirm('¿Cerrar sesión de ' + currentUser + '?')) doLogout();
+}
+
+async function doLogout() {
+  APP_DATA.meses[mesActual] = DB;
+  await save();
+  currentUser = null;
+  APP_DATA = { meses:{}, moto:{ km:0, aceite:{ kmCambio:0, intervalo:3000, fecha:'' }}, gastosFijos:[], depositos:{} };
+  DB = { semanas:{}, cargas:[], gastosMoto:[], gastosPersonales:[] };
+  MOTO = { km:0, aceite:{ kmCambio:0, intervalo:3000, fecha:'' }, transmision:{ kmCambio:0, intervalo:5000, fecha:'' }};
+  document.getElementById('login-screen').classList.remove('hidden');
+  document.getElementById('app-shell').classList.remove('visible');
+}
+
+/* ═══════════════════════════════════════════
+   DATA STRUCTURES
+═══════════════════════════════════════════ */
+const MESES_NOMBRES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+const DIAS = ['lunes','martes','miercoles','jueves','viernes','sabado','domingo'];
+const DIAS_LABEL = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
+const DIAS_SHORT = ['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
+
+let DB = { semanas:{}, cargas:[], gastosMoto:[], gastosPersonales:[] };
+let MOTO = { km:0, aceite:{ kmCambio:0, intervalo:3000, fecha:'' }, transmision:{ kmCambio:0, intervalo:5000, fecha:'' }};
+let mesActual = getMesKey();
+let semanaOffset = 0;
+let diaActual = null;
+
+let APP_DATA = {
+  meses:{}, moto:{ km:0, aceite:{ kmCambio:0, intervalo:3000, fecha:'' }, transmision:{ kmCambio:0, intervalo:5000, fecha:'' }}, gastosFijos:[], depositos:{}
+};
+
+const LS_KEY = 'dp_v10_';
+
+/* ═══════════════════════════════════════════
+   STORAGE
+═══════════════════════════════════════════ */
+function showSavePill(msg, color) {
+  const el = document.getElementById('save-pill');
+  el.textContent = msg;
+  el.style.background = color === 'green' ? 'var(--green-dim)' : 'var(--gold-dim)';
+  el.style.color = color === 'green' ? 'var(--green)' : 'var(--gold)';
+  el.style.borderColor = color === 'green' ? 'rgba(45,212,164,0.2)' : 'rgba(245,166,35,0.2)';
+  el.classList.add('show');
+  if (color === 'green') setTimeout(() => el.classList.remove('show'), 2500);
+}
+
+function lsSave() {
+  try { APP_DATA._savedAt = new Date().toISOString(); localStorage.setItem(LS_KEY + currentUser, JSON.stringify(APP_DATA)); } catch(e){}
+}
+function lsLoad() {
+  try { const r = localStorage.getItem(LS_KEY + currentUser); return r ? JSON.parse(r) : null; } catch(e){ return null; }
+}
+
+async function save() {
+  if (!currentUser) return;
+  APP_DATA.meses[mesActual] = DB;
+  APP_DATA.moto = MOTO;
+  lsSave();
+  showSavePill('💾 Guardando...', 'gold');
+  try {
+    const username = 'delivery_' + currentUser;
+    const r = await fetch(SUPA_URL + '/rest/v1/datos_usuario?username=eq.' + encodeURIComponent(username), {
+      method: 'PATCH',
+      headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ data: APP_DATA, updated_at: APP_DATA._savedAt })
+    });
+    if (r.ok) { showSavePill('✓ Guardado', 'green'); return; }
+    const r2 = await fetch(SUPA_URL + '/rest/v1/datos_usuario', {
+      method: 'POST',
+      headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ username, data: APP_DATA, updated_at: APP_DATA._savedAt })
+    });
+    if (r2.ok) showSavePill('✓ Guardado', 'green');
+    else showSavePill('📱 Local', 'gold');
+  } catch(e) { showSavePill('📱 Local', 'gold'); }
+}
+
+async function load() {
+  if (!currentUser) return;
+  let remoteData = null;
+  try {
+    const row = await dbGet('datos_usuario', { username: 'delivery_' + currentUser });
+    if (row && row.data) remoteData = row.data;
+  } catch(e){}
+  const localData = lsLoad();
+  if (remoteData && localData) {
+    const rt = remoteData._savedAt ? new Date(remoteData._savedAt).getTime() : 0;
+    const lt = localData._savedAt ? new Date(localData._savedAt).getTime() : 0;
+    APP_DATA = lt > rt ? localData : remoteData;
+  } else {
+    APP_DATA = remoteData || localData || APP_DATA;
+  }
+  if (!APP_DATA.meses) APP_DATA.meses = {};
+  if (!APP_DATA.moto) APP_DATA.moto = { km:0, aceite:{ kmCambio:0, intervalo:3000, fecha:'' }, transmision:{ kmCambio:0, intervalo:5000, fecha:'' }};
+  if (!APP_DATA.moto.transmision) APP_DATA.moto.transmision = { kmCambio:0, intervalo:5000, fecha:'' };
+  if (!APP_DATA.gastosFijos) APP_DATA.gastosFijos = [];
+  if (!APP_DATA.depositos) APP_DATA.depositos = {};
+  mesActual = getMesKey();
+  if (!APP_DATA.meses[mesActual]) APP_DATA.meses[mesActual] = { semanas:{}, cargas:[], gastosMoto:[], gastosPersonales:[] };
+  DB = APP_DATA.meses[mesActual];
+  if (!DB.gastosPersonales) DB.gastosPersonales = [];
+  MOTO = APP_DATA.moto;
+}
+
+/* ═══════════════════════════════════════════
+   DATE UTILS
+═══════════════════════════════════════════ */
+function getMesKey(offset = 0) {
+  const d = new Date(); d.setMonth(d.getMonth() + offset);
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
+}
+function getMesLabel(key) {
+  const [anio, mes] = key.split('-');
+  return MESES_NOMBRES[parseInt(mes)-1] + ' ' + anio;
+}
+function getMondayOf(date) {
+  const d = new Date(date);
+  const day = d.getDay();
+  const diff = day === 0 ? -6 : 1 - day;
+  d.setDate(d.getDate() + diff); d.setHours(0,0,0,0); return d;
+}
+function getWeekKey(offset) {
+  const now = new Date(); now.setDate(now.getDate() + offset * 7);
+  const monday = getMondayOf(now);
+  const jan4 = new Date(monday.getFullYear(), 0, 4);
+  const startOfWeek1 = getMondayOf(jan4);
+  const wk = Math.round((monday - startOfWeek1) / 604800000) + 1;
+  return monday.getFullYear() + '-W' + String(wk).padStart(2,'0');
+}
+function getWeekDates(offset) {
+  const now = new Date(); now.setDate(now.getDate() + offset * 7);
+  const monday = getMondayOf(now);
+  const sunday = new Date(monday); sunday.setDate(monday.getDate() + 6);
+  const f = d => d.getDate() + '/' + (d.getMonth()+1);
+  return f(monday) + ' — ' + f(sunday);
+}
+function getWeekLabel(offset) {
+  if (offset === 0) return 'Esta semana';
+  if (offset === -1) return 'Semana pasada';
+  return 'Semana ' + offset;
+}
+// Devuelve el mes (YYYY-MM) al que pertenece una weekKey (YYYY-Www)
+function getMesDeWeekKey(weekKey) {
+  // Reconstruir el lunes de esa semana
+  const [yearStr, wStr] = weekKey.split('-W');
+  const year = parseInt(yearStr), wk = parseInt(wStr);
+  // ISO week: el 4 de enero siempre cae en la semana 1
+  const jan4 = new Date(year, 0, 4);
+  const monday = getMondayOf(jan4);
+  monday.setDate(monday.getDate() + (wk - 1) * 7);
+  // El mes de la semana = mes del jueves de esa semana (regla ISO)
+  const thursday = new Date(monday); thursday.setDate(monday.getDate() + 3);
+  return thursday.getFullYear() + '-' + String(thursday.getMonth() + 1).padStart(2, '0');
+}
+
+// Devuelve el objeto DB correcto para una weekKey (puede ser otro mes)
+function getDBForWeek(weekKey) {
+  const mesKey = getMesDeWeekKey(weekKey);
+  if (mesKey === mesActual) return DB;
+  // Buscar en historial (solo lectura si no es el mes actual)
+  if (!APP_DATA.meses[mesKey]) return null;
+  return APP_DATA.meses[mesKey];
+}
+
+function getSemana(key) {
+  const dbTarget = getDBForWeek(key);
+  // Si pertenece a otro mes y existe, devolver (read-only safe)
+  if (dbTarget && dbTarget !== DB) {
+    if (!dbTarget.semanas) dbTarget.semanas = {};
+    if (!dbTarget.semanas[key]) {
+      dbTarget.semanas[key] = {};
+      DIAS.forEach(d => { dbTarget.semanas[key][d] = { ingresos:[], gastos:[] }; });
+    }
+    return dbTarget.semanas[key];
+  }
+  // Mes actual
+  if (!DB.semanas[key]) {
+    DB.semanas[key] = {};
+    DIAS.forEach(d => { DB.semanas[key][d] = { ingresos:[], gastos:[] }; });
+  }
+  return DB.semanas[key];
+}
+function getMesData(key) {
+  if (!APP_DATA.meses[key]) APP_DATA.meses[key] = { semanas:{}, cargas:[], gastosMoto:[], gastosPersonales:[] };
+  if (!APP_DATA.meses[key].gastosPersonales) APP_DATA.meses[key].gastosPersonales = [];
+  return APP_DATA.meses[key];
+}
+function checkNuevoMes() {
+  const keyActual = getMesKey();
+  if (mesActual !== keyActual) {
+    const mesAnterior = mesActual;
+    mesActual = keyActual;
+
+    // Archivar mes anterior
+    if (APP_DATA.meses[mesAnterior]) {
+      APP_DATA.meses[mesAnterior]._cerrado = true;
+      APP_DATA.meses[mesAnterior]._fechaCierre = new Date().toISOString();
+    }
+
+    // Nuevo mes limpio
+    if (!APP_DATA.meses[mesActual]) {
+      APP_DATA.meses[mesActual] = {
+        semanas:{}, cargas:[], gastosMoto:[], gastosPersonales:[],
+        _abierto: new Date().toISOString()
+      };
+    }
+    DB = APP_DATA.meses[mesActual];
+    if (!DB.gastosPersonales) DB.gastosPersonales = [];
+
+    // ── Gastos fijos: reset pagado + eliminar los que terminaron cuotas ──
+    const fijos = APP_DATA.gastosFijos || [];
+    const eliminados = [];
+    fijos.forEach((x, idx) => {
+      // Eliminar los que llegaron a 0 cuotas (marcados en togglePagoFijo)
+      if (x._eliminarAlReset) eliminados.push(idx);
+      // Reset pagado para el nuevo mes
+      x.pagado = false;
+    });
+    // Eliminar de atrás para adelante
+    eliminados.reverse().forEach(i => fijos.splice(i, 1));
+    APP_DATA.gastosFijos = fijos;
+
+    save();
+
+    const msg = eliminados.length
+      ? `Nuevo mes — ${eliminados.length} gasto${eliminados.length>1?'s':''} finalizado${eliminados.length>1?'s':''}`
+      : 'Nuevo mes iniciado — gastos fijos reseteados';
+    showToast(msg);
+  }
+}
+function getAllMeses() { return Object.keys(APP_DATA.meses || {}).sort((a,b) => b.localeCompare(a)); }
+
+function getTotalesDeMes(key) {
+  const data = getMesData(key);
+  let bruto = 0, gastosDel = 0;
+  Object.keys(data.semanas).forEach(sk => {
+    const sem = data.semanas[sk];
+    DIAS.forEach(dia => {
+      if (sem[dia]) {
+        sem[dia].ingresos.forEach(v => bruto += v);
+        sem[dia].gastos.forEach(g => gastosDel += g.monto);
+      }
+    });
+  });
+  const combustible = (data.cargas||[]).reduce((a,c) => a + c.monto, 0);
+  const gastosMoto = (data.gastosMoto||[]).reduce((a,g) => a + g.monto, 0);
+  const gastosPersonales = (data.gastosPersonales||[]).reduce((a,g) => a + g.monto, 0);
+  const totalGastos = gastosDel + combustible + gastosMoto + gastosPersonales;
+  const neto = bruto - totalGastos;
+  const ganancia = neto * 0.10;
+  return { bruto, gastosDel, combustible, gastosMoto, gastosPersonales, totalGastos, neto, ganancia };
+}
+
+/* ═══════════════════════════════════════════
+   FORMAT
+═══════════════════════════════════════════ */
+let currentPage = 'dashboard';
+
+function fmt(n) { return '₲\u202F' + Math.round(n||0).toLocaleString('es-PY'); }
+function fmtNum(n) { return Math.round(n||0).toLocaleString('es-PY'); }
+function fmtInput(el) {
+  const raw = el.value.replace(/\D/g,'');
+  el.value = raw ? parseInt(raw).toLocaleString('es-PY') : '';
+}
+function parseInput(id) {
+  const v = document.getElementById(id).value.replace(/\./g,'').replace(/,/g,'').trim();
+  return parseFloat(v) || 0;
+}
+
+/* ═══════════════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════════════ */
+function showPage(id) {
+  checkNuevoMes(); // Revisar cambio de mes cada vez que se navega
+  currentPage = id;
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  const navEl = document.getElementById('nav-' + id);
+  if (navEl) navEl.classList.add('active');
+  updateFab(id);
+  const renders = {
+    dashboard: () => { renderDashboard(); setTimeout(renderDashMiniChart, 80); },
+    delivery: renderDelivery,
+    combustible: renderCombustible,
+    moto: renderMoto,
+    gastos: renderGastosMoto,
+    'gastos-personales': renderGastosPersonales,
+    historial: renderHistorial,
+    fijos: renderGastosFijos,
+    stats: renderStats
+  };
+  if (renders[id]) renders[id]();
+}
+
+function openModal(id) {
+  const overlay = document.getElementById(id);
+  if (!overlay) return;
+  // Contar cuántos modales ya están abiertos y apilar el z-index
+  const openCount = document.querySelectorAll('.modal-overlay.open').length;
+  overlay.style.zIndex = 500 + (openCount * 200);
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal(id) {
+  const overlay = document.getElementById(id);
+  if (!overlay) return;
+  overlay.classList.remove('open');
+  overlay.style.zIndex = '';
+  // Restaurar scroll solo si no quedan modales abiertos
+  if (document.querySelectorAll('.modal-overlay.open').length === 0) {
+    document.body.style.overflow = '';
+  }
+}
+document.querySelectorAll('.modal-overlay').forEach(m => {
+  m.addEventListener('click', e => {
+    if (e.target === m) closeModal(m.id);
+  });
+});
+
+/* ═══════════════════════════════════════════
+   DASHBOARD
+═══════════════════════════════════════════ */
+function renderDashboard() {
+  const hora = new Date().getHours();
+  const greeting = hora < 12 ? 'Buenos días 👋' : hora < 18 ? 'Buenas tardes 👋' : 'Buenas noches 👋';
+  document.getElementById('dash-greeting').textContent = greeting + ' ' + currentUser;
+  document.getElementById('dash-month').textContent = getMesLabel(mesActual);
+
+  const t = getTotalesDeMes(mesActual);
+  const heroEl = document.getElementById('dash-hero');
+  heroEl.querySelector('.hero-amount').textContent = fmt(t.neto);
+  heroEl.querySelector('.hero-amount').classList.toggle('negative', t.neto < 0);
+  document.getElementById('dash-neto-sub').textContent = `Bruto: ${fmt(t.bruto)} · Gastos: ${fmt(t.totalGastos)}`;
+
+  const pct = t.bruto > 0 ? Math.min(100, (t.neto / t.bruto) * 100) : 0;
+  document.getElementById('dash-progress').style.width = Math.max(0,pct) + '%';
+  document.getElementById('dash-prog-label').textContent = t.bruto > 0 ? `${Math.round(pct)}% del bruto queda como neto` : 'Sin datos aún';
+
+  document.getElementById('dash-bruto').textContent = fmt(t.bruto);
+  document.getElementById('dash-total-gastos').textContent = fmt(t.gastosPersonales || 0);
+  document.getElementById('dash-combustible').textContent = fmt(t.combustible);
+  document.getElementById('dash-gastos-moto').textContent = fmt(t.gastosMoto);
+  document.getElementById('dash-ganancia').textContent = fmt(t.ganancia);
+
+  const gPct = t.neto > 0 ? 100 : 0;
+  document.getElementById('dash-ganancia-prog').style.width = gPct + '%';
+  document.getElementById('dash-ganancia-label').textContent = `10% del neto mensual`;
+
+  // Depósitos
+  const depositos = getDepositos();
+  const totalDep = depositos.reduce((a,d) => a + d.monto, 0);
+  const falta = Math.max(0, t.ganancia - totalDep);
+  document.getElementById('dash-depositado').textContent = fmt(totalDep);
+  document.getElementById('dash-falta').textContent = fmt(falta);
+  const listaEl = document.getElementById('dash-depositos-lista');
+  renderDepositosList(depositos, listaEl);
+
+  // Estado moto
+  const a = MOTO.aceite;
+  const restantes = (a.kmCambio + a.intervalo) - MOTO.km;
+  const estadoEl = document.getElementById('dash-moto-estado');
+  if (!a.kmCambio) {
+    estadoEl.innerHTML = '<div class="text-muted" style="font-size:13px;padding:4px 0">Sin datos de aceite configurados</div>';
+  } else {
+    const color = restantes < 500 ? 'var(--red)' : restantes < 1000 ? 'var(--gold)' : 'var(--green)';
+    estadoEl.innerHTML = `
+      <div class="moto-dash-row"><span class="moto-dash-label">Km actuales</span><span class="moto-dash-val">${fmtNum(MOTO.km)} km</span></div>
+      <div class="moto-dash-row"><span class="moto-dash-label">Próximo aceite</span><span class="moto-dash-val" style="color:${color}">${restantes > 0 ? fmtNum(restantes) + ' km restantes' : '⚠️ CAMBIAR YA'}</span></div>`;
+  }
+}
+
+/* ═══════════════════════════════════════════
+   DELIVERY
+═══════════════════════════════════════════ */
+function cambiarSemana(dir) { semanaOffset += dir; renderDelivery(); }
+
+function renderDelivery() {
+  const key = getWeekKey(semanaOffset);
+  const mesDeEstaSemana = getMesDeWeekKey(key);
+  const esMesActual = mesDeEstaSemana === mesActual;
+  document.getElementById('semana-label').textContent = getWeekLabel(semanaOffset);
+  // Mostrar a qué mes pertenece si no es el actual
+  const fechaBase = getWeekDates(semanaOffset);
+  const mesTag = !esMesActual ? ' · ' + getMesLabel(mesDeEstaSemana) : '';
+  document.getElementById('semana-dates').textContent = fechaBase + mesTag;
+  const sem = getSemana(key);
+
+  let brutoTotal = 0, gastosTotal = 0;
+  const grid = document.getElementById('dias-grid');
+  // Detectar día actual (solo si estamos en la semana actual)
+  const hoyIdx = semanaOffset === 0 ? (() => { const d = new Date().getDay(); return d === 0 ? 6 : d - 1; })() : -1;
+
+  grid.innerHTML = DIAS.map((dia, i) => {
+    const d = sem[dia];
+    const bruto = d.ingresos.reduce((a,v) => a + v, 0);
+    const gastos = d.gastos.reduce((a,v) => a + v.monto, 0);
+    const neto = bruto - gastos;
+    brutoTotal += bruto; gastosTotal += gastos;
+    const hasData = bruto > 0 || gastos > 0;
+    const isToday = i === hoyIdx;
+    return `<div class="dia-tile ${hasData ? 'has-data' : ''} ${isToday ? 'today' : ''}" onclick="abrirDia('${dia}', ${i})">
+      <div class="dia-tile-head">
+        <div>
+          ${isToday ? '<span class="dia-today-badge">Hoy</span>' : ''}
+          <div class="dia-name">${DIAS_SHORT[i]}</div>
+        </div>
+        <div class="dia-dot ${hasData ? 'active' : ''}"></div>
+      </div>
+      ${hasData ? `
+        <div class="dia-bruto">${fmt(bruto)}</div>
+        ${gastos > 0 ? `<div class="dia-gastos">− ${fmt(gastos)}</div>` : ''}
+        <div class="dia-neto">Neto ${fmt(neto)}</div>
+      ` : `<div class="dia-empty" style="margin-top:6px">Sin datos</div>`}
+    </div>`;
+  }).join('');
+
+  document.getElementById('sem-bruto').textContent = fmt(brutoTotal);
+  document.getElementById('sem-gastos').textContent = fmt(gastosTotal);
+  document.getElementById('sem-neto').textContent = fmt(brutoTotal - gastosTotal);
+}
+
+function abrirDia(dia, idx) {
+  diaActual = { dia, key: getWeekKey(semanaOffset) };
+  document.getElementById('modal-dia-title').textContent = DIAS_LABEL[idx];
+  renderModalDia();
+  openModal('modal-dia');
+}
+
+function renderModalDia() {
+  if (!diaActual) return;
+  const sem = getSemana(diaActual.key);
+  const d = sem[diaActual.dia];
+
+  const inEl = document.getElementById('modal-ingresos-list');
+  inEl.innerHTML = d.ingresos.length
+    ? d.ingresos.map((v,i) => `
+        <div class="list-item">
+          <div class="list-item-left"><div class="list-item-desc">Ingreso ${i+1}</div></div>
+          <span class="list-item-val text-green">${fmt(v)}</span>
+          <button class="btn btn-danger" onclick="eliminarIngreso(${i})">✕</button>
+        </div>`).join('')
+    : `<div class="empty-state" style="padding:14px 0"><div class="text-muted" style="font-size:13px">Sin ingresos aún</div></div>`;
+
+  const gEl = document.getElementById('modal-gastos-list');
+  gEl.innerHTML = d.gastos.length
+    ? d.gastos.map((g,i) => `
+        <div class="list-item">
+          <div class="list-item-left">
+            <div class="list-item-desc">${g.desc || 'Gasto'}</div>
+          </div>
+          <span class="list-item-val text-red">${fmt(g.monto)}</span>
+          <button class="btn btn-danger" onclick="eliminarGastoDia(${i})">✕</button>
+        </div>`).join('')
+    : `<div class="empty-state" style="padding:14px 0"><div class="text-muted" style="font-size:13px">Sin gastos aún</div></div>`;
+
+  const bruto = d.ingresos.reduce((a,v) => a+v, 0);
+  const gastos = d.gastos.reduce((a,v) => a+v.monto, 0);
+  document.getElementById('dia-sum-bruto').textContent = fmt(bruto);
+  document.getElementById('dia-sum-gastos').textContent = fmt(gastos);
+  document.getElementById('dia-sum-neto').textContent = fmt(bruto - gastos);
+}
+
+// Guarda el mes correcto según la semana del día actual
+function saveParaDia() {
+  const mesKey = getMesDeWeekKey(diaActual.key);
+  APP_DATA.meses[mesKey] = getDBForWeek(diaActual.key) || DB;
+  if (mesKey === mesActual) APP_DATA.meses[mesActual] = DB;
+  save();
+}
+function agregarIngreso() {
+  const monto = parseInput('ingreso-monto');
+  if (!monto) { alert('Ingresá un monto'); return; }
+  const sem = getSemana(diaActual.key);
+  sem[diaActual.dia].ingresos.push(monto);
+  saveParaDia();
+  document.getElementById('ingreso-monto').value = '';
+  renderModalDia(); renderDelivery();
+}
+function agregarGasto() {
+  const monto = parseInput('gasto-monto');
+  const desc = document.getElementById('gasto-desc').value.trim() || 'Gasto';
+  if (!monto) { alert('Ingresá un monto'); return; }
+  const sem = getSemana(diaActual.key);
+  sem[diaActual.dia].gastos.push({ desc, monto });
+  saveParaDia();
+  document.getElementById('gasto-desc').value = '';
+  document.getElementById('gasto-monto').value = '';
+  renderModalDia(); renderDelivery();
+}
+function eliminarIngreso(idx) {
+  const sem = getSemana(diaActual.key);
+  sem[diaActual.dia].ingresos.splice(idx, 1);
+  saveParaDia(); renderModalDia(); renderDelivery();
+}
+function eliminarGastoDia(idx) {
+  const sem = getSemana(diaActual.key);
+  sem[diaActual.dia].gastos.splice(idx, 1);
+  saveParaDia(); renderModalDia(); renderDelivery();
+}
+
+/* ═══════════════════════════════════════════
+   COMBUSTIBLE
+═══════════════════════════════════════════ */
+function renderCombustible() {
+  const mes = new Date().getMonth(), anio = new Date().getFullYear();
+  const delMes = DB.cargas.filter(c => {
+    const d = new Date(c.fecha); return d.getMonth() === mes && d.getFullYear() === anio;
+  });
+  document.getElementById('comb-total').textContent = fmt(delMes.reduce((a,c) => a + c.monto, 0));
+  document.getElementById('comb-count').textContent = delMes.length;
+  const lista = document.getElementById('lista-cargas');
+  if (!DB.cargas.length) {
+    lista.innerHTML = `<div class="empty-state"><div class="empty-icon">⛽</div><div>Sin cargas registradas</div></div>`;
+    return;
+  }
+  lista.innerHTML = [...DB.cargas].reverse().map((c,i) => `
+    <div class="carga-tile">
+      <div>
+        <div class="carga-info-val">${fmt(c.monto)}</div>
+        <div class="carga-info-meta">${c.fecha}${c.litros ? ' · ' + c.litros + ' lts' : ''}</div>
+      </div>
+      <button class="btn btn-danger btn-sm" onclick="eliminarCarga(${DB.cargas.length-1-i})">✕ Eliminar</button>
+    </div>`).join('');
+}
+function guardarCarga() {
+  const monto = parseInput('carga-monto');
+  if (!monto) { alert('Ingresá el monto'); return; }
+  const litros = parseInput('carga-litros') || null;
+  const fecha = document.getElementById('carga-fecha').value || new Date().toISOString().split('T')[0];
+  DB.cargas.push({ monto, litros, fecha });
+  APP_DATA.meses[mesActual] = DB; save();
+  closeModal('modal-carga');
+  document.getElementById('carga-monto').value = '';
+  document.getElementById('carga-litros').value = '';
+  renderCombustible();
+}
+function eliminarCarga(idx) {
+  
+  DB.cargas.splice(idx, 1);
+  APP_DATA.meses[mesActual] = DB; save(); renderCombustible();
+}
+
+/* ═══════════════════════════════════════════
+   MOTO
+═══════════════════════════════════════════ */
+function tiempoTranscurrido(fechaStr) {
+  if (!fechaStr) return '';
+  const hoy = new Date();
+  hoy.setHours(0, 0, 0, 0);
+  const fecha = new Date(fechaStr + 'T00:00:00');
+  const diffMs = hoy - fecha;
+  const dias = Math.floor(diffMs / 86400000);
+  if (dias < 0) return '';
+  if (dias === 0) return 'hoy';
+  if (dias === 1) return 'ayer';
+  if (dias < 30) return `hace ${dias} día${dias !== 1 ? 's' : ''}`;
+  const meses = Math.floor(dias / 30);
+  const diasRest = dias % 30;
+  if (meses < 12) {
+    return diasRest > 0
+      ? `hace ${meses} mes${meses !== 1 ? 'es' : ''} y ${diasRest}d`
+      : `hace ${meses} mes${meses !== 1 ? 'es' : ''}`;
+  }
+  const anios = Math.floor(meses / 12);
+  const mesesRest = meses % 12;
+  return mesesRest > 0
+    ? `hace ${anios} año${anios !== 1 ? 's' : ''} y ${mesesRest} mes${mesesRest !== 1 ? 'es' : ''}`
+    : `hace ${anios} año${anios !== 1 ? 's' : ''}`;
+}
+
+function fmtFechaCorta(fechaStr) {
+  if (!fechaStr) return '—';
+  const [anio, mes, dia] = fechaStr.split('-');
+  const mesesCortos = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+  return `${parseInt(dia)} ${mesesCortos[parseInt(mes) - 1]} ${anio}`;
+}
+
+function renderMoto() {
+  document.getElementById('moto-km-display').textContent = fmtNum(MOTO.km) + ' km';
+  const a = MOTO.aceite;
+  document.getElementById('aceite-ultimo').textContent = a.kmCambio ? fmtNum(a.kmCambio) + ' km' : '—';
+  const proximo = a.kmCambio + a.intervalo;
+  document.getElementById('aceite-proximo').textContent = a.kmCambio ? fmtNum(proximo) + ' km' : '—';
+  document.getElementById('aceite-fecha-display').textContent = fmtFechaCorta(a.fecha);
+  const aceiteElapsed = document.getElementById('aceite-elapsed');
+  if (aceiteElapsed) aceiteElapsed.textContent = tiempoTranscurrido(a.fecha);
+  const restantes = proximo - MOTO.km;
+  const restEl = document.getElementById('aceite-restantes');
+  const progEl = document.getElementById('aceite-progress');
+  const labelEl = document.getElementById('aceite-label');
+  const alertEl = document.getElementById('moto-alert-banner');
+
+  if (a.kmCambio) {
+    const pct = Math.min(100, ((MOTO.km - a.kmCambio) / a.intervalo) * 100);
+    restEl.textContent = restantes > 0 ? fmtNum(restantes) + ' km' : '⚠️ VENCIDO';
+    restEl.style.color = restantes < 500 ? 'var(--red)' : restantes < 1000 ? 'var(--gold)' : 'var(--green)';
+    progEl.style.width = pct + '%';
+    progEl.className = 'prog-bar ' + (pct > 85 ? 'red' : pct > 65 ? 'gold' : 'green');
+    labelEl.textContent = Math.round(pct) + '% del intervalo recorrido';
+
+    if (restantes <= 0) {
+      alertEl.innerHTML = `<div class="alert-banner danger">⚠️ El aceite está vencido. ¡Cambiar urgente!</div>`;
+    } else if (restantes <= 500) {
+      alertEl.innerHTML = `<div class="alert-banner warn">🔔 Faltan solo ${fmtNum(restantes)} km para el cambio de aceite.</div>`;
+    } else {
+      alertEl.innerHTML = `<div class="alert-banner ok">✅ Aceite en buen estado. ${fmtNum(restantes)} km restantes.</div>`;
+    }
+  } else {
+    alertEl.innerHTML = `<div class="alert-banner warn">⚠️ Configura el cambio de aceite para ver el estado.</div>`;
+  }
+  renderTransmision();
+}
+function guardarKm() {
+  const km = parseInput('km-valor');
+  if (!km) { alert('Ingresá el kilometraje'); return; }
+  MOTO.km = km; APP_DATA.moto = MOTO; save();
+  closeModal('modal-km');
+  document.getElementById('km-valor').value = '';
+  renderMoto();
+}
+function guardarAceite() {
+  const km = parseInput('aceite-km');
+  const intervalo = parseInput('aceite-intervalo') || 3000;
+  const fecha = document.getElementById('aceite-fecha').value;
+  if (!km) { alert('Ingresá el km del cambio'); return; }
+  MOTO.aceite = { kmCambio: km, intervalo, fecha };
+  if (km > MOTO.km) MOTO.km = km;
+  APP_DATA.moto = MOTO; save();
+  closeModal('modal-aceite');
+  document.getElementById('aceite-km').value = '';
+  document.getElementById('aceite-intervalo').value = '';
+  renderMoto();
+}
+
+function renderTransmision() {
+  const t = MOTO.transmision;
+  if (!t) return;
+
+  document.getElementById('trans-ultimo').textContent = t.kmCambio ? fmtNum(t.kmCambio) + ' km' : '—';
+  const proximo = t.kmCambio + (t.intervalo || 5000);
+  document.getElementById('trans-proximo').textContent = t.kmCambio ? fmtNum(proximo) + ' km' : '—';
+  document.getElementById('trans-fecha-display').textContent = fmtFechaCorta(t.fecha);
+  const transElapsed = document.getElementById('trans-elapsed');
+  if (transElapsed) transElapsed.textContent = tiempoTranscurrido(t.fecha);
+
+  const alertEl = document.getElementById('transmision-alert');
+
+  if (t.kmCambio) {
+    const restantes = proximo - MOTO.km;
+    const pct = Math.min(100, ((MOTO.km - t.kmCambio) / (t.intervalo || 5000)) * 100);
+    const restEl = document.getElementById('trans-restantes');
+    const progEl = document.getElementById('trans-progress');
+    const labelEl = document.getElementById('trans-label');
+
+    restEl.textContent = restantes > 0 ? fmtNum(restantes) + ' km' : '⚠️ VENCIDO';
+    restEl.style.color = restantes < 500 ? 'var(--red)' : restantes < 1000 ? 'var(--gold)' : 'var(--green)';
+    progEl.style.width = pct + '%';
+    progEl.className = 'prog-bar ' + (pct > 85 ? 'red' : pct > 65 ? 'gold' : 'green');
+    labelEl.textContent = Math.round(pct) + '% del intervalo recorrido';
+
+    if (restantes <= 0) {
+      alertEl.innerHTML = `<div class="alert-banner danger">⚠️ Transmisión vencida. ¡Cambiar urgente!</div>`;
+    } else if (restantes <= 500) {
+      alertEl.innerHTML = `<div class="alert-banner warn">🔔 Faltan ${fmtNum(restantes)} km para cambio de transmisión.</div>`;
+    } else {
+      alertEl.innerHTML = `<div class="alert-banner ok">✅ Transmisión en buen estado. ${fmtNum(restantes)} km restantes.</div>`;
+    }
+  } else {
+    alertEl.innerHTML = `<div class="alert-banner warn">⚠️ Configura el cambio de transmisión para ver el estado.</div>`;
+  }
+}
+
+function guardarTransmision() {
+  const km = parseInput('trans-km');
+  const intervalo = parseInput('trans-intervalo') || 5000;
+  const fecha = document.getElementById('trans-fecha').value;
+  if (!km) { alert('Ingresá el km del cambio'); return; }
+  if (!MOTO.transmision) MOTO.transmision = {};
+  MOTO.transmision = { kmCambio: km, intervalo, fecha };
+  if (km > MOTO.km) MOTO.km = km;
+  APP_DATA.moto = MOTO; save();
+  closeModal('modal-transmision');
+  document.getElementById('trans-km').value = '';
+  document.getElementById('trans-intervalo').value = '';
+  renderMoto();
+}
+
+/* ═══════════════════════════════════════════
+   GASTOS MOTO
+═══════════════════════════════════════════ */
+const CAT_ICONS  = { mecanico:'🔧', accesorio:'🛒', aceite:'🛢️', otro:'📦' };
+const CAT_LABELS = { mecanico:'Mecánico', accesorio:'Accesorio', aceite:'Aceite', otro:'Otro' };
+const CAT_CLASS  = { mecanico:'purple', accesorio:'blue', aceite:'gold', otro:'green' };
+
+function renderGastosMoto() {
+  const mes = new Date().getMonth(), anio = new Date().getFullYear();
+  const delMes = DB.gastosMoto.filter(g => {
+    const d = new Date(g.fecha); return d.getMonth() === mes && d.getFullYear() === anio;
+  });
+  document.getElementById('gmoto-mes').textContent = fmt(delMes.reduce((a,g) => a + g.monto, 0));
+  document.getElementById('gmoto-total').textContent = fmt(DB.gastosMoto.reduce((a,g) => a + g.monto, 0));
+  const lista = document.getElementById('lista-gastos-moto');
+  if (!DB.gastosMoto.length) {
+    lista.innerHTML = `<div class="empty-state"><div class="empty-icon">🔧</div><div>Sin gastos registrados</div></div>`;
+    return;
+  }
+  lista.innerHTML = [...DB.gastosMoto].reverse().map((g,i) => `
+    <div class="list-item">
+      <div class="list-item-left">
+        <div class="list-item-desc">${CAT_ICONS[g.cat]} ${g.desc}</div>
+        <div class="list-item-meta">${g.fecha} · <span class="badge ${CAT_CLASS[g.cat]}">${CAT_LABELS[g.cat]}</span></div>
+      </div>
+      <div style="text-align:right">
+        <div class="list-item-val text-purple">${fmt(g.monto)}</div>
+        <button class="btn btn-danger btn-sm" style="margin-top:6px" onclick="eliminarGastoMoto(${DB.gastosMoto.length-1-i})">✕</button>
+      </div>
+    </div>`).join('');
+}
+function guardarGastoMoto() {
+  const desc = document.getElementById('gmoto-desc').value.trim();
+  const monto = parseInput('gmoto-monto');
+  const cat = document.getElementById('gmoto-cat').value;
+  const fecha = document.getElementById('gmoto-fecha').value || new Date().toISOString().split('T')[0];
+  if (!desc || !monto) { alert('Completá descripción y monto'); return; }
+  DB.gastosMoto.push({ desc, monto, cat, fecha });
+  save(); closeModal('modal-gasto-moto');
+  document.getElementById('gmoto-desc').value = '';
+  document.getElementById('gmoto-monto').value = '';
+  renderGastosMoto();
+}
+function eliminarGastoMoto(idx) {
+  
+  DB.gastosMoto.splice(idx, 1); save(); renderGastosMoto();
+}
+
+/* ═══════════════════════════════════════════
+   GASTOS PERSONALES
+═══════════════════════════════════════════ */
+const GP_CAT_ICONS = {
+  super:'🛒', combustible:'⛽', comida:'🍔', casa:'🏠',
+  cuentas:'💡', salud:'💊', transporte:'🚌', ropa:'👕',
+  entretenimiento:'🎮', otro:'📦'
+};
+const GP_CAT_LABELS = {
+  super:'Super', combustible:'Combustible', comida:'Comida', casa:'Casa',
+  cuentas:'Cuentas', salud:'Salud', transporte:'Transp.', ropa:'Ropa',
+  entretenimiento:'Entret.', otro:'Otro'
+};
+const GP_CAT_COLORS = {
+  super:'green', combustible:'blue', comida:'gold', casa:'purple',
+  cuentas:'red', salud:'green', transporte:'blue', ropa:'purple',
+  entretenimiento:'gold', otro:'text2'
+};
+
+function getGastosPersonalesMes() {
+  if (!DB.gastosPersonales) DB.gastosPersonales = [];
+  const mes = new Date().getMonth(), anio = new Date().getFullYear();
+  return DB.gastosPersonales.filter(g => {
+    const d = new Date(g.fecha + 'T00:00:00');
+    return d.getMonth() === mes && d.getFullYear() === anio;
+  });
+}
+
+function renderGastosPersonales() {
+  if (!DB.gastosPersonales) DB.gastosPersonales = [];
+  const delMes = getGastosPersonalesMes();
+  const totalMes = delMes.reduce((a, g) => a + g.monto, 0);
+  const t = getTotalesDeMes(mesActual);
+
+  document.getElementById('gp-total-mes').textContent = fmt(totalMes);
+  document.getElementById('gp-sub').textContent = `${getMesLabel(mesActual)} · ${delMes.length} gasto${delMes.length !== 1 ? 's' : ''}`;
+
+  // barra: gastos personales vs bruto
+  const pct = t.bruto > 0 ? Math.min(100, (totalMes / t.bruto) * 100) : 0;
+  document.getElementById('gp-prog-bar').style.width = pct + '%';
+
+  // stats por categoría (top 3)
+  const porCat = {};
+  delMes.forEach(g => { porCat[g.cat] = (porCat[g.cat] || 0) + g.monto; });
+  const topCats = Object.entries(porCat).sort((a, b) => b[1] - a[1]).slice(0, 3);
+  const statsEl = document.getElementById('gp-cats-stats');
+  if (topCats.length) {
+    statsEl.innerHTML = topCats.map(([cat, monto]) => `
+      <div class="stat-tile">
+        <div class="stat-tile-label">${GP_CAT_ICONS[cat]} ${GP_CAT_LABELS[cat]}</div>
+        <div class="stat-tile-val ${GP_CAT_COLORS[cat]}">${fmt(monto)}</div>
+      </div>`).join('');
+    statsEl.style.display = '';
+  } else {
+    statsEl.innerHTML = '';
+    statsEl.style.display = 'none';
+  }
+
+  // lista del mes (más reciente primero)
+  const lista = document.getElementById('lista-gastos-personales');
+  if (!delMes.length) {
+    lista.innerHTML = `<div class="empty-state"><div class="empty-icon">💸</div><div>Sin gastos registrados este mes</div></div>`;
+    return;
+  }
+
+  // ordenar por fecha desc
+  const ordenados = [...delMes].sort((a, b) => b.fecha.localeCompare(a.fecha));
+  lista.innerHTML = ordenados.map(g => {
+    const idx = DB.gastosPersonales.indexOf(g);
+    const color = GP_CAT_COLORS[g.cat] || 'text2';
+    return `<div class="list-item">
+      <div class="list-item-left">
+        <div class="list-item-icon" style="background:var(--${color}-dim,rgba(255,255,255,.05));font-size:18px;width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center">
+          ${GP_CAT_ICONS[g.cat] || '📦'}
+        </div>
+        <div>
+          <div class="list-item-title">${g.desc}</div>
+          <div class="list-item-sub">${GP_CAT_LABELS[g.cat]} · ${fmtFechaCorta(g.fecha)}</div>
+        </div>
+      </div>
+      <div class="list-item-right">
+        <div class="list-item-val" style="color:var(--red)">${fmt(g.monto)}</div>
+        <div class="list-item-actions">
+          <button class="icon-btn" onclick="abrirEdicionGastoPersonal(${idx})" title="Editar">✏️</button>
+          <button class="icon-btn" onclick="eliminarGastoPersonal(${idx})" title="Eliminar">🗑️</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function guardarGastoPersonal() {
+  const desc = document.getElementById('gp-desc').value.trim();
+  const cat  = document.getElementById('gp-cat').value;
+  const monto = parseInput('gp-monto');
+  const fecha = document.getElementById('gp-fecha').value || new Date().toISOString().split('T')[0];
+  if (!desc) { showToast('Ingresá una descripción'); return; }
+  if (!monto) { showToast('Ingresá el monto'); return; }
+  if (!DB.gastosPersonales) DB.gastosPersonales = [];
+  DB.gastosPersonales.push({ desc, cat, monto, fecha });
+  APP_DATA.meses[mesActual] = DB;
+  save();
+  closeModal('modal-nuevo-gasto-personal');
+  document.getElementById('gp-desc').value = '';
+  document.getElementById('gp-monto').value = '';
+  renderGastosPersonales();
+  renderDashboard();
+}
+
+function abrirEdicionGastoPersonal(idx) {
+  if (!DB.gastosPersonales) return;
+  const g = DB.gastosPersonales[idx];
+  if (!g) return;
+  document.getElementById('gp-edit-idx').value = idx;
+  document.getElementById('gp-edit-desc').value = g.desc;
+  document.getElementById('gp-edit-cat').value = g.cat;
+  document.getElementById('gp-edit-monto').value = g.monto.toLocaleString('es-PY');
+  document.getElementById('gp-edit-fecha').value = g.fecha;
+  openModal('modal-editar-gasto-personal');
+}
+
+function guardarEdicionGastoPersonal() {
+  const idx   = parseInt(document.getElementById('gp-edit-idx').value);
+  const desc  = document.getElementById('gp-edit-desc').value.trim();
+  const cat   = document.getElementById('gp-edit-cat').value;
+  const monto = parseInput('gp-edit-monto');
+  const fecha = document.getElementById('gp-edit-fecha').value;
+  if (!desc || !monto) { showToast('Completá descripción y monto'); return; }
+  DB.gastosPersonales[idx] = { desc, cat, monto, fecha };
+  APP_DATA.meses[mesActual] = DB;
+  save();
+  closeModal('modal-editar-gasto-personal');
+  renderGastosPersonales();
+  renderDashboard();
+}
+
+function eliminarGastoPersonal(idx) {
+  DB.gastosPersonales.splice(idx, 1);
+  APP_DATA.meses[mesActual] = DB;
+  save();
+  renderGastosPersonales();
+  renderDashboard();
+}
+
+/* ═══════════════════════════════════════════
+   DEPÓSITOS
+═══════════════════════════════════════════ */
+function getDepositos() {
+  if (!APP_DATA.depositos) APP_DATA.depositos = {};
+  if (!APP_DATA.depositos[mesActual]) APP_DATA.depositos[mesActual] = [];
+  return APP_DATA.depositos[mesActual];
+}
+function renderDepositosList(deps, el) {
+  if (!el) el = document.getElementById('dash-depositos-lista');
+  if (!el) return;
+  if (!deps || !deps.length) { el.innerHTML = ''; return; }
+  el.innerHTML = deps.map((d, realIdx) => `
+    <div class="dep-item">
+      <div>
+        <span class="fw7 text-green">${fmt(d.monto)}</span>
+        ${d.nota ? `<span class="text-muted" style="margin-left:6px;font-size:12px">${d.nota}</span>` : ''}
+        <span class="text-muted" style="font-size:11px;margin-left:6px;opacity:.6">${d.fecha ? new Date(d.fecha).toLocaleDateString('es-PY') : ''}</span>
+      </div>
+      <button onclick="eliminarDeposito(${realIdx})" class="icon-btn" style="color:var(--red);opacity:.8;font-size:16px" title="Eliminar">✕</button>
+    </div>`).join('');
+}
+
+function guardarDeposito() {
+  const monto = parseInput('dep-monto');
+  const nota = document.getElementById('dep-nota').value.trim();
+  if (!monto) { showToast('Ingresá un monto'); return; }
+  // Asegurar que el array existe en APP_DATA antes de pushear
+  if (!APP_DATA.depositos) APP_DATA.depositos = {};
+  if (!APP_DATA.depositos[mesActual]) APP_DATA.depositos[mesActual] = [];
+  APP_DATA.depositos[mesActual].push({ monto, nota, fecha: new Date().toISOString() });
+  save();
+  // Cerrar solo el modal de depósito
+  closeModal('modal-deposito');
+  document.getElementById('dep-monto').value = '';
+  document.getElementById('dep-nota').value = '';
+  _depMesKey = null;
+  // Actualizar valores directamente en la tile
+  const deps = APP_DATA.depositos[mesActual];
+  const totalDep = deps.reduce((a,d) => a + d.monto, 0);
+  const t = getTotalesDeMes(mesActual);
+  const falta = Math.max(0, t.ganancia - totalDep);
+  document.getElementById('dash-depositado').textContent = fmt(totalDep);
+  document.getElementById('dash-falta').textContent = fmt(falta);
+  renderDepositosList(deps);
+  showToast('Depósito guardado');
+}
+function eliminarDeposito(idx) {
+  if (!APP_DATA.depositos) APP_DATA.depositos = {};
+  if (!APP_DATA.depositos[mesActual]) APP_DATA.depositos[mesActual] = [];
+  APP_DATA.depositos[mesActual].splice(idx, 1);
+  save();
+  // Actualizar tiles directamente
+  const deps = APP_DATA.depositos[mesActual];
+  const totalDep = deps.reduce((a,d) => a + d.monto, 0);
+  const t = getTotalesDeMes(mesActual);
+  const falta = Math.max(0, t.ganancia - totalDep);
+  document.getElementById('dash-depositado').textContent = fmt(totalDep);
+  document.getElementById('dash-falta').textContent = fmt(falta);
+  renderDepositosList(deps);
+  showToast('Depósito eliminado');
+}
+
+// ── Depósitos de un mes arbitrario (desde historial) ──
+let _depMesKey = null;
+
+function submitDeposito() {
+  // Dispatcher: mes actual o mes histórico según contexto
+  if (_depMesKey && _depMesKey !== mesActual) {
+    guardarDepositoMes();
+  } else {
+    guardarDeposito();
+  }
+}
+
+function abrirDepositoMes(key) {
+  _depMesKey = key;
+  document.getElementById('dep-monto').value = '';
+  document.getElementById('dep-nota').value = '';
+  openModal('modal-deposito');
+}
+
+function guardarDepositoMes() {
+  const key = _depMesKey;
+  const monto = parseInput('dep-monto');
+  const nota = document.getElementById('dep-nota').value.trim();
+  if (!monto) { showToast('Ingresá un monto'); return; }
+  if (!APP_DATA.depositos) APP_DATA.depositos = {};
+  if (!APP_DATA.depositos[key]) APP_DATA.depositos[key] = [];
+  APP_DATA.depositos[key].push({ monto, nota, fecha: new Date().toISOString() });
+  save();
+
+  // Cerrar solo el modal de depósito sin tocar el modal de historial
+  closeModal('modal-deposito');
+  document.getElementById('dep-monto').value = '';
+  document.getElementById('dep-nota').value = '';
+  _depMesKey = null;
+
+  // Refrescar la lista de depósitos DENTRO del modal ya abierto
+  refreshDepsMesLista(key);
+  showToast('Depósito guardado');
+}
+
+function refreshDepsMesLista(key) {
+  const t = getTotalesDeMes(key);
+  const deps = (APP_DATA.depositos && APP_DATA.depositos[key]) || [];
+  const totalDep = deps.reduce((a,d) => a + d.monto, 0);
+  const faltaDep = Math.max(0, t.ganancia - totalDep);
+
+  // Actualizar lista
+  const listaEl = document.getElementById('deps-mes-lista');
+  if (listaEl) {
+    listaEl.innerHTML = deps.length
+      ? deps.slice().reverse().map((d,i) =>
+          `<div class="dep-item">
+            <div><span class="fw7 text-green">${fmt(d.monto)}</span>${d.nota ? `<span style="color:var(--text3);font-size:12px;margin-left:6px">${d.nota}</span>` : ''}</div>
+            <button onclick="eliminarDepositoMes('${key}',${deps.length-1-i})" class="icon-btn" style="opacity:.7">✕</button>
+          </div>`).join('')
+      : '<div style="color:var(--text3);font-size:12px;padding:4px 0">Sin depósitos</div>';
+  }
+
+  // Actualizar mini-totales dentro del dep-card
+  const miniGrid = document.querySelectorAll('.dep-mini-val');
+  if (miniGrid.length >= 2) {
+    miniGrid[0].textContent = fmt(totalDep);
+    miniGrid[0].className = 'dep-mini-val text-green';
+    miniGrid[1].textContent = faltaDep > 0 ? fmt(faltaDep) : 'Completo';
+    miniGrid[1].className = 'dep-mini-val ' + (faltaDep > 0 ? 'text-red' : 'text-green');
+  }
+
+  // Si es mes actual, refrescar dashboard también
+  if (key === mesActual) renderDashboard();
+}
+
+function eliminarDepositoMes(key, idx) {
+  
+  if (!APP_DATA.depositos || !APP_DATA.depositos[key]) return;
+  APP_DATA.depositos[key].splice(idx, 1);
+  save();
+  // Refrescar in-place sin cerrar/reabrir modal
+  refreshDepsMesLista(key);
+}
+
+/* ═══════════════════════════════════════════
+   HISTORIAL
+═══════════════════════════════════════════ */
+function renderHistorial() {
+  const lista = document.getElementById('lista-historial');
+  const meses = getAllMeses();
+  if (!meses.length) {
+    lista.innerHTML = `<div class="empty-state"><div class="empty-icon">📅</div><div>Sin historial aún. Los datos se guardan mes a mes.</div></div>`;
+    return;
+  }
+  lista.innerHTML = meses.map(key => {
+    const t = getTotalesDeMes(key);
+    const esMesActual = key === mesActual;
+    const data = getMesData(key);
+    const gp = (data.gastosPersonales||[]).reduce((a,g) => a + g.monto, 0);
+    return `<div class="mes-tile" onclick="verDetallesMes('${key}')">
+      <div class="mes-tile-head">
+        <div>
+          <div class="mes-nombre">${getMesLabel(key)}</div>
+          ${esMesActual ? '<span class="badge gold" style="margin-top:4px">MES ACTUAL</span>' : (data._cerrado ? '<span class="badge" style="margin-top:4px;background:var(--bg3);color:var(--text3);font-size:9px">CERRADO</span>' : '')}
+        </div>
+        <div class="mes-neto ${t.neto < 0 ? 'negative' : ''}">${fmt(t.neto)}</div>
+      </div>
+      <div class="mes-stat-row">
+        <div class="mes-stat-tile"><div class="mes-stat-lbl">Bruto</div><div class="mes-stat-val text-gold">${fmt(t.bruto)}</div></div>
+        <div class="mes-stat-tile"><div class="mes-stat-lbl">Delivery</div><div class="mes-stat-val text-red">${fmt(t.gastosDel)}</div></div>
+        <div class="mes-stat-tile"><div class="mes-stat-lbl">Comb.</div><div class="mes-stat-val text-blue">${fmt(t.combustible)}</div></div>
+        <div class="mes-stat-tile"><div class="mes-stat-lbl">Personales</div><div class="mes-stat-val text-red">${fmt(gp)}</div></div>
+        <div class="mes-stat-tile"><div class="mes-stat-lbl">Mi 10%</div><div class="mes-stat-val text-green">${fmt(t.ganancia)}</div></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function verDetallesMes(key) {
+  const t = getTotalesDeMes(key);
+  const data = getMesData(key);
+  document.getElementById('modal-mes-hist-title').textContent = getMesLabel(key);
+
+  // ── Delivery: detalle diario ──
+  const semanas = Object.keys(data.semanas).sort();
+  let deliveryRows = '';
+  let totalBrutoDel = 0, totalGastosDel = 0;
+  semanas.forEach(sk => {
+    const sem = data.semanas[sk];
+    const wNum = sk.split('-W')[1];
+    deliveryRows += `<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;padding:10px 0 4px">Semana ${wNum}</div>`;
+    DIAS.forEach((dia, i) => {
+      if (!sem[dia]) return;
+      const d = sem[dia];
+      const bruto = d.ingresos.reduce((a,v) => a+v, 0);
+      const gastos = d.gastos.reduce((a,v) => a+v.monto, 0);
+      if (!bruto && !gastos) return;
+      totalBrutoDel += bruto; totalGastosDel += gastos;
+      deliveryRows += `<div style="display:flex;justify-content:space-between;align-items:flex-start;padding:6px 0;border-bottom:1px solid var(--border);font-size:13px">
+        <div>
+          <div style="font-weight:600">${DIAS_LABEL[i]}</div>
+          ${d.gastos.map(g=>`<div style="font-size:11px;color:var(--text3);margin-top:1px">↳ ${g.desc||'Gasto'}: ${fmt(g.monto)}</div>`).join('')}
+        </div>
+        <div style="text-align:right">
+          <div style="color:var(--green);font-weight:700">${fmt(bruto)}</div>
+          ${gastos ? `<div style="color:var(--red);font-size:11px">−${fmt(gastos)}</div>` : ''}
+          <div style="color:var(--text3);font-size:11px">${fmt(bruto-gastos)} neto</div>
+        </div>
+      </div>`;
+    });
+  });
+
+  // ── Combustible ──
+  const cargas = data.cargas || [];
+  const combRows = cargas.length
+    ? cargas.slice().reverse().map(c =>
+        `<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);font-size:13px">
+          <div><span style="color:var(--text2)">${c.fecha}</span>${c.litros ? `<span style="color:var(--text3);font-size:11px;margin-left:6px">${c.litros} lts</span>` : ''}</div>
+          <div style="color:var(--blue);font-weight:700">${fmt(c.monto)}</div>
+        </div>`).join('')
+    : '<div style="color:var(--text3);font-size:12px;padding:6px 0">Sin cargas</div>';
+
+  // ── Gastos moto ──
+  const gmRows = (data.gastosMoto||[]).length
+    ? data.gastosMoto.slice().reverse().map(g =>
+        `<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);font-size:13px">
+          <div><span style="font-weight:600">${g.desc}</span><span style="color:var(--text3);font-size:11px;margin-left:6px">${g.fecha}</span></div>
+          <div style="color:var(--purple);font-weight:700">${fmt(g.monto)}</div>
+        </div>`).join('')
+    : '<div style="color:var(--text3);font-size:12px;padding:6px 0">Sin gastos</div>';
+
+  // ── Gastos personales ──
+  const gpList = data.gastosPersonales || [];
+  const gpRows = gpList.length
+    ? gpList.slice().sort((a,b)=>b.fecha.localeCompare(a.fecha)).map(g =>
+        `<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);font-size:13px">
+          <div>
+            <span style="font-weight:600">${g.desc}</span>
+            <span style="color:var(--text3);font-size:11px;margin-left:6px">${GP_CAT_LABELS[g.cat]||g.cat} · ${fmtFechaCorta(g.fecha)}</span>
+          </div>
+          <div style="color:var(--red);font-weight:700">${fmt(g.monto)}</div>
+        </div>`).join('')
+    : '<div style="color:var(--text3);font-size:12px;padding:6px 0">Sin gastos personales</div>';
+  const totalGP = gpList.reduce((a,g)=>a+g.monto,0);
+
+  // ── Depósitos ──
+  if (!APP_DATA.depositos) APP_DATA.depositos = {};
+  const deps = APP_DATA.depositos[key] || [];
+  const totalDep = deps.reduce((a,d) => a + d.monto, 0);
+  const faltaDep = Math.max(0, t.ganancia - totalDep);
+  const depsHTML = deps.length
+    ? deps.slice().reverse().map((d,i) =>
+        `<div class="dep-item">
+          <div><span class="fw7 text-green">${fmt(d.monto)}</span>${d.nota?`<span style="color:var(--text3);font-size:12px;margin-left:6px">${d.nota}</span>`:''}</div>
+          <button onclick="eliminarDepositoMes('${key}',${deps.length-1-i})" class="icon-btn" style="opacity:.7">✕</button>
+        </div>`).join('')
+    : '<div style="color:var(--text3);font-size:12px;padding:4px 0">Sin depósitos</div>';
+
+  document.getElementById('modal-mes-hist-content').innerHTML = `
+    <!-- RESUMEN HERO -->
+    <div class="hero-neto" style="margin-bottom:14px">
+      <div class="hero-label">Neto del mes</div>
+      <div class="hero-amount ${t.neto < 0 ? 'negative' : ''}" style="font-size:28px">${fmt(t.neto)}</div>
+      <div class="hero-sub">10%: <strong class="text-green">${fmt(t.ganancia)}</strong></div>
+    </div>
+
+    <!-- STATS GRILLA -->
+    <div class="stat-row cols-2" style="margin-bottom:4px">
+      <div class="stat-tile"><div class="stat-tile-label">Bruto delivery</div><div class="stat-tile-val gold">${fmt(t.bruto)}</div></div>
+      <div class="stat-tile"><div class="stat-tile-label">Gastos delivery</div><div class="stat-tile-val red">${fmt(t.gastosDel)}</div></div>
+      <div class="stat-tile"><div class="stat-tile-label">Combustible</div><div class="stat-tile-val blue">${fmt(t.combustible)}</div></div>
+      <div class="stat-tile"><div class="stat-tile-label">Gastos moto</div><div class="stat-tile-val purple">${fmt(t.gastosMoto)}</div></div>
+      <div class="stat-tile"><div class="stat-tile-label">Gastos</div><div class="stat-tile-val red">${fmt(t.gastosPersonales||0)}</div></div>
+      <div class="stat-tile"><div class="stat-tile-label">Total gastos</div><div class="stat-tile-val red">${fmt(t.totalGastos)}</div></div>
+    </div>
+
+    <!-- BOTÓN PDF -->
+    <button onclick="generarPDF('${key}')" style="width:100%;margin:10px 0 14px;padding:11px;background:linear-gradient(135deg,rgba(245,166,35,.15),rgba(245,166,35,.08));border:1px solid rgba(245,166,35,.3);border-radius:12px;color:var(--gold);font-family:var(--ff-display);font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;letter-spacing:.02em">
+      📄 Descargar detalle completo en PDF
+    </button>
+
+    <!-- DEPÓSITOS -->
+    <div class="dep-card" style="margin-bottom:10px">
+      <div class="dep-header">
+        <div class="dep-title">💰 Depósitos</div>
+        <button class="dep-btn" onclick="abrirDepositoMes('${key}')">+ Depositar</button>
+      </div>
+      <div class="dep-mini-grid">
+        <div class="dep-mini"><div class="dep-mini-label">Depositado</div><div class="dep-mini-val text-green">${fmt(totalDep)}</div></div>
+        <div class="dep-mini"><div class="dep-mini-label">Falta</div><div class="dep-mini-val ${faltaDep>0?'text-red':'text-green'}">${faltaDep>0?fmt(faltaDep):'Completo'}</div></div>
+      </div>
+      <div id="deps-mes-lista">${depsHTML}</div>
+    </div>
+
+    <!-- DELIVERY DETALLE -->
+    <div class="card" style="margin-bottom:10px">
+      <div class="card-label" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center" onclick="toggleSection(this)">
+        <span>📦 Delivery día a día</span><span style="color:var(--gold);font-size:18px">›</span>
+      </div>
+      <div class="section-body">
+        ${deliveryRows || '<div style="color:var(--text3);font-size:12px;padding:6px 0">Sin datos</div>'}
+        <div style="display:flex;justify-content:space-between;font-size:13px;padding:8px 0;font-weight:700;border-top:1px solid var(--border);margin-top:4px">
+          <span>Neto delivery</span><span class="text-green">${fmt(totalBrutoDel - totalGastosDel)}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- COMBUSTIBLE DETALLE -->
+    <div class="card" style="margin-bottom:10px">
+      <div class="card-label" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center" onclick="toggleSection(this)">
+        <span>⛽ Combustible</span><span style="color:var(--gold);font-size:18px">›</span>
+      </div>
+      <div class="section-body">${combRows}</div>
+    </div>
+
+    <!-- GASTOS MOTO DETALLE -->
+    <div class="card" style="margin-bottom:10px">
+      <div class="card-label" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center" onclick="toggleSection(this)">
+        <span>🔧 Gastos moto</span><span style="color:var(--gold);font-size:18px">›</span>
+      </div>
+      <div class="section-body">${gmRows}</div>
+    </div>
+
+    <!-- GASTOS PERSONALES DETALLE -->
+    <div class="card" style="margin-bottom:10px">
+      <div class="card-label" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center" onclick="toggleSection(this)">
+        <span>💸 Gastos <span style="font-size:11px;color:var(--red);font-weight:700">${fmt(totalGP)}</span></span>
+        <span style="color:var(--gold);font-size:18px">›</span>
+      </div>
+      <div class="section-body">${gpRows}</div>
+    </div>
+  `;
+
+  document.getElementById('modal-mes-hist').dataset.mesKey = key;
+  openModal('modal-mes-hist');
+}
+
+function toggleSection(header) {
+  const body = header.nextElementSibling;
+  const arrow = header.querySelector('span:last-child');
+  if (body.style.display === 'none') {
+    body.style.display = '';
+    arrow.style.transform = '';
+  } else {
+    body.style.display = 'none';
+    arrow.style.transform = 'rotate(90deg)';
+  }
+}
+
+/* ─── PDF GENERATION ─── */
+function generarPDF(key) {
+  const t = getTotalesDeMes(key);
+  const data = getMesData(key);
+  const mesLabel = getMesLabel(key);
+  const deps = (APP_DATA.depositos && APP_DATA.depositos[key]) || [];
+  const totalDep = deps.reduce((a,d)=>a+d.monto,0);
+
+  // Build delivery table rows
+  let deliveryTableRows = '';
+  const semanas = Object.keys(data.semanas).sort();
+  semanas.forEach(sk => {
+    const sem = data.semanas[sk];
+    const wNum = sk.split('-W')[1];
+    deliveryTableRows += `<tr><td colspan="4" style="background:#1a1a2e;color:#111;font-size:11px;font-weight:700;padding:8px 12px;letter-spacing:.06em;text-transform:uppercase">SEMANA ${wNum}</td></tr>`;
+    DIAS.forEach((dia, i) => {
+      if (!sem[dia]) return;
+      const d = sem[dia];
+      const bruto = d.ingresos.reduce((a,v)=>a+v,0);
+      const gastos = d.gastos.reduce((a,v)=>a+v.monto,0);
+      if (!bruto && !gastos) return;
+      deliveryTableRows += `<tr>
+        <td style="padding:7px 12px;font-weight:600">${DIAS_LABEL[i]}</td>
+        <td style="padding:7px 12px;color:#111;font-weight:700;text-align:right">${fmt(bruto)}</td>
+        <td style="padding:7px 12px;color:#111;text-align:right">${gastos ? '−'+fmt(gastos) : '—'}</td>
+        <td style="padding:7px 12px;font-weight:700;text-align:right">${fmt(bruto-gastos)}</td>
+      </tr>`;
+      d.gastos.forEach(g => {
+        deliveryTableRows += `<tr style="background:rgba(255,255,255,.02)"><td style="padding:3px 12px 3px 24px;color:#666;font-size:11px" colspan="4">↳ ${g.desc||'Gasto'}: ${fmt(g.monto)}</td></tr>`;
+      });
+    });
+  });
+
+  // Combustible rows
+  let combRows = (data.cargas||[]).slice().reverse().map(c =>
+    `<tr><td style="padding:7px 12px">${c.fecha}</td><td style="padding:7px 12px">${c.litros ? c.litros+' lts' : '—'}</td><td style="padding:7px 12px;color:#111;font-weight:700;text-align:right">${fmt(c.monto)}</td></tr>`
+  ).join('') || '<tr><td colspan="3" style="padding:7px 12px;color:#666">Sin cargas</td></tr>';
+
+  // Gastos moto rows
+  let gmRows = (data.gastosMoto||[]).slice().reverse().map(g =>
+    `<tr><td style="padding:7px 12px;font-weight:600">${g.desc}</td><td style="padding:7px 12px;color:#666;font-size:11px">${g.fecha}</td><td style="padding:7px 12px;color:#111;font-weight:700;text-align:right">${fmt(g.monto)}</td></tr>`
+  ).join('') || '<tr><td colspan="3" style="padding:7px 12px;color:#666">Sin gastos</td></tr>';
+
+  // Gastos personales rows
+  const gpList = data.gastosPersonales || [];
+  let gpRows = gpList.slice().sort((a,b)=>b.fecha.localeCompare(a.fecha)).map(g =>
+    `<tr><td style="padding:7px 12px;font-weight:600">${g.desc}</td><td style="padding:7px 12px;color:#666;font-size:11px">${GP_CAT_LABELS[g.cat]||g.cat} · ${fmtFechaCorta(g.fecha)}</td><td style="padding:7px 12px;color:#111;font-weight:700;text-align:right">${fmt(g.monto)}</td></tr>`
+  ).join('') || '<tr><td colspan="3" style="padding:7px 12px;color:#666">Sin gastos</td></tr>';
+  const totalGP = gpList.reduce((a,g)=>a+g.monto,0);
+
+  // Depósitos rows
+  let depRows = deps.length
+    ? deps.map(d=>`<tr><td style="padding:7px 12px;color:#111;font-weight:700">${fmt(d.monto)}</td><td style="padding:7px 12px;color:#666">${d.nota||'—'}</td></tr>`).join('')
+    : '<tr><td colspan="2" style="padding:7px 12px;color:#666">Sin depósitos</td></tr>';
+
+  const html = `<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Reporte ${mesLabel} — Moto Pro</title>
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:Arial,sans-serif; background:#fff; color:#111; font-size:13px; }
+  .page { max-width:700px; margin:0 auto; padding:32px 24px; }
+  h1 { font-size:22px; font-weight:bold; color:#111; margin-bottom:2px; }
+  .subtitle { color:#666; font-size:12px; margin-bottom:24px; }
+  .section { margin-bottom:22px; }
+  .section-title { font-size:13px; font-weight:bold; color:#111; margin-bottom:8px; border-bottom:2px solid #111; padding-bottom:4px; }
+  .hero { border:1px solid #ccc; border-radius:6px; padding:16px 20px; margin-bottom:20px; }
+  .hero-label { font-size:10px; font-weight:bold; text-transform:uppercase; letter-spacing:.08em; color:#555; margin-bottom:4px; }
+  .hero-neto { font-size:32px; font-weight:bold; color:#111; margin-bottom:4px; }
+  .hero-sub { font-size:12px; color:#444; }
+  .hero-sub strong { color:#111; font-weight:bold; }
+  .stats-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:18px; }
+  .stat-box { border:1px solid #ccc; border-radius:4px; padding:10px; }
+  .stat-lbl { font-size:10px; text-transform:uppercase; letter-spacing:.05em; font-weight:bold; color:#666; margin-bottom:3px; }
+  .stat-val { font-size:15px; font-weight:bold; color:#111; }
+  table { width:100%; border-collapse:collapse; border:1px solid #ccc; }
+  th { background:#f0f0f0; padding:7px 10px; font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:#333; text-align:left; font-weight:bold; border-bottom:1px solid #ccc; }
+  td { padding:6px 10px; border-bottom:1px solid #e8e8e8; color:#111; }
+  tr:nth-child(even) td { background:#f9f9f9; }
+  .total-row td { background:#f0f0f0 !important; font-weight:bold; border-top:1px solid #ccc; }
+  .week-header td { background:#e8e8e8 !important; font-weight:bold; font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:#555; }
+  .sub-row td { color:#888; font-size:11px; padding-left:20px; }
+  .footer { margin-top:28px; text-align:center; font-size:11px; color:#888; border-top:1px solid #ccc; padding-top:12px; }
+  @media print { body { -webkit-print-color-adjust:exact; print-color-adjust:exact; } }
+</style>
+</head>
+<body>
+<div class="page">
+  <h1>Moto Pro 🏍️</h1>
+  <div class="subtitle">Reporte mensual — ${mesLabel} · Generado ${new Date().toLocaleDateString('es-PY')}</div>
+
+  <div class="hero">
+    <div class="hero-label">Neto del mes</div>
+    <div class="hero-neto">${fmt(t.neto)}</div>
+    <div class="hero-sub">Bruto: <strong style="color:#111">${fmt(t.bruto)}</strong> &nbsp;·&nbsp; Total gastos: <strong style="color:#111">${fmt(t.totalGastos)}</strong></div>
+    <div class="hero-sub" style="margin-top:6px">10%: <strong>${fmt(t.ganancia)}</strong> &nbsp;·&nbsp; Depositado: <strong style="color:#111">${fmt(totalDep)}</strong></div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-box"><div class="stat-lbl">Bruto delivery</div><div class="stat-val gold">${fmt(t.bruto)}</div></div>
+    <div class="stat-box"><div class="stat-lbl">Gastos delivery</div><div class="stat-val red">${fmt(t.gastosDel)}</div></div>
+    <div class="stat-box"><div class="stat-lbl">Combustible</div><div class="stat-val blue">${fmt(t.combustible)}</div></div>
+    <div class="stat-box"><div class="stat-lbl">Gastos moto</div><div class="stat-val purple">${fmt(t.gastosMoto)}</div></div>
+    <div class="stat-box"><div class="stat-lbl">Gastos personales</div><div class="stat-val red">${fmt(t.gastosPersonales||0)}</div></div>
+    <div class="stat-box"><div class="stat-lbl">Mi ganancia 10%</div><div class="stat-val green">${fmt(t.ganancia)}</div></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">📦 Delivery — Detalle diario</div>
+    <table>
+      <thead><tr><th>Día</th><th style="text-align:right">Bruto</th><th style="text-align:right">Gastos</th><th style="text-align:right">Neto</th></tr></thead>
+      <tbody>${deliveryTableRows}</tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">⛽ Combustible</div>
+    <table>
+      <thead><tr><th>Fecha</th><th>Litros</th><th style="text-align:right">Monto</th></tr></thead>
+      <tbody>${combRows}
+        <tr class="total-row"><td colspan="2" style="padding:8px 12px">Total combustible</td><td style="padding:8px 12px;color:#111;text-align:right">${fmt(t.combustible)}</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">🔧 Gastos moto</div>
+    <table>
+      <thead><tr><th>Descripción</th><th>Fecha</th><th style="text-align:right">Monto</th></tr></thead>
+      <tbody>${gmRows}
+        <tr class="total-row"><td colspan="2" style="padding:8px 12px">Total gastos moto</td><td style="padding:8px 12px;color:#111;text-align:right">${fmt(t.gastosMoto)}</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">💸 Gastos</div>
+    <table>
+      <thead><tr><th>Descripción</th><th>Categoría · Fecha</th><th style="text-align:right">Monto</th></tr></thead>
+      <tbody>${gpRows}
+        <tr class="total-row"><td colspan="2" style="padding:8px 12px">Total gastos personales</td><td style="padding:8px 12px;color:#111;text-align:right">${fmt(totalGP)}</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">💰 Depósitos registrados</div>
+    <table>
+      <thead><tr><th>Monto</th><th>Nota</th></tr></thead>
+      <tbody>${depRows}
+        <tr class="total-row"><td style="padding:8px 12px;color:#111">Total depositado: ${fmt(totalDep)}</td><td style="padding:8px 12px;color:${(t.ganancia-totalDep)>0?'#ff6b6b':'#2dd4a4'}">${(t.ganancia-totalDep)>0?'Falta: '+fmt(t.ganancia-totalDep):'Completo'}</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="footer">Moto Pro · ${currentUser} · ${mesLabel}</div>
+</div>
+<script>window.onload=function(){window.print();}<\/script>
+</body></html>`;
+
+  const blob = new Blob([html], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  const w = window.open(url, '_blank');
+  setTimeout(() => URL.revokeObjectURL(url), 60000);
+}
+
+
+/* ═══════════════════════════════════════════
+   GASTOS FIJOS
+═══════════════════════════════════════════ */
+function loadGastosFijos() { return APP_DATA.gastosFijos || []; }
+function saveGastosFijos(lista) { APP_DATA.gastosFijos = lista; save(); }
+
+function guardarGastoFijo() {
+  const nombre = document.getElementById('fijo-nombre').value.trim();
+  const monto = parseInput('fijo-monto');
+  const vence = parseInt(document.getElementById('fijo-vence').value) || null;
+  const cuotas = parseInt(document.getElementById('fijo-cuotas').value) || null;
+  if (!nombre) { alert('Ingresá el nombre'); return; }
+  if (!monto) { alert('Ingresá el monto'); return; }
+  const lista = loadGastosFijos();
+  lista.push({ id: Date.now(), nombre, monto, vence, cuotas, pagado: false });
+  saveGastosFijos(lista);
+  closeModal('modal-nuevo-fijo');
+  ['fijo-nombre','fijo-monto','fijo-vence','fijo-cuotas'].forEach(id => document.getElementById(id).value = '');
+  renderGastosFijos();
+}
+function abrirEdicionFijo(id) {
+  const item = loadGastosFijos().find(x => x.id === id);
+  if (!item) return;
+  document.getElementById('edit-fijo-id').value = id;
+  document.getElementById('edit-fijo-nombre').value = item.nombre;
+  document.getElementById('edit-fijo-monto').value = item.monto.toLocaleString('es-PY');
+  document.getElementById('edit-fijo-vence').value = item.vence || '';
+  document.getElementById('edit-fijo-cuotas').value = item.cuotas || '';
+  openModal('modal-editar-fijo');
+}
+function guardarEdicionFijo() {
+  const id = parseInt(document.getElementById('edit-fijo-id').value);
+  const nombre = document.getElementById('edit-fijo-nombre').value.trim();
+  const monto = parseInput('edit-fijo-monto');
+  const vence = parseInt(document.getElementById('edit-fijo-vence').value) || null;
+  const cuotas = parseInt(document.getElementById('edit-fijo-cuotas').value) || null;
+  if (!nombre || !monto) { alert('Completá los campos'); return; }
+  const lista = loadGastosFijos();
+  const idx = lista.findIndex(x => x.id === id);
+  if (idx !== -1) { lista[idx] = { ...lista[idx], nombre, monto, vence, cuotas }; saveGastosFijos(lista); }
+  closeModal('modal-editar-fijo');
+  renderGastosFijos();
+}
+function togglePagoFijo(id) {
+  const lista = loadGastosFijos();
+  const item = lista.find(x => x.id === id);
+  if (!item) return;
+  const marcandoPagado = !item.pagado;
+  item.pagado = marcandoPagado;
+  // Descontar cuota solo al MARCAR como pagado, no al destildar
+  if (marcandoPagado && item.cuotas !== null && item.cuotas !== undefined) {
+    item.cuotas = Math.max(0, item.cuotas - 1);
+    if (item.cuotas === 0) {
+      showToast('✅ ' + item.nombre + ' — cuotas finalizadas');
+      // Eliminar al mes siguiente (no ahora, para que quede visible este mes)
+      item._eliminarAlReset = true;
+    } else {
+      showToast('🔢 ' + item.nombre + ' — ' + item.cuotas + ' cuota' + (item.cuotas !== 1 ? 's' : '') + ' restante' + (item.cuotas !== 1 ? 's' : ''));
+    }
+  }
+  saveGastosFijos(lista); renderGastosFijos();
+}
+function eliminarGastoFijo(id) {
+  
+  saveGastosFijos(loadGastosFijos().filter(x => x.id !== id));
+  renderGastosFijos();
+}
+
+function renderGastosFijos() {
+  const lista = loadGastosFijos();
+  const el = document.getElementById('lista-fijos');
+  if (!lista.length) {
+    el.innerHTML = `<div class="empty-state"><div class="empty-icon">💳</div><div>No hay gastos fijos aún</div></div>`;
+    document.getElementById('fijos-total').textContent = '₲ 0';
+    document.getElementById('fijos-pagado').textContent = '₲ 0';
+    document.getElementById('fijos-pendiente').textContent = '₲ 0';
+    document.getElementById('fijos-prog-bar').style.width = '0%';
+    document.getElementById('fijos-pct-label').textContent = '0%';
+    return;
+  }
+  const total = lista.reduce((a,x) => a + x.monto, 0);
+  const pagado = lista.filter(x => x.pagado).reduce((a,x) => a + x.monto, 0);
+  const pendiente = total - pagado;
+  const pct = total > 0 ? Math.round((pagado / total) * 100) : 0;
+  document.getElementById('fijos-total').textContent = fmt(total);
+  document.getElementById('fijos-pagado').textContent = fmt(pagado);
+  document.getElementById('fijos-pendiente').textContent = fmt(pendiente);
+  document.getElementById('fijos-prog-bar').style.width = pct + '%';
+  document.getElementById('fijos-pct-label').textContent = pct + '% pagado';
+
+  const hoy = new Date().getDate();
+  const ordenados = [...lista].sort((a,b) => {
+    if (a.pagado !== b.pagado) return a.pagado ? 1 : -1;
+    return (a.vence||99) - (b.vence||99);
+  });
+  el.innerHTML = ordenados.map(x => {
+    const venceHoy  = x.vence === hoy;
+    const venceProx = x.vence && !x.pagado && x.vence >= hoy && x.vence <= hoy + 3;
+    const vencido   = x.vence && !x.pagado && x.vence < hoy;
+
+    // Días vencido
+    const diasVencido = vencido ? hoy - x.vence : 0;
+
+    // Deuda total restante (cuotas que quedan x monto)
+    const deudaTotal = (x.cuotas && x.cuotas > 0) ? x.cuotas * x.monto : 0;
+
+    const venceMeta = x.vence
+      ? `📅 Día ${x.vence}${venceHoy ? ' <span class="badge red" style="font-size:9px">HOY</span>' : venceProx ? ' <span class="badge gold" style="font-size:9px">PRONTO</span>' : vencido ? ` <span class="badge red" style="font-size:9px">VENCIDO ${diasVencido}d</span>` : ''}` : '';
+
+    const cuotasMeta = x.cuotas
+      ? `🔢 ${x.cuotas} cuota${x.cuotas !== 1 ? 's' : ''} restante${x.cuotas !== 1 ? 's' : ''}`
+      : '';
+
+    const deudaMeta = deudaTotal > 0
+      ? `<div style="font-size:11px;color:var(--red);font-weight:600;margin-top:3px">💸 Deuda total: ${fmt(deudaTotal)}</div>`
+      : '';
+
+    return `<div class="fijo-item ${x.pagado ? 'pagado' : ''}">
+      <div class="fijo-top">
+        <button class="fijo-check ${x.pagado ? 'done' : ''}" onclick="togglePagoFijo(${x.id})">${x.pagado ? '✓' : ''}</button>
+        <div class="fijo-info">
+          <div class="fijo-nombre">${x.nombre}</div>
+          <div class="fijo-meta">${venceMeta}${cuotasMeta ? (x.vence ? ' · ' : '') + cuotasMeta : ''}</div>
+          ${deudaMeta}
+        </div>
+        <div class="fijo-right">
+          <div class="fijo-monto">${fmt(x.monto)}</div>
+          <div class="fijo-actions">
+            <button class="icon-btn" onclick="abrirEdicionFijo(${x.id})" title="Editar">✏️</button>
+            <button class="icon-btn" onclick="eliminarGastoFijo(${x.id})" title="Eliminar">🗑️</button>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ═══════════════════════════════════════════
+   RIPPLE UTILITY
+═══════════════════════════════════════════ */
+function addRipple(el, e) {
+  const rect = el.getBoundingClientRect();
+  const r = document.createElement('span');
+  r.className = 'ripple-wave';
+  const size = Math.max(rect.width, rect.height) * 2;
+  r.style.cssText = `width:${size}px;height:${size}px;left:${e.clientX-rect.left-size/2}px;top:${e.clientY-rect.top-size/2}px`;
+  el.appendChild(r);
+  r.addEventListener('animationend', () => r.remove());
+}
+document.addEventListener('DOMContentLoaded', () => {
+  initTheme();
+  document.querySelectorAll('.btn-gold,.btn-green,.nav-item').forEach(el => {
+    el.classList.add('ripple-host');
+    el.addEventListener('click', e => addRipple(el, e));
+  });
+});
+
+/* ═══════════════════════════════════════════
+   TOAST
+═══════════════════════════════════════════ */
+function showToast(msg, duration = 2200) {
+  const c = document.getElementById('toast-container');
+  const t = document.createElement('div');
+  t.className = 'toast'; t.textContent = msg;
+  c.appendChild(t);
+  setTimeout(() => {
+    t.style.animation = 'toastOut .3s ease forwards';
+    t.addEventListener('animationend', () => t.remove());
+  }, duration);
+}
+
+/* ═══════════════════════════════════════════
+   FAB
+═══════════════════════════════════════════ */
+const FAB_PAGES = {
+  combustible: () => openModal('modal-carga'),
+  gastos: () => openModal('modal-gasto-moto'),
+  'gastos-personales': () => openModal('modal-nuevo-gasto-personal'),
+  fijos: () => openModal('modal-nuevo-fijo'),
+};
+function fabAction() {
+  if (FAB_PAGES[currentPage]) FAB_PAGES[currentPage]();
+}
+function updateFab(page) {
+  const fab = document.getElementById('fab');
+  if (FAB_PAGES[page]) fab.classList.add('visible');
+  else fab.classList.remove('visible');
+}
+const charts = {};
+function destroyChart(id) { if (charts[id]) { charts[id].destroy(); delete charts[id]; } }
+
+/* ═══════════════════════════════════════════
+   CHART DEFAULTS
+═══════════════════════════════════════════ */
+Chart.defaults.color = '#55556a';
+Chart.defaults.font.family = "'Inter', sans-serif";
+Chart.defaults.plugins.legend.display = false;
+Chart.defaults.plugins.tooltip.backgroundColor = '#1c1c38';
+Chart.defaults.plugins.tooltip.borderColor = 'rgba(255,255,255,0.1)';
+Chart.defaults.plugins.tooltip.borderWidth = 1;
+Chart.defaults.plugins.tooltip.titleColor = '#eeeeff';
+Chart.defaults.plugins.tooltip.bodyColor = '#9999bb';
+Chart.defaults.plugins.tooltip.padding = 10;
+Chart.defaults.plugins.tooltip.cornerRadius = 8;
+
+/* ═══════════════════════════════════════════
+   DASHBOARD MINI CHART
+═══════════════════════════════════════════ */
+function getLast5WeeksNeto() {
+  const results = [];
+  for (let i = -4; i <= 0; i++) {
+    const key = getWeekKey(i);
+    const sem = DB.semanas[key];
+    let bruto = 0, gastos = 0;
+    if (sem) {
+      DIAS.forEach(dia => {
+        if (sem[dia]) {
+          sem[dia].ingresos.forEach(v => bruto += v);
+          sem[dia].gastos.forEach(g => gastos += g.monto);
+        }
+      });
+    }
+    results.push({ label: getWeekDates(i).split('—')[0].trim(), neto: bruto - gastos });
+  }
+  return results;
+}
+
+function renderDashMiniChart() {
+  const data = getLast5WeeksNeto();
+  const avg = data.reduce((a,d) => a + Math.max(0, d.neto), 0) / data.length;
+  document.getElementById('dash-mini-avg').textContent = '∅ ' + fmt(avg);
+
+  destroyChart('dash-mini');
+  const ctx = document.getElementById('chart-dash-mini');
+  if (!ctx) return;
+  const values = data.map(d => d.neto);
+  const colors = values.map(v => v >= 0 ? 'rgba(45,212,164,0.8)' : 'rgba(255,107,107,0.8)');
+  charts['dash-mini'] = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: data.map(d => d.label),
+      datasets: [{ data: values, backgroundColor: colors, borderRadius: 6, borderSkipped: false }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      scales: {
+        x: { grid: { display: false }, ticks: { font: { size: 9 } } },
+        y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { font: { size: 9 }, callback: v => '₲' + (v/1000).toFixed(0) + 'k' } }
+      },
+      plugins: { tooltip: { callbacks: { label: ctx => fmt(ctx.raw) } } }
+    }
+  });
+
+  // Best day of month
+  renderDashBestDay();
+  renderDashAvgDia();
+}
+
+function getDiasDelMes() {
+  const dias = [];
+  Object.keys(DB.semanas).forEach(sk => {
+    const sem = DB.semanas[sk];
+    DIAS.forEach((dia, i) => {
+      if (sem[dia]) {
+        const bruto = sem[dia].ingresos.reduce((a,v) => a+v, 0);
+        const gastos = sem[dia].gastos.reduce((a,g) => a+g.monto, 0);
+        if (bruto > 0) dias.push({ nombre: DIAS_LABEL[i], bruto, neto: bruto-gastos });
+      }
+    });
+  });
+  return dias;
+}
+
+function renderDashBestDay() {
+  const dias = getDiasDelMes();
+  const el = document.getElementById('dash-best-day');
+  if (!dias.length) { el.innerHTML = ''; return; }
+  const best = dias.reduce((a,b) => b.neto > a.neto ? b : a, dias[0]);
+  el.innerHTML = `
+    <div class="best-day-card">
+      <div class="best-day-icon">🏆</div>
+      <div class="best-day-info">
+        <div class="best-day-label">Mejor día del mes</div>
+        <div class="best-day-name">${best.nombre}</div>
+        <div class="best-day-val">Neto: <strong class="text-green">${fmt(best.neto)}</strong></div>
+      </div>
+    </div>`;
+}
+
+function renderDashAvgDia() {
+  const dias = getDiasDelMes();
+  const el = document.getElementById('dash-avg-dia');
+  if (!dias.length) { el.innerHTML = ''; return; }
+  const avg = dias.reduce((a,d) => a + d.neto, 0) / dias.length;
+  el.innerHTML = `
+    <div class="stat-tile" style="margin-bottom:12px">
+      <div class="stat-tile-label">Promedio diario (neto)</div>
+      <div class="stat-tile-val green">${fmt(avg)}</div>
+    </div>`;
+}
+
+/* ═══════════════════════════════════════════
+   STATISTICS PAGE
+═══════════════════════════════════════════ */
+let currentStatsTab = 'semana';
+
+function switchStatsTab(tab, btn) {
+  currentStatsTab = tab;
+  document.querySelectorAll('.stats-tab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.stats-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('stats-' + tab).classList.add('active');
+  renderStatsTab(tab);
+}
+
+function renderStats() {
+  renderStatsTab(currentStatsTab);
+}
+
+function renderStatsTab(tab) {
+  if (tab === 'semana') renderStatsSemana();
+  if (tab === 'mes') renderStatsMes();
+  if (tab === 'insights') renderStatsInsights();
+}
+
+/* --- SEMANA --- */
+function renderStatsSemana() {
+  const key = getWeekKey(0);
+  const sem = getSemana(key);
+  const netoData = [], brutoData = [], gastosData = [];
+  DIAS_SHORT.forEach((label, i) => {
+    const d = sem[DIAS[i]];
+    const bruto = d.ingresos.reduce((a,v) => a+v, 0);
+    const gastos = d.gastos.reduce((a,v) => a+v.monto, 0);
+    netoData.push(bruto - gastos);
+    brutoData.push(bruto);
+    gastosData.push(gastos);
+  });
+
+  // Neto por día
+  destroyChart('sem-neto');
+  const ctx1 = document.getElementById('chart-semana-neto');
+  if (ctx1) {
+    charts['sem-neto'] = new Chart(ctx1, {
+      type: 'bar',
+      data: {
+        labels: DIAS_SHORT,
+        datasets: [{
+          data: netoData,
+          backgroundColor: netoData.map(v => v > 0 ? 'rgba(45,212,164,0.75)' : 'rgba(255,107,107,0.7)'),
+          borderRadius: 8, borderSkipped: false
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        scales: {
+          x: { grid: { display: false } },
+          y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { callback: v => '₲' + (v/1000).toFixed(0) + 'k' } }
+        },
+        plugins: { tooltip: { callbacks: { label: c => fmt(c.raw) } } }
+      }
+    });
+  }
+
+  // Bruto vs Gastos
+  destroyChart('sem-compare');
+  const ctx2 = document.getElementById('chart-semana-compare');
+  if (ctx2) {
+    charts['sem-compare'] = new Chart(ctx2, {
+      type: 'bar',
+      data: {
+        labels: DIAS_SHORT,
+        datasets: [
+          { label: 'Bruto', data: brutoData, backgroundColor: 'rgba(245,166,35,0.7)', borderRadius: 6, borderSkipped: false },
+          { label: 'Gastos', data: gastosData, backgroundColor: 'rgba(255,107,107,0.6)', borderRadius: 6, borderSkipped: false }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: true, labels: { color: '#9999bb', font: { size: 11 }, boxWidth: 10 } },
+          tooltip: { callbacks: { label: c => c.dataset.label + ': ' + fmt(c.raw) } } },
+        scales: {
+          x: { grid: { display: false } },
+          y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { callback: v => '₲' + (v/1000).toFixed(0) + 'k' } }
+        }
+      }
+    });
+  }
+
+  // Best day
+  const maxIdx = netoData.indexOf(Math.max(...netoData));
+  const bestEl = document.getElementById('stats-best-day-sem');
+  if (netoData[maxIdx] > 0) {
+    bestEl.innerHTML = `
+      <div class="best-day-card">
+        <div class="best-day-icon">⭐</div>
+        <div class="best-day-info">
+          <div class="best-day-label">Mejor día de la semana</div>
+          <div class="best-day-name">${DIAS_LABEL[maxIdx]}</div>
+          <div class="best-day-val">Neto <strong class="text-green">${fmt(netoData[maxIdx])}</strong></div>
+        </div>
+      </div>`;
+  } else { bestEl.innerHTML = ''; }
+}
+
+/* --- MES --- */
+function renderStatsMes() {
+  // Neto por semana
+  const semKeys = Object.keys(DB.semanas).sort();
+  const semLabels = [], semNetos = [];
+  semKeys.forEach(sk => {
+    const sem = DB.semanas[sk];
+    let bruto = 0, gastos = 0;
+    DIAS.forEach(dia => {
+      if (sem[dia]) {
+        sem[dia].ingresos.forEach(v => bruto += v);
+        sem[dia].gastos.forEach(g => gastos += g.monto);
+      }
+    });
+    semLabels.push('S' + sk.split('-W')[1]);
+    semNetos.push(bruto - gastos);
+  });
+
+  destroyChart('mes-semanas');
+  const ctx3 = document.getElementById('chart-mes-semanas');
+  if (ctx3 && semLabels.length) {
+    charts['mes-semanas'] = new Chart(ctx3, {
+      type: 'line',
+      data: {
+        labels: semLabels,
+        datasets: [{
+          data: semNetos,
+          borderColor: '#2dd4a4',
+          backgroundColor: 'rgba(45,212,164,0.08)',
+          tension: 0.4, fill: true, pointBackgroundColor: '#2dd4a4',
+          pointRadius: 5, pointHoverRadius: 7
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        scales: {
+          x: { grid: { display: false } },
+          y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { callback: v => '₲' + (v/1000).toFixed(0) + 'k' } }
+        },
+        plugins: { tooltip: { callbacks: { label: c => fmt(c.raw) } } }
+      }
+    });
+  }
+
+  // Distribución de gastos (hbar custom)
+  const t = getTotalesDeMes(mesActual);
+  const gEl = document.getElementById('chart-gastos-breakdown');
+  const maxG = Math.max(t.gastosDel, t.combustible, t.gastosMoto, 1);
+  gEl.innerHTML = `
+    <div class="chart-card-title">Distribución de gastos</div>
+    <div class="hbar-wrap">
+      ${[
+        { label: 'Gastos delivery', val: t.gastosDel, color: '#ff6b6b' },
+        { label: 'Combustible', val: t.combustible, color: '#60a5fa' },
+        { label: 'Gastos moto', val: t.gastosMoto, color: '#a78bfa' }
+      ].map(r => `
+        <div class="hbar-row">
+          <div class="hbar-meta"><span class="hbar-label">${r.label}</span><span class="hbar-val" style="color:${r.color}">${fmt(r.val)}</span></div>
+          <div class="hbar-bg"><div class="hbar-fill" style="width:${(r.val/maxG*100).toFixed(1)}%;background:${r.color}"></div></div>
+        </div>`).join('')}
+    </div>`;
+
+  // Evolución mensual
+  const meses = getAllMeses().slice(0, 6).reverse();
+  const mesLabels = meses.map(k => MESES_NOMBRES[parseInt(k.split('-')[1])-1].slice(0,3));
+  const mesNetos = meses.map(k => getTotalesDeMes(k).neto);
+  destroyChart('evolucion');
+  const ctx4 = document.getElementById('chart-evolucion');
+  if (ctx4 && meses.length > 1) {
+    charts['evolucion'] = new Chart(ctx4, {
+      type: 'line',
+      data: {
+        labels: mesLabels,
+        datasets: [{
+          data: mesNetos,
+          borderColor: '#f5a623',
+          backgroundColor: 'rgba(245,166,35,0.08)',
+          tension: 0.35, fill: true, pointBackgroundColor: '#f5a623',
+          pointRadius: 5
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        scales: {
+          x: { grid: { display: false } },
+          y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { callback: v => '₲' + (v/1000).toFixed(0) + 'k' } }
+        },
+        plugins: { tooltip: { callbacks: { label: c => fmt(c.raw) } } }
+      }
+    });
+  } else if (ctx4) {
+    const parent = ctx4.closest('.chart-card');
+    if (parent) parent.innerHTML += '<div class="text-muted fs-13" style="text-align:center;padding:20px 0">Necesitás más de un mes de datos</div>';
+  }
+}
+
+/* --- INSIGHTS --- */
+function renderStatsInsights() {
+  const t = getTotalesDeMes(mesActual);
+  const dias = getDiasDelMes();
+  const meses = getAllMeses();
+  const el = document.getElementById('insights-content');
+
+  // Calcular tendencia vs mes anterior
+  let tendencia = null;
+  if (meses.length > 1) {
+    const prev = getTotalesDeMes(meses[1]);
+    if (prev.neto !== 0) tendencia = ((t.neto - prev.neto) / Math.abs(prev.neto) * 100).toFixed(1);
+  }
+
+  const ratioGastos = t.bruto > 0 ? ((t.totalGastos / t.bruto) * 100).toFixed(0) : 0;
+  const avgDia = dias.length ? t.neto / dias.length : 0;
+  const best = dias.length ? dias.reduce((a,b) => b.neto > a.neto ? b : a, dias[0]) : null;
+
+  let tendHTML = '';
+  if (tendencia !== null) {
+    const isUp = parseFloat(tendencia) > 0;
+    tendHTML = `<span class="trend ${isUp ? 'up' : 'down'}">${isUp ? '↑' : '↓'} ${Math.abs(tendencia)}% vs mes anterior</span>`;
+  }
+
+  el.innerHTML = `
+    <div class="insight-grid">
+      <div class="insight-tile">
+        <div class="insight-emoji">📈</div>
+        <div class="insight-val text-green">${fmt(t.neto)}</div>
+        <div class="insight-label">Neto del mes ${tendHTML}</div>
+      </div>
+      <div class="insight-tile">
+        <div class="insight-emoji">💸</div>
+        <div class="insight-val text-red">${ratioGastos}%</div>
+        <div class="insight-label">De tu bruto va a gastos</div>
+      </div>
+      <div class="insight-tile">
+        <div class="insight-emoji">📅</div>
+        <div class="insight-val">${fmt(avgDia)}</div>
+        <div class="insight-label">Promedio diario neto</div>
+      </div>
+      <div class="insight-tile">
+        <div class="insight-emoji">⛽</div>
+        <div class="insight-val text-blue">${t.bruto > 0 ? ((t.combustible/t.bruto)*100).toFixed(0) : 0}%</div>
+        <div class="insight-label">Del bruto en combustible</div>
+      </div>
+    </div>
+
+    ${best ? `
+    <div class="best-day-card">
+      <div class="best-day-icon">🏆</div>
+      <div class="best-day-info">
+        <div class="best-day-label">Mejor día del mes</div>
+        <div class="best-day-name">${best.nombre}</div>
+        <div class="best-day-val">Bruto <strong>${fmt(best.bruto)}</strong> · Neto <strong class="text-green">${fmt(best.neto)}</strong></div>
+      </div>
+    </div>` : ''}
+
+    <div class="chart-card">
+      <div class="chart-card-title">Análisis inteligente</div>
+      ${getAutoInsights(t, ratioGastos, dias)}
+    </div>`;
+}
+
+function getAutoInsights(t, ratioGastos, dias) {
+  const tips = [];
+  if (t.bruto === 0) return '<div class="text-muted fs-13">Registrá datos para ver análisis automáticos.</div>';
+  if (parseInt(ratioGastos) > 50) tips.push({ emoji:'⚠️', color:'var(--red)', msg:`Tus gastos son el <strong>${ratioGastos}%</strong> de tu bruto. Intentá reducir gastos operativos.` });
+  else if (parseInt(ratioGastos) < 25) tips.push({ emoji:'🎉', color:'var(--green)', msg:`¡Excelente! Solo el <strong>${ratioGastos}%</strong> de tu bruto se va en gastos.` });
+  if (t.combustible > 0 && t.bruto > 0) {
+    const pct = ((t.combustible / t.bruto) * 100).toFixed(0);
+    if (parseInt(pct) > 20) tips.push({ emoji:'⛽', color:'var(--gold)', msg:`El combustible representa el <strong>${pct}%</strong> del bruto. Considerá optimizar rutas.` });
+  }
+  if (dias.length > 0) {
+    const diasSem = dias.length / (Object.keys(DB.semanas).length || 1);
+    if (diasSem < 4) tips.push({ emoji:'📅', color:'var(--blue)', msg:`Trabajás en promedio <strong>${diasSem.toFixed(1)} días</strong> por semana. Más días = más ingresos.` });
+  }
+  if (t.neto > 0) {
+    const proyeccion = t.neto * (30 / new Date().getDate());
+    tips.push({ emoji:'🔮', color:'var(--purple)', msg:`A este ritmo, tu neto proyectado para el mes es <strong>${fmt(proyeccion)}</strong>.` });
+  }
+  if (!tips.length) tips.push({ emoji:'✅', color:'var(--green)', msg:'Todo en orden. Seguí así.' });
+  return tips.map(tip => `
+    <div style="display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)">
+      <span style="font-size:18px;flex-shrink:0">${tip.emoji}</span>
+      <span style="font-size:13px;color:var(--text2);line-height:1.5" style="color:${tip.color}">${tip.msg}</span>
+    </div>`).join('');
+}
+
+/* ═══════════════════════════════════════════
+   SERVICE WORKER
+═══════════════════════════════════════════ */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw-delivery.js')
+      .then(() => console.log('SW registrado ✅'))
+      .catch(e => console.log('SW error:', e));
+  });
+}
+</script>
+</body>
+</html>
