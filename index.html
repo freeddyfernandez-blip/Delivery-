@@ -3451,7 +3451,7 @@ function generarPDF(key) {
   <div class="footer">Moto Pro · ${currentUser} · ${mesLabel}</div>
 </div>
 <script>window.onload=function(){window.print();}<\/script>
-</body></html>`;
+</body></html>\`;
 
   const blob = new Blob([html], { type: 'text/html' });
   const url = URL.createObjectURL(blob);

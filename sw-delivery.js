@@ -1,4 +1,4 @@
-const CACHE = 'delivery-pro-v99';
+const CACHE = 'delivery-pro-v100';
 
 self.addEventListener('install', e => {
   self.skipWaiting();
