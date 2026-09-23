@@ -6,6 +6,9 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#070711">
+<link rel="manifest" href="./manifest-delivery.json">
+<link rel="icon" type="image/png" href="./icon-192.png">
+<link rel="apple-touch-icon" href="./icon-192.png">
 <title>Delivery Pro</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
@@ -1133,6 +1136,102 @@ canvas { display: block; }
 .best-day-label { font-size: 10px; font-weight: 700; color: var(--green); text-transform: uppercase; letter-spacing: .1em; }
 .best-day-name  { font-family: var(--ff-display); font-size: 18px; font-weight: 800; color: var(--text); }
 .best-day-val   { font-size: 13px; color: var(--text3); margin-top: 2px; }
+
+/* ═══════════════════════════════════════════
+   CUENTAS (estilo app bancaria)
+═══════════════════════════════════════════ */
+.cta-hero { border-radius: 20px; padding: 18px; margin-bottom: 12px;
+  background: linear-gradient(135deg, rgba(45,212,164,0.10), var(--card) 60%); border: 1px solid var(--border); }
+.cta-hero-top { display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:10px; }
+.cta-hero-lbl { font-size:11px; font-weight:700; color:var(--text3); text-transform:uppercase; letter-spacing:.08em; }
+.cta-hero-amt { font-family:var(--ff-display); font-size:28px; font-weight:800; color:var(--green); line-height:1.1; }
+.cta-hero-of { font-size:13px; color:var(--text2); }
+.cta-alert { display:flex; gap:12px; align-items:flex-start; padding:12px 14px; border-radius:14px; margin-bottom:12px;
+  background: var(--red-dim); border:1px solid rgba(255,107,107,0.35); color: var(--text); }
+.cta-alert-ico { font-size:20px; line-height:1; }
+.cta-alert-t { font-weight:700; color:var(--red); font-size:14px; }
+.cta-alert-s { font-size:12px; color:var(--text2); margin-top:2px; }
+.cta-card { background:var(--card); border:1px solid var(--border); border-radius:18px; padding:14px; margin-bottom:10px;
+  cursor:pointer; transition: transform .15s, border-color .2s, background .2s; position:relative; overflow:hidden; }
+.cta-card:active { transform: scale(.985); }
+.cta-card::before { content:''; position:absolute; left:0; top:0; bottom:0; width:4px; background: var(--border-hi); }
+.cta-card.is-late::before { background: var(--red); }
+.cta-card.is-late { border-color: rgba(255,107,107,0.35); }
+.cta-card.is-soon::before { background: var(--gold); }
+.cta-card.is-paid::before, .cta-card.is-done::before { background: var(--green); }
+.cta-card.is-paid { background: linear-gradient(135deg, rgba(45,212,164,0.08), var(--card) 70%); border-color: rgba(45,212,164,0.30); }
+.cta-top { display:flex; gap:12px; align-items:center; }
+.cta-avatar { width:42px; height:42px; border-radius:14px; flex-shrink:0; display:flex; align-items:center; justify-content:center;
+  font-family:var(--ff-display); font-weight:800; font-size:18px; background: var(--gold-dim); color: var(--gold); }
+.is-paid .cta-avatar, .is-done .cta-avatar { background: var(--green-dim); color: var(--green); }
+.is-late .cta-avatar { background: var(--red-dim); color: var(--red); }
+.cta-info { flex:1; min-width:0; }
+.cta-name { font-weight:700; font-size:15px; margin-bottom:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.cta-amount { text-align:right; font-family:var(--ff-display); font-weight:800; font-size:16px; }
+.cta-amount small { display:block; font-family:var(--ff-body); font-weight:500; font-size:10px; color:var(--text3); }
+.cta-chip { display:inline-flex; max-width:100%; align-items:center; gap:4px; font-size:11px; font-weight:700; padding:3px 9px; border-radius:99px;
+  background: var(--bg2); color: var(--text2); border:1px solid var(--border); line-height:1.4; }
+.cta-chip.red { background:var(--red-dim); color:var(--red); border-color:rgba(255,107,107,0.3); }
+.cta-chip.green { background:var(--green-dim); color:var(--green); border-color:rgba(45,212,164,0.3); }
+.cta-chip.gold { background:var(--gold-dim); color:var(--gold); border-color:rgba(245,166,35,0.3); }
+.cta-chip.blue { background:var(--blue-dim); color:var(--blue); border-color:rgba(96,165,250,0.3); }
+.cta-chip.pulse { animation: ctaPulse 1.6s ease-in-out infinite; }
+@keyframes ctaPulse { 50% { box-shadow: 0 0 0 4px rgba(255,107,107,0.15); } }
+.cta-plan { margin-top:12px; }
+.cta-plan-row { display:flex; justify-content:space-between; font-size:12px; color:var(--text2); margin-top:6px; }
+.cta-plan-row b { color: var(--text); }
+.cta-pay { width:100%; margin-top:12px; min-height:46px; border:none; border-radius:14px; cursor:pointer;
+  font-family:var(--ff-display); font-weight:800; font-size:14px; color:#1a1200;
+  background: linear-gradient(135deg, var(--gold), #fb923c); box-shadow: 0 4px 14px var(--gold-glow); transition: transform .12s; }
+.cta-pay:active { transform: scale(.97); }
+.cta-pay.late { background: linear-gradient(135deg, #ff6b6b, #f43f5e); color:#fff; box-shadow: 0 4px 14px rgba(255,107,107,0.35); }
+.cta-pay.ghost { background: none; color: var(--gold); border:1px dashed rgba(245,166,35,0.5); box-shadow:none; }
+.cta-paid-row { margin-top:12px; display:flex; align-items:center; gap:10px; font-size:13px; font-weight:600; color:var(--green);
+  background: var(--green-dim); border-radius:12px; padding:10px 12px; }
+.cta-paid-check { width:24px; height:24px; border-radius:50%; background:var(--green); color:#00140d; display:flex;
+  align-items:center; justify-content:center; font-size:13px; font-weight:900; animation: ctaPop .35s cubic-bezier(.2,1.6,.4,1); }
+@keyframes ctaPop { from { transform: scale(0); } to { transform: scale(1); } }
+.cta-pago-row { display:flex; gap:10px; align-items:flex-start; padding:10px 0; border-bottom:1px solid var(--border); }
+.cta-pago-ico { width:28px; height:28px; border-radius:50%; background:var(--green-dim); color:var(--green); flex-shrink:0;
+  display:flex; align-items:center; justify-content:center; font-weight:900; font-size:13px; }
+.cta-pago-info { flex:1; min-width:0; }
+.cta-pago-t { font-size:13px; font-weight:700; }
+.cta-pago-s { font-size:11px; color:var(--text3); margin-top:2px; }
+.cta-pago-m { font-family:var(--ff-display); font-weight:800; font-size:14px; color:var(--green); text-align:right; white-space:nowrap; }
+.cta-hist-group { font-size:11px; font-weight:700; color:var(--text3); text-transform:uppercase; letter-spacing:.08em; padding:14px 0 2px; }
+.cta-hist-total { display:flex; justify-content:space-between; font-size:13px; color:var(--text2); padding:10px 14px;
+  background:var(--card); border:1px solid var(--border); border-radius:12px; }
+.cta-hist-total b { color:var(--green); font-family:var(--ff-display); }
+.cta-det-head { display:flex; justify-content:space-between; align-items:flex-start; gap:10px; margin-bottom:12px; flex-wrap:wrap; }
+.cta-det-monto { font-family:var(--ff-display); font-size:26px; font-weight:800; }
+.seg { display:grid; grid-template-columns:1fr 1fr; gap:4px; padding:4px; background:var(--bg2); border-radius:12px; border:1px solid var(--border); }
+.seg button { border:none; background:none; color:var(--text2); padding:10px; border-radius:9px; font-weight:700; font-size:13px; cursor:pointer; font-family:var(--ff-body); }
+.seg button.active { background: var(--card); color: var(--gold); box-shadow: 0 1px 4px rgba(0,0,0,.25); }
+.field-help { font-size:11px; color:var(--text3); margin-top:5px; }
+.recibo-check { width:72px; height:72px; margin:4px auto 10px; border-radius:50%; background:var(--green); color:#00140d;
+  display:flex; align-items:center; justify-content:center; font-size:38px; font-weight:900;
+  box-shadow: 0 0 0 10px var(--green-dim); animation: ctaPop .45s cubic-bezier(.2,1.6,.4,1); }
+.recibo-titulo { text-align:center; font-family:var(--ff-display); font-weight:800; font-size:18px; }
+.recibo-monto { text-align:center; font-family:var(--ff-display); font-weight:800; font-size:32px; color:var(--green); margin:4px 0 14px; }
+.recibo-tabla { background:var(--bg2); border-radius:14px; padding:4px 14px; border:1px dashed var(--border-hi); }
+.recibo-tabla > div { display:flex; justify-content:space-between; gap:10px; font-size:13px; padding:9px 0; border-bottom:1px solid var(--border); }
+.recibo-tabla > div:last-child { border-bottom:none; }
+.recibo-tabla span { color:var(--text3); }
+.recibo-tabla b { text-align:right; }
+.dash-cta { background:var(--card); border:1px solid var(--border); border-radius:var(--r); padding:14px 16px; margin-bottom:12px; cursor:pointer; }
+.dash-cta.late { border-color: rgba(255,107,107,0.4); background: linear-gradient(135deg, var(--red-dim), var(--card) 70%); }
+.nav-badge { position:absolute; top:4px; right:calc(50% - 20px); min-width:17px; height:17px; padding:0 4px; border-radius:99px;
+  background:var(--red); color:#fff; font-size:10px; font-weight:800; display:flex; align-items:center; justify-content:center;
+  box-shadow: 0 0 0 2px var(--bg); font-family: var(--ff-body); }
+.mas-grid { display:grid; grid-template-columns: repeat(3, 1fr); gap:10px; }
+.mas-item { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:16px 8px; text-align:center;
+  cursor:pointer; color:var(--text); font-family:var(--ff-body); font-size:12px; font-weight:600; display:flex; flex-direction:column; align-items:center; gap:8px; }
+.mas-item:active { transform: scale(.96); }
+.mas-item .mi { font-size:24px; }
+.toast-undo { pointer-events:auto; display:flex; align-items:center; gap:14px; }
+.toast-undo button { background:none; border:none; color:var(--gold); font-weight:800; font-size:13px; cursor:pointer; padding:4px; }
+input[type="month"], input[type="datetime-local"] { color-scheme: dark; }
+body.light input[type="month"], body.light input[type="datetime-local"] { color-scheme: light; }
 </style>
 </head>
 <body>
@@ -1245,6 +1344,8 @@ canvas { display: block; }
         </div>
       </div>
       <div id="dash-depositos-lista" style="margin-bottom:12px"></div>
+
+      <div id="dash-cuentas"></div>
 
       <div class="moto-dash-card">
         <div class="maintenance-title">🏍️ Estado de la moto</div>
@@ -1465,38 +1566,39 @@ canvas { display: block; }
       <div id="lista-historial"></div>
     </div>
 
-    <!-- ═══ GASTOS FIJOS ═══ -->
+    <!-- ═══ CUENTAS ═══ -->
     <div class="page" id="page-fijos">
       <div class="sec-head">
         <div>
-          <div class="sec-title">Gastos Fijos</div>
-          <div class="sec-sub">Pagos mensuales y cuotas</div>
+          <div class="sec-title">Cuentas</div>
+          <div class="sec-sub">Cuotas, préstamos y pagos mensuales</div>
         </div>
-        <button class="btn btn-gold btn-sm" onclick="openModal('modal-nuevo-fijo')">+ Agregar</button>
+        <button class="btn btn-gold btn-sm" onclick="abrirNuevaCuenta()">+ Nueva</button>
       </div>
 
-      <div class="fijos-hero">
-        <div class="flex-between" style="margin-bottom:6px">
-          <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em">Progreso del mes</div>
-          <div class="stat-tile-val green" style="font-size:15px" id="fijos-pagado">₲ 0</div>
-        </div>
-        <div class="prog-wrap" style="margin-bottom:12px">
-          <div class="prog-bar green" id="fijos-prog-bar" style="width:0%"></div>
-        </div>
-        <div class="fijos-pct-row">
-          <div class="fijos-pct-label">Pendiente</div>
-          <div class="fijos-pct-val" id="fijos-pct-label">0%</div>
-        </div>
-        <div class="stat-row cols-2" style="margin-bottom:0;margin-top:10px">
-          <div class="stat-tile">
-            <div class="stat-tile-label">Total</div>
-            <div class="stat-tile-val gold" style="font-size:15px" id="fijos-total">₲ 0</div>
+      <div id="cta-alerta"></div>
+
+      <div class="cta-hero">
+        <div class="cta-hero-top">
+          <div>
+            <div class="cta-hero-lbl">Pagado en <span id="cta-mes-label">—</span></div>
+            <div class="cta-hero-amt" id="cta-pagado">₲ 0</div>
           </div>
-          <div class="stat-tile">
-            <div class="stat-tile-label">Pendiente</div>
-            <div class="stat-tile-val red" style="font-size:15px" id="fijos-pendiente">₲ 0</div>
-          </div>
+          <div class="cta-hero-of" id="cta-total">de ₲ 0</div>
         </div>
+        <div class="prog-wrap" style="margin-bottom:6px"><div class="prog-bar green" id="cta-prog" style="width:0%"></div></div>
+        <div style="font-size:12px;color:var(--text3)" id="cta-pct">—</div>
+        <div class="stat-row cols-3" style="margin:12px 0 0">
+          <div class="stat-tile"><div class="stat-tile-label">Pendiente mes</div><div class="stat-tile-val gold" style="font-size:13px" id="cta-pendiente">₲ 0</div></div>
+          <div class="stat-tile"><div class="stat-tile-label">Atrasado</div><div class="stat-tile-val red" style="font-size:13px" id="cta-atrasado">₲ 0</div></div>
+          <div class="stat-tile"><div class="stat-tile-label">Saldo cuotas</div><div class="stat-tile-val purple" style="font-size:13px" id="cta-saldo">₲ 0</div></div>
+        </div>
+      </div>
+
+      <div class="stats-tab-bar" id="cta-tabs" style="margin-bottom:12px">
+        <button class="stats-tab active" data-tab="mes" onclick="cambiarTabCuentas('mes')">Este mes</button>
+        <button class="stats-tab" data-tab="historial" onclick="cambiarTabCuentas('historial')">Historial</button>
+        <button class="stats-tab" data-tab="finalizadas" onclick="cambiarTabCuentas('finalizadas')">Terminadas</button>
       </div>
 
       <div id="lista-fijos"></div>
@@ -1556,10 +1658,10 @@ canvas { display: block; }
   </div><!-- /pages-area -->
 
   <!-- Bottom Nav -->
-  <nav class="bottom-nav">
+  <nav class="bottom-nav" aria-label="Navegación principal">
     <button class="nav-item active" id="nav-dashboard" onclick="showPage('dashboard')">
       <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-      <span>Resumen</span>
+      <span>Inicio</span>
       <div class="nav-indicator"></div>
     </button>
     <button class="nav-item" id="nav-delivery" onclick="showPage('delivery')">
@@ -1567,39 +1669,20 @@ canvas { display: block; }
       <span>Delivery</span>
       <div class="nav-indicator"></div>
     </button>
-    <button class="nav-item" id="nav-combustible" onclick="showPage('combustible')">
-      <svg viewBox="0 0 24 24"><path d="M4 4h10v14H4V4z"/><path d="M14 8l4 2v4h-4"/><path d="M8 4v4"/><path d="M6 10h4"/></svg>
-      <span>Combustible</span>
-      <div class="nav-indicator"></div>
-    </button>
-    <button class="nav-item" id="nav-moto" onclick="showPage('moto')">
-      <svg viewBox="0 0 24 24"><circle cx="6" cy="17" r="3"/><circle cx="18" cy="17" r="3"/><path d="M6 17L9 7h6l2 4h2"/><path d="M12 7l2 4"/></svg>
-      <span>Moto</span>
-      <div class="nav-indicator"></div>
-    </button>
-    <button class="nav-item" id="nav-gastos" onclick="showPage('gastos')">
-      <svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
-      <span>Moto $</span>
+    <button class="nav-item" id="nav-fijos" onclick="showPage('fijos')">
+      <svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/><path d="M6 15h4"/></svg>
+      <span>Cuentas</span>
+      <b class="nav-badge" id="nav-cuentas-badge" style="display:none">0</b>
       <div class="nav-indicator"></div>
     </button>
     <button class="nav-item" id="nav-gastos-personales" onclick="showPage('gastos-personales')">
-      <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M3 9h18M9 21V9" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9.5 9.5c0-1.1 1.1-2 2.5-2s2.5.9 2.5 2-1.1 1.7-2.5 2-2.5.9-2.5 2 1.1 2 2.5 2 2.5-.9 2.5-2"/></svg>
       <span>Gastos</span>
       <div class="nav-indicator"></div>
     </button>
-    <button class="nav-item" id="nav-historial" onclick="showPage('historial')">
-      <svg viewBox="0 0 24 24"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="9"/></svg>
-      <span>Historial</span>
-      <div class="nav-indicator"></div>
-    </button>
-    <button class="nav-item" id="nav-fijos" onclick="showPage('fijos')">
-      <svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
-      <span>Fijos</span>
-      <div class="nav-indicator"></div>
-    </button>
-    <button class="nav-item" id="nav-stats" onclick="showPage('stats')">
-      <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-      <span>Stats</span>
+    <button class="nav-item" id="nav-mas" onclick="openModal('modal-mas')">
+      <svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg>
+      <span>Más</span>
       <div class="nav-indicator"></div>
     </button>
   </nav>
@@ -1844,47 +1927,126 @@ canvas { display: block; }
   </div>
 </div>
 
-<!-- Modal NUEVO GASTO FIJO -->
-<div class="modal-overlay" id="modal-nuevo-fijo">
+<!-- Modal CUENTA: nueva / editar -->
+<div class="modal-overlay" id="modal-cuenta-form">
   <div class="modal-sheet">
     <div class="modal-handle"></div>
     <div class="modal-body">
       <div class="modal-title">
-        <span>💳 Nuevo gasto fijo</span>
-        <button class="modal-close" onclick="closeModal('modal-nuevo-fijo')">✕</button>
+        <span id="cta-form-titulo">💳 Nueva cuenta</span>
+        <button class="modal-close" onclick="closeModal('modal-cuenta-form')" aria-label="Cerrar">✕</button>
       </div>
-      <div class="field"><label class="field-label">Nombre</label>
-        <input type="text" id="fijo-nombre" placeholder="Ej: Spotify, Wifi, Cuota..."></div>
-      <div class="field"><label class="field-label">Monto mensual (₲)</label>
-        <input type="text" inputmode="numeric" id="fijo-monto" placeholder="0" oninput="fmtInput(this)"></div>
-      <div class="field"><label class="field-label">Vencimiento (día del mes)</label>
-        <input type="number" id="fijo-vence" placeholder="Ej: 15" min="1" max="31"></div>
-      <div class="field"><label class="field-label">Cuotas restantes (vacío = indefinido)</label>
-        <input type="number" id="fijo-cuotas" placeholder="Ej: 12"></div>
-      <button class="btn btn-gold btn-full" onclick="guardarGastoFijo()">Guardar</button>
+      <input type="hidden" id="cta-form-id">
+      <input type="hidden" id="cta-f-tipo" value="mensual">
+      <div class="field"><label class="field-label" for="cta-f-nombre">Nombre</label>
+        <input type="text" id="cta-f-nombre" placeholder="Ej: Cuota moto, Préstamo, Wifi..." maxlength="60"></div>
+      <div class="field"><label class="field-label">Tipo</label>
+        <div class="seg" id="cta-f-seg">
+          <button type="button" data-tipo="mensual" onclick="setTipoCuenta('mensual')">🔁 Todos los meses</button>
+          <button type="button" data-tipo="cuotas" onclick="setTipoCuenta('cuotas')">🔢 En cuotas</button>
+        </div></div>
+      <div class="field"><label class="field-label" for="cta-f-monto">Monto por mes / cuota (₲)</label>
+        <input type="text" inputmode="numeric" id="cta-f-monto" placeholder="0" oninput="fmtInput(this)"></div>
+      <div id="cta-f-cuotas-box" style="display:none">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="field"><label class="field-label" for="cta-f-total">Total de cuotas</label>
+            <input type="number" inputmode="numeric" id="cta-f-total" placeholder="Ej: 12" min="1"></div>
+          <div class="field"><label class="field-label" for="cta-f-previas">Ya pagadas antes</label>
+            <input type="number" inputmode="numeric" id="cta-f-previas" placeholder="0" min="0"></div>
+        </div>
+        <div class="field-help" style="margin:-6px 0 12px">"Ya pagadas antes" = cuotas que pagaste antes de usar la app (opcional).</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="field"><label class="field-label" for="cta-f-vence">Vence el día</label>
+          <input type="number" inputmode="numeric" id="cta-f-vence" placeholder="Opcional" min="1" max="31" oninput="actualizarAyudaInicio()"></div>
+        <div class="field"><label class="field-label" for="cta-f-inicio">Primer mes a pagar</label>
+          <input type="month" id="cta-f-inicio" onchange="actualizarAyudaInicio()"></div>
+      </div>
+      <div class="field-help" id="cta-f-ayuda" style="margin:-6px 0 14px"></div>
+      <button class="btn btn-gold btn-full" onclick="guardarCuenta()">Guardar</button>
     </div>
   </div>
 </div>
 
-<!-- Modal EDITAR GASTO FIJO -->
-<div class="modal-overlay" id="modal-editar-fijo">
+<!-- Modal CUENTA: detalle + historial -->
+<div class="modal-overlay" id="modal-cuenta-detalle">
   <div class="modal-sheet">
     <div class="modal-handle"></div>
     <div class="modal-body">
       <div class="modal-title">
-        <span>✏️ Editar gasto fijo</span>
-        <button class="modal-close" onclick="closeModal('modal-editar-fijo')">✕</button>
+        <span id="cta-det-titulo">Cuenta</span>
+        <button class="modal-close" onclick="closeModal('modal-cuenta-detalle')" aria-label="Cerrar">✕</button>
       </div>
-      <input type="hidden" id="edit-fijo-id">
-      <div class="field"><label class="field-label">Nombre</label>
-        <input type="text" id="edit-fijo-nombre" placeholder="Nombre"></div>
-      <div class="field"><label class="field-label">Monto mensual (₲)</label>
-        <input type="text" inputmode="numeric" id="edit-fijo-monto" placeholder="0" oninput="fmtInput(this)"></div>
-      <div class="field"><label class="field-label">Vencimiento (día del mes)</label>
-        <input type="number" id="edit-fijo-vence" placeholder="Ej: 15" min="1" max="31"></div>
-      <div class="field"><label class="field-label">Cuotas restantes</label>
-        <input type="number" id="edit-fijo-cuotas" placeholder="Ej: 12"></div>
-      <button class="btn btn-gold btn-full" onclick="guardarEdicionFijo()">Guardar cambios</button>
+      <div id="cta-det-body"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal PAGAR -->
+<div class="modal-overlay" id="modal-pagar">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-body">
+      <div class="modal-title">
+        <span>💸 Registrar pago</span>
+        <button class="modal-close" onclick="closeModal('modal-pagar')" aria-label="Cerrar">✕</button>
+      </div>
+      <div class="card" style="margin-bottom:14px">
+        <div style="font-family:var(--ff-display);font-weight:800;font-size:16px" id="pago-cuenta">—</div>
+        <div style="font-size:12px;color:var(--text2);margin-top:4px;line-height:1.6" id="pago-detalle"></div>
+      </div>
+      <div class="field"><label class="field-label" for="pago-monto">Monto pagado (₲)</label>
+        <input type="text" inputmode="numeric" id="pago-monto" oninput="fmtInput(this)"></div>
+      <div class="field"><label class="field-label" for="pago-fecha">Fecha y hora del pago</label>
+        <input type="datetime-local" id="pago-fecha"></div>
+      <div class="field"><label class="field-label" for="pago-nota">Nota (opcional)</label>
+        <input type="text" id="pago-nota" placeholder="Ej: transferencia, Tigo Money, efectivo..." maxlength="80"></div>
+      <button class="cta-pay" style="margin-top:4px" onclick="confirmarPago()">✓ Confirmar pago</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal RECIBO -->
+<div class="modal-overlay" id="modal-recibo">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-body">
+      <div id="recibo-body"></div>
+      <button class="btn btn-gold btn-full" style="margin-top:16px" onclick="closeModal('modal-recibo')">Listo</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal CONFIRMAR -->
+<div class="modal-overlay" id="modal-confirmar">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-body">
+      <div class="modal-title"><span id="confirm-titulo">¿Seguro?</span></div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:16px" id="confirm-texto"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <button class="btn btn-ghost" onclick="closeModal('modal-confirmar')">Cancelar</button>
+        <button class="btn btn-danger" id="confirm-ok" onclick="ejecutarConfirmacion()">Confirmar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal MÁS (menú) -->
+<div class="modal-overlay" id="modal-mas">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-body">
+      <div class="modal-title"><span>Más opciones</span>
+        <button class="modal-close" onclick="closeModal('modal-mas')" aria-label="Cerrar">✕</button></div>
+      <div class="mas-grid">
+        <button class="mas-item" onclick="irDesdeMas('combustible')"><span class="mi">⛽</span>Combustible</button>
+        <button class="mas-item" onclick="irDesdeMas('moto')"><span class="mi">🏍️</span>Moto</button>
+        <button class="mas-item" onclick="irDesdeMas('gastos')"><span class="mi">🔧</span>Gastos moto</button>
+        <button class="mas-item" onclick="irDesdeMas('historial')"><span class="mi">📅</span>Historial</button>
+        <button class="mas-item" onclick="irDesdeMas('stats')"><span class="mi">📈</span>Estadísticas</button>
+        <button class="mas-item" onclick="irDesdeMas('cuenta')"><span class="mi">👤</span>Mi cuenta</button>
+      </div>
     </div>
   </div>
 </div>
@@ -1903,6 +2065,27 @@ canvas { display: block; }
       <div class="field"><label class="field-label">Nota (opcional)</label>
         <input type="text" id="dep-nota" placeholder="Ej: Depósito parcial, banco..."></div>
       <button class="btn btn-gold btn-full" id="dep-submit-btn" onclick="submitDeposito()">Guardar depósito</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal CUENTA -->
+<div class="modal-overlay" id="modal-cuenta">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-body">
+      <div class="modal-title">
+        <span>👤 <span id="cuenta-usuario">Cuenta</span></span>
+        <button class="modal-close" onclick="closeModal('modal-cuenta')">✕</button>
+      </div>
+      <div class="field"><label class="field-label">Contraseña actual</label>
+        <input type="password" id="pw-actual" autocomplete="current-password"></div>
+      <div class="field"><label class="field-label">Nueva contraseña (mín. 6)</label>
+        <input type="password" id="pw-nueva" autocomplete="new-password"></div>
+      <div class="field"><label class="field-label">Repetir nueva contraseña</label>
+        <input type="password" id="pw-nueva2" autocomplete="new-password"></div>
+      <button class="btn btn-gold btn-full" id="pw-btn" onclick="cambiarPassword()">🔒 Cambiar contraseña</button>
+      <button class="btn btn-danger btn-full" style="margin-top:12px" onclick="doLogout()">Cerrar sesión</button>
     </div>
   </div>
 </div>
@@ -1928,19 +2111,74 @@ canvas { display: block; }
 const SUPA_URL = 'https://ictognjxntmklzhkronv.supabase.co';
 const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImljdG9nbmp4bnRta2x6aGtyb252Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1MTA2ODgsImV4cCI6MjA4OTA4NjY4OH0.utxIgFu6GJjmwlUrKtSYogBCpaTZN4ZafaUG4A40rV0';
 
-async function dbGet(table, filters) {
-  let url = SUPA_URL + '/rest/v1/' + table + '?';
-  for (const [k,v] of Object.entries(filters)) url += k + '=eq.' + encodeURIComponent(v) + '&';
-  url += 'limit=1';
-  const r = await fetch(url, { headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY }});
-  const data = await r.json();
-  return Array.isArray(data) ? data[0] : null;
+/* Fecha de HOY en hora local (toISOString usa UTC: después de las 21:00 en PY daba el día siguiente) */
+function hoyLocal() {
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+/* Escapa texto escrito por el usuario antes de meterlo en innerHTML */
+function esc(v) {
+  return String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+/* Llama a una función segura de Supabase (las tablas de Delivery Pro están cerradas al público) */
+async function rpc(fn, params) {
+  const r = await fetch(SUPA_URL + '/rest/v1/rpc/' + fn, {
+    method: 'POST',
+    headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY, 'Content-Type': 'application/json' },
+    body: JSON.stringify(params || {})
+  });
+  const txt = await r.text();
+  const body = txt ? JSON.parse(txt) : null;
+  if (!r.ok) {
+    const err = new Error((body && body.message) || ('HTTP ' + r.status));
+    err.server = true; // el servidor respondió (no es falta de internet)
+    err.status = r.status;
+    err.code = body && body.code;
+    throw err;
+  }
+  return body;
+}
+function isSesionInvalida(e) { return e && e.server && /sesion_invalida/.test(e.message); }
+// ¿Falta correr el SQL de seguridad en Supabase? (la función no existe todavía)
+function faltaSQL(e) { return e && e.server && (e.code === 'PGRST202' || e.status === 404); }
+
+/* ── MODO COMPATIBLE ──
+   Solo se usa si todavía no se corrió supabase/seguridad-delivery-pro.sql.
+   Apenas el SQL existe, la app pide volver a ingresar y queda en modo seguro. */
+const LEGACY = 'legacy';
+const SUPA_HDRS = { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY, 'Content-Type': 'application/json' };
+async function legacyLogin(user, pass) {
+  let b64; try { b64 = btoa(pass); } catch(e) { return false; }
+  const r = await fetch(SUPA_URL + '/rest/v1/usuarios?select=username,password&username=eq.' + encodeURIComponent(user) + '&limit=1', { headers: SUPA_HDRS });
+  const rows = await r.json();
+  return Array.isArray(rows) && rows[0] && rows[0].password === b64;
+}
+async function legacyCargar() {
+  const r = await fetch(SUPA_URL + '/rest/v1/datos_usuario?select=data&username=eq.' + encodeURIComponent('delivery_' + currentUser) + '&limit=1', { headers: SUPA_HDRS });
+  const rows = await r.json();
+  return Array.isArray(rows) && rows[0] ? rows[0].data : null;
+}
+async function legacyGuardar() {
+  const username = 'delivery_' + currentUser;
+  const r = await fetch(SUPA_URL + '/rest/v1/datos_usuario?username=eq.' + encodeURIComponent(username), {
+    method: 'PATCH', headers: { ...SUPA_HDRS, 'Prefer': 'return=representation' },
+    body: JSON.stringify({ data: APP_DATA, updated_at: APP_DATA._savedAt })
+  });
+  const rows = r.ok ? await r.json() : null;
+  if (r.ok && Array.isArray(rows) && rows.length) return;
+  const r2 = await fetch(SUPA_URL + '/rest/v1/datos_usuario', {
+    method: 'POST', headers: { ...SUPA_HDRS, 'Prefer': 'return=minimal' },
+    body: JSON.stringify({ username, data: APP_DATA, updated_at: APP_DATA._savedAt })
+  });
+  if (!r2.ok) throw new Error('HTTP ' + r2.status);
 }
 
 /* ═══════════════════════════════════════════
    AUTH
 ═══════════════════════════════════════════ */
 let currentUser = null;
+let sessionToken = null;
 
 async function doLogin() {
   const user = document.getElementById('login-user').value.trim().toLowerCase();
@@ -1950,30 +2188,48 @@ async function doLogin() {
   if (!user || !pass) { errEl.textContent = 'Completá todos los campos.'; errEl.classList.add('show'); return; }
   btn.textContent = 'Cargando...'; btn.disabled = true;
   try {
-    const data = await dbGet('usuarios', { username: user });
-    if (!data || data.password !== btoa(pass)) {
+    let token;
+    try {
+      token = await rpc('dp_login', { p_user: user, p_pass: pass });
+    } catch(e) {
+      if (!faltaSQL(e)) throw e;
+      token = (await legacyLogin(user, pass)) ? LEGACY : null; // SQL todavía no corrido
+    }
+    if (!token) {
       errEl.textContent = 'Usuario o contraseña incorrectos.'; errEl.classList.add('show');
     } else {
       errEl.classList.remove('show');
+      sessionToken = token;
+      try { localStorage.setItem('dp_token', token); } catch(e){}
       await loginSuccess(user);
     }
   } catch(e) {
-    errEl.textContent = 'Error de conexión: ' + e.message; errEl.classList.add('show');
+    errEl.textContent = /bloqueado/.test(e.message)
+      ? 'Demasiados intentos fallidos. Probá de nuevo en 15 minutos.'
+      : 'Error de conexión: ' + e.message;
+    errEl.classList.add('show');
   }
   btn.textContent = 'Ingresar →'; btn.disabled = false;
 }
 
 async function loginSuccess(user) {
   currentUser = user;
+  try { localStorage.setItem('dp_user', user); } catch(e){}
   document.getElementById('login-screen').classList.add('hidden');
   document.getElementById('app-shell').classList.add('visible');
   document.getElementById('user-chip-name').textContent = user;
   document.getElementById('user-avatar-initial').textContent = user[0].toUpperCase();
   document.getElementById('login-user').value = '';
   document.getElementById('login-pass').value = '';
-  await load();
+  try {
+    await load();
+  } catch(e) {
+    if (isSesionInvalida(e)) { forzarLogin('Tu sesión venció. Ingresá de nuevo.'); return; }
+    throw e;
+  }
+  if (hasPending()) save(); // subir cambios hechos sin internet
   checkNuevoMes(); // Verificar cambio de mes al entrar
-  const hoy = new Date().toISOString().split('T')[0];
+  const hoy = hoyLocal();
   ['carga-fecha','aceite-fecha','gmoto-fecha','trans-fecha','gp-fecha','gp-edit-fecha'].forEach(id => {
     const el = document.getElementById(id); if(el) el.value = hoy;
   });
@@ -2012,13 +2268,50 @@ function initTheme() {
 }
 
 function promptLogout() {
-  if (confirm('¿Cerrar sesión de ' + currentUser + '?')) doLogout();
+  document.getElementById('cuenta-usuario').textContent = currentUser;
+  ['pw-actual','pw-nueva','pw-nueva2'].forEach(id => document.getElementById(id).value = '');
+  openModal('modal-cuenta');
+}
+
+async function cambiarPassword() {
+  const actual = document.getElementById('pw-actual').value;
+  const nueva  = document.getElementById('pw-nueva').value;
+  const nueva2 = document.getElementById('pw-nueva2').value;
+  if (!actual || !nueva) { showToast('Completá los campos'); return; }
+  if (nueva.length < 6)  { showToast('La nueva contraseña debe tener al menos 6 caracteres'); return; }
+  if (nueva !== nueva2)  { showToast('Las contraseñas nuevas no coinciden'); return; }
+  if (sessionToken === LEGACY) { showToast('Primero hay que activar la seguridad en Supabase (ver LEEME)'); return; }
+  const btn = document.getElementById('pw-btn'); btn.disabled = true;
+  try {
+    const ok = await rpc('dp_cambiar_password', { p_token: sessionToken, p_actual: actual, p_nueva: nueva });
+    if (ok) { closeModal('modal-cuenta'); showToast('🔒 Contraseña cambiada'); }
+    else showToast('La contraseña actual no es correcta');
+  } catch(e) {
+    if (isSesionInvalida(e)) forzarLogin('Tu sesión venció. Ingresá de nuevo.');
+    else showToast('Sin conexión, probá de nuevo');
+  }
+  btn.disabled = false;
+}
+
+// Vuelve al login sin borrar los datos guardados en el teléfono
+function forzarLogin(msg) {
+  try { localStorage.removeItem('dp_token'); localStorage.removeItem('dp_user'); } catch(e){}
+  sessionToken = null; currentUser = null;
+  document.querySelectorAll('.modal-overlay.open').forEach(m => closeModal(m.id));
+  document.getElementById('login-screen').classList.remove('hidden');
+  document.getElementById('app-shell').classList.remove('visible');
+  const errEl = document.getElementById('login-err');
+  errEl.textContent = msg; errEl.classList.add('show');
 }
 
 async function doLogout() {
+  closeModal('modal-cuenta');
   APP_DATA.meses[mesActual] = DB;
   await save();
+  if (sessionToken && sessionToken !== LEGACY) { try { await rpc('dp_logout', { p_token: sessionToken }); } catch(e){} }
+  sessionToken = null;
   currentUser = null;
+  try { localStorage.removeItem('dp_user'); localStorage.removeItem('dp_token'); } catch(e){}
   APP_DATA = { meses:{}, moto:{ km:0, aceite:{ kmCambio:0, intervalo:3000, fecha:'' }}, gastosFijos:[], depositos:{} };
   DB = { semanas:{}, cargas:[], gastosMoto:[], gastosPersonales:[] };
   MOTO = { km:0, aceite:{ kmCambio:0, intervalo:3000, fecha:'' }, transmision:{ kmCambio:0, intervalo:5000, fecha:'' }};
@@ -2073,30 +2366,39 @@ async function save() {
   lsSave();
   showSavePill('💾 Guardando...', 'gold');
   try {
-    const username = 'delivery_' + currentUser;
-    const r = await fetch(SUPA_URL + '/rest/v1/datos_usuario?username=eq.' + encodeURIComponent(username), {
-      method: 'PATCH',
-      headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
-      body: JSON.stringify({ data: APP_DATA, updated_at: APP_DATA._savedAt })
-    });
-    if (r.ok) { showSavePill('✓ Guardado', 'green'); return; }
-    const r2 = await fetch(SUPA_URL + '/rest/v1/datos_usuario', {
-      method: 'POST',
-      headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
-      body: JSON.stringify({ username, data: APP_DATA, updated_at: APP_DATA._savedAt })
-    });
-    if (r2.ok) showSavePill('✓ Guardado', 'green');
-    else showSavePill('📱 Local', 'gold');
-  } catch(e) { showSavePill('📱 Local', 'gold'); }
+    if (sessionToken === LEGACY) await legacyGuardar();
+    else await rpc('dp_guardar', { p_token: sessionToken, p_data: APP_DATA });
+    setPending(false); showSavePill('✓ Guardado', 'green');
+  } catch(e) {
+    setPending(true); showSavePill('📱 Local', 'gold');
+    if (isSesionInvalida(e)) forzarLogin('Tu sesión venció. Ingresá de nuevo: tus datos quedaron guardados en el teléfono.');
+  }
 }
+function setPending(v) {
+  try { v ? localStorage.setItem('dp_pending_' + currentUser, '1') : localStorage.removeItem('dp_pending_' + currentUser); } catch(e){}
+}
+function hasPending() {
+  try { return localStorage.getItem('dp_pending_' + currentUser) === '1'; } catch(e){ return false; }
+}
+// Al recuperar la conexión, subir lo que quedó guardado solo en el teléfono
+window.addEventListener('online', () => { if (currentUser && hasPending()) save(); });
 
 async function load() {
   if (!currentUser) return;
   let remoteData = null;
   try {
-    const row = await dbGet('datos_usuario', { username: 'delivery_' + currentUser });
-    if (row && row.data) remoteData = row.data;
-  } catch(e){}
+    if (sessionToken === LEGACY) {
+      // Si el SQL ya se corrió, pasar a modo seguro pidiendo login de nuevo
+      let sqlListo = false;
+      try { await rpc('dp_ping', {}); sqlListo = true; } catch(e) {}
+      if (sqlListo) { const e = new Error('sesion_invalida'); e.server = true; throw e; }
+      remoteData = await legacyCargar();
+    } else {
+      remoteData = await rpc('dp_cargar', { p_token: sessionToken });
+    }
+  } catch(e) {
+    if (isSesionInvalida(e)) throw e; // sesión vencida → loginSuccess manda al login
+  }
   const localData = lsLoad();
   if (remoteData && localData) {
     const rt = remoteData._savedAt ? new Date(remoteData._savedAt).getTime() : 0;
@@ -2110,6 +2412,7 @@ async function load() {
   if (!APP_DATA.moto.transmision) APP_DATA.moto.transmision = { kmCambio:0, intervalo:5000, fecha:'' };
   if (!APP_DATA.gastosFijos) APP_DATA.gastosFijos = [];
   if (!APP_DATA.depositos) APP_DATA.depositos = {};
+  normalizarCuentas(); // convierte los gastos fijos viejos al modelo con historial de pagos
   mesActual = getMesKey();
   if (!APP_DATA.meses[mesActual]) APP_DATA.meses[mesActual] = { semanas:{}, cargas:[], gastosMoto:[], gastosPersonales:[] };
   DB = APP_DATA.meses[mesActual];
@@ -2121,7 +2424,7 @@ async function load() {
    DATE UTILS
 ═══════════════════════════════════════════ */
 function getMesKey(offset = 0) {
-  const d = new Date(); d.setMonth(d.getMonth() + offset);
+  const d = new Date(); d.setDate(1); d.setMonth(d.getMonth() + offset);
   return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
 }
 function getMesLabel(key) {
@@ -2227,22 +2530,8 @@ function checkNuevoMes() {
     DB = APP_DATA.meses[keyActual];
     if (!DB.gastosPersonales) DB.gastosPersonales = [];
 
-    // ── Gastos fijos: reset pagado + eliminar los que terminaron cuotas ──
-    const fijos = APP_DATA.gastosFijos || [];
-    const eliminados = [];
-    fijos.forEach((x, idx) => {
-      if (x._eliminarAlReset) eliminados.push(idx);
-      x.pagado = false;
-    });
-    eliminados.reverse().forEach(i => fijos.splice(i, 1));
-    APP_DATA.gastosFijos = fijos;
-
     save();
-
-    const msg = eliminados.length
-      ? `Nuevo mes — ${eliminados.length} gasto${eliminados.length>1?'s':''} finalizado${eliminados.length>1?'s':''}`
-      : 'Nuevo mes — gastos fijos reseteados';
-    showToast(msg);
+    if (ultimoReset) showToast('📅 Empezó ' + getMesLabel(keyActual));
   } else {
     mesActual = keyActual;
   }
@@ -2295,8 +2584,9 @@ function showPage(id) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
   document.getElementById('page-' + id).classList.add('active');
-  const navEl = document.getElementById('nav-' + id);
+  const navEl = document.getElementById('nav-' + id) || document.getElementById('nav-mas');
   if (navEl) navEl.classList.add('active');
+  actualizarBadgeCuentas();
   updateFab(id);
   const renders = {
     dashboard: () => { renderDashboard(); setTimeout(renderDashMiniChart, 80); },
@@ -2306,7 +2596,7 @@ function showPage(id) {
     gastos: renderGastosMoto,
     'gastos-personales': renderGastosPersonales,
     historial: renderHistorial,
-    fijos: renderGastosFijos,
+    fijos: renderCuentas,
     stats: renderStats
   };
   if (renders[id]) renders[id]();
@@ -2364,7 +2654,8 @@ function renderDashboard() {
 
   const gPct = t.neto > 0 ? 100 : 0;
   document.getElementById('dash-ganancia-prog').style.width = gPct + '%';
-  document.getElementById('dash-ganancia-label').textContent = `10% del neto mensual`;
+  const gLabel = document.getElementById('dash-ganancia-label'); // no existe en el HTML: antes cortaba el panel acá
+  if (gLabel) gLabel.textContent = `10% del neto mensual`;
 
   // Depósitos
   const depositos = getDepositos();
@@ -2374,6 +2665,8 @@ function renderDashboard() {
   document.getElementById('dash-falta').textContent = fmt(falta);
   const listaEl = document.getElementById('dash-depositos-lista');
   renderDepositosList(depositos, listaEl);
+
+  renderDashCuentas();
 
   // Estado moto
   const a = MOTO.aceite;
@@ -2466,7 +2759,7 @@ function renderModalDia() {
     ? d.gastos.map((g,i) => `
         <div class="list-item">
           <div class="list-item-left">
-            <div class="list-item-desc">${g.desc || 'Gasto'}</div>
+            <div class="list-item-desc">${esc(g.desc || 'Gasto')}</div>
           </div>
           <span class="list-item-val text-red">${fmt(g.monto)}</span>
           <button class="btn btn-danger" onclick="eliminarGastoDia(${i})">✕</button>
@@ -2508,14 +2801,18 @@ function agregarGasto() {
   renderModalDia(); renderDelivery();
 }
 function eliminarIngreso(idx) {
-  const sem = getSemana(diaActual.key);
-  sem[diaActual.dia].ingresos.splice(idx, 1);
+  const ctx = { ...diaActual };
+  const arr = getSemana(ctx.key)[ctx.dia].ingresos;
+  const [v] = arr.splice(idx, 1);
   saveParaDia(); renderModalDia(); renderDelivery();
+  toastDeshacer('Ingreso eliminado', () => { arr.splice(idx, 0, v); diaActual = ctx; saveParaDia(); renderModalDia(); renderDelivery(); });
 }
 function eliminarGastoDia(idx) {
-  const sem = getSemana(diaActual.key);
-  sem[diaActual.dia].gastos.splice(idx, 1);
+  const ctx = { ...diaActual };
+  const arr = getSemana(ctx.key)[ctx.dia].gastos;
+  const [v] = arr.splice(idx, 1);
   saveParaDia(); renderModalDia(); renderDelivery();
+  toastDeshacer('Gasto eliminado', () => { arr.splice(idx, 0, v); diaActual = ctx; saveParaDia(); renderModalDia(); renderDelivery(); });
 }
 
 /* ═══════════════════════════════════════════
@@ -2546,7 +2843,7 @@ function guardarCarga() {
   const monto = parseInput('carga-monto');
   if (!monto) { alert('Ingresá el monto'); return; }
   const litros = parseInput('carga-litros') || null;
-  const fecha = document.getElementById('carga-fecha').value || new Date().toISOString().split('T')[0];
+  const fecha = document.getElementById('carga-fecha').value || hoyLocal();
   DB.cargas.push({ monto, litros, fecha });
   APP_DATA.meses[mesActual] = DB; save();
   closeModal('modal-carga');
@@ -2555,9 +2852,10 @@ function guardarCarga() {
   renderCombustible();
 }
 function eliminarCarga(idx) {
-  
-  DB.cargas.splice(idx, 1);
+  const arr = DB.cargas;
+  const [v] = arr.splice(idx, 1);
   APP_DATA.meses[mesActual] = DB; save(); renderCombustible();
+  toastDeshacer('Carga eliminada', () => { arr.splice(idx, 0, v); save(); renderCombustible(); });
 }
 
 /* ═══════════════════════════════════════════
@@ -2727,7 +3025,7 @@ function renderGastosMoto() {
   lista.innerHTML = [...DB.gastosMoto].reverse().map((g,i) => `
     <div class="list-item">
       <div class="list-item-left">
-        <div class="list-item-desc">${CAT_ICONS[g.cat]} ${g.desc}</div>
+        <div class="list-item-desc">${CAT_ICONS[g.cat]} ${esc(g.desc)}</div>
         <div class="list-item-meta">${g.fecha} · <span class="badge ${CAT_CLASS[g.cat]}">${CAT_LABELS[g.cat]}</span></div>
       </div>
       <div style="text-align:right">
@@ -2740,7 +3038,7 @@ function guardarGastoMoto() {
   const desc = document.getElementById('gmoto-desc').value.trim();
   const monto = parseInput('gmoto-monto');
   const cat = document.getElementById('gmoto-cat').value;
-  const fecha = document.getElementById('gmoto-fecha').value || new Date().toISOString().split('T')[0];
+  const fecha = document.getElementById('gmoto-fecha').value || hoyLocal();
   if (!desc || !monto) { alert('Completá descripción y monto'); return; }
   DB.gastosMoto.push({ desc, monto, cat, fecha });
   save(); closeModal('modal-gasto-moto');
@@ -2749,8 +3047,9 @@ function guardarGastoMoto() {
   renderGastosMoto();
 }
 function eliminarGastoMoto(idx) {
-  
-  DB.gastosMoto.splice(idx, 1); save(); renderGastosMoto();
+  const arr = DB.gastosMoto;
+  const [v] = arr.splice(idx, 1); save(); renderGastosMoto();
+  toastDeshacer('Gasto eliminado', () => { arr.splice(idx, 0, v); save(); renderGastosMoto(); });
 }
 
 /* ═══════════════════════════════════════════
@@ -2829,7 +3128,7 @@ function renderGastosPersonales() {
           ${GP_CAT_ICONS[g.cat] || '📦'}
         </div>
         <div>
-          <div class="list-item-title">${g.desc}</div>
+          <div class="list-item-title">${esc(g.desc)}</div>
           <div class="list-item-sub">${GP_CAT_LABELS[g.cat]} · ${fmtFechaCorta(g.fecha)}</div>
         </div>
       </div>
@@ -2848,7 +3147,7 @@ function guardarGastoPersonal() {
   const desc = document.getElementById('gp-desc').value.trim();
   const cat  = document.getElementById('gp-cat').value;
   const monto = parseInput('gp-monto');
-  const fecha = document.getElementById('gp-fecha').value || new Date().toISOString().split('T')[0];
+  const fecha = document.getElementById('gp-fecha').value || hoyLocal();
   if (!desc) { showToast('Ingresá una descripción'); return; }
   if (!monto) { showToast('Ingresá el monto'); return; }
   if (!DB.gastosPersonales) DB.gastosPersonales = [];
@@ -2890,11 +3189,13 @@ function guardarEdicionGastoPersonal() {
 }
 
 function eliminarGastoPersonal(idx) {
-  DB.gastosPersonales.splice(idx, 1);
+  const arr = DB.gastosPersonales;
+  const [v] = arr.splice(idx, 1);
   APP_DATA.meses[mesActual] = DB;
   save();
   renderGastosPersonales();
   renderDashboard();
+  toastDeshacer('Gasto eliminado', () => { arr.splice(idx, 0, v); save(); renderGastosPersonales(); renderDashboard(); });
 }
 
 /* ═══════════════════════════════════════════
@@ -2913,7 +3214,7 @@ function renderDepositosList(deps, el) {
     <div class="dep-item">
       <div>
         <span class="fw7 text-green">${fmt(d.monto)}</span>
-        ${d.nota ? `<span class="text-muted" style="margin-left:6px;font-size:12px">${d.nota}</span>` : ''}
+        ${d.nota ? `<span class="text-muted" style="margin-left:6px;font-size:12px">${esc(d.nota)}</span>` : ''}
         <span class="text-muted" style="font-size:11px;margin-left:6px;opacity:.6">${d.fecha ? new Date(d.fecha).toLocaleDateString('es-PY') : ''}</span>
       </div>
       <button onclick="eliminarDeposito(${realIdx})" class="icon-btn" style="color:var(--red);opacity:.8;font-size:16px" title="Eliminar">✕</button>
@@ -2947,8 +3248,10 @@ function guardarDeposito() {
 function eliminarDeposito(idx) {
   if (!APP_DATA.depositos) APP_DATA.depositos = {};
   if (!APP_DATA.depositos[mesActual]) APP_DATA.depositos[mesActual] = [];
-  APP_DATA.depositos[mesActual].splice(idx, 1);
+  const arrDep = APP_DATA.depositos[mesActual];
+  const [depBorrado] = arrDep.splice(idx, 1);
   save();
+  toastDeshacer('Depósito eliminado', () => { arrDep.splice(idx, 0, depBorrado); save(); renderDashboard(); });
   // Actualizar tiles directamente
   const deps = APP_DATA.depositos[mesActual];
   const totalDep = deps.reduce((a,d) => a + d.monto, 0);
@@ -2957,7 +3260,6 @@ function eliminarDeposito(idx) {
   document.getElementById('dash-depositado').textContent = fmt(totalDep);
   document.getElementById('dash-falta').textContent = fmt(falta);
   renderDepositosList(deps);
-  showToast('Depósito eliminado');
 }
 
 // ── Depósitos de un mes arbitrario (desde historial) ──
@@ -3024,7 +3326,7 @@ function refreshDepsMesLista(key) {
     listaEl.innerHTML = deps.length
       ? deps.slice().reverse().map((d,i) =>
           `<div class="dep-item">
-            <div><span class="fw7 text-green">${fmt(d.monto)}</span>${d.nota ? `<span style="color:var(--text3);font-size:12px;margin-left:6px">${d.nota}</span>` : ''}</div>
+            <div><span class="fw7 text-green">${fmt(d.monto)}</span>${d.nota ? `<span style="color:var(--text3);font-size:12px;margin-left:6px">${esc(d.nota)}</span>` : ''}</div>
             <button onclick="eliminarDepositoMes('${key}',${deps.length-1-i})" class="icon-btn" style="opacity:.7">✕</button>
           </div>`).join('')
       : '<div style="color:var(--text3);font-size:12px;padding:4px 0">Sin depósitos</div>';
@@ -3044,10 +3346,11 @@ function refreshDepsMesLista(key) {
 }
 
 function eliminarDepositoMes(key, idx) {
-  
   if (!APP_DATA.depositos || !APP_DATA.depositos[key]) return;
-  APP_DATA.depositos[key].splice(idx, 1);
+  const arr = APP_DATA.depositos[key];
+  const [v] = arr.splice(idx, 1);
   save();
+  toastDeshacer('Depósito eliminado', () => { arr.splice(idx, 0, v); save(); refreshDepsMesLista(key); });
   // Refrescar in-place sin cerrar/reabrir modal
   refreshDepsMesLista(key);
 }
@@ -3109,7 +3412,7 @@ function verDetallesMes(key) {
       deliveryRows += `<div style="display:flex;justify-content:space-between;align-items:flex-start;padding:6px 0;border-bottom:1px solid var(--border);font-size:13px">
         <div>
           <div style="font-weight:600">${DIAS_LABEL[i]}</div>
-          ${d.gastos.map(g=>`<div style="font-size:11px;color:var(--text3);margin-top:1px">↳ ${g.desc||'Gasto'}: ${fmt(g.monto)}</div>`).join('')}
+          ${d.gastos.map(g=>`<div style="font-size:11px;color:var(--text3);margin-top:1px">↳ ${esc(g.desc||'Gasto')}: ${fmt(g.monto)}</div>`).join('')}
         </div>
         <div style="text-align:right">
           <div style="color:var(--green);font-weight:700">${fmt(bruto)}</div>
@@ -3134,7 +3437,7 @@ function verDetallesMes(key) {
   const gmRows = (data.gastosMoto||[]).length
     ? data.gastosMoto.slice().reverse().map(g =>
         `<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);font-size:13px">
-          <div><span style="font-weight:600">${g.desc}</span><span style="color:var(--text3);font-size:11px;margin-left:6px">${g.fecha}</span></div>
+          <div><span style="font-weight:600">${esc(g.desc)}</span><span style="color:var(--text3);font-size:11px;margin-left:6px">${g.fecha}</span></div>
           <div style="color:var(--purple);font-weight:700">${fmt(g.monto)}</div>
         </div>`).join('')
     : '<div style="color:var(--text3);font-size:12px;padding:6px 0">Sin gastos</div>';
@@ -3145,7 +3448,7 @@ function verDetallesMes(key) {
     ? gpList.slice().sort((a,b)=>b.fecha.localeCompare(a.fecha)).map(g =>
         `<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);font-size:13px">
           <div>
-            <span style="font-weight:600">${g.desc}</span>
+            <span style="font-weight:600">${esc(g.desc)}</span>
             <span style="color:var(--text3);font-size:11px;margin-left:6px">${GP_CAT_LABELS[g.cat]||g.cat} · ${fmtFechaCorta(g.fecha)}</span>
           </div>
           <div style="color:var(--red);font-weight:700">${fmt(g.monto)}</div>
@@ -3161,7 +3464,7 @@ function verDetallesMes(key) {
   const depsHTML = deps.length
     ? deps.slice().reverse().map((d,i) =>
         `<div class="dep-item">
-          <div><span class="fw7 text-green">${fmt(d.monto)}</span>${d.nota?`<span style="color:var(--text3);font-size:12px;margin-left:6px">${d.nota}</span>`:''}</div>
+          <div><span class="fw7 text-green">${fmt(d.monto)}</span>${d.nota?`<span style="color:var(--text3);font-size:12px;margin-left:6px">${esc(d.nota)}</span>`:''}</div>
           <button onclick="eliminarDepositoMes('${key}',${deps.length-1-i})" class="icon-btn" style="opacity:.7">✕</button>
         </div>`).join('')
     : '<div style="color:var(--text3);font-size:12px;padding:4px 0">Sin depósitos</div>';
@@ -3201,6 +3504,8 @@ function verDetallesMes(key) {
       </div>
       <div id="deps-mes-lista">${depsHTML}</div>
     </div>
+
+    ${htmlCuentasHistorialMes(key)}
 
     <!-- DELIVERY DETALLE -->
     <div class="card" style="margin-bottom:10px">
@@ -3285,7 +3590,7 @@ function generarPDF(key) {
         <td style="padding:7px 12px;font-weight:700;text-align:right">${fmt(bruto-gastos)}</td>
       </tr>`;
       d.gastos.forEach(g => {
-        deliveryTableRows += `<tr style="background:rgba(255,255,255,.02)"><td style="padding:3px 12px 3px 24px;color:#666;font-size:11px" colspan="4">↳ ${g.desc||'Gasto'}: ${fmt(g.monto)}</td></tr>`;
+        deliveryTableRows += `<tr style="background:rgba(255,255,255,.02)"><td style="padding:3px 12px 3px 24px;color:#666;font-size:11px" colspan="4">↳ ${esc(g.desc||'Gasto')}: ${fmt(g.monto)}</td></tr>`;
       });
     });
   });
@@ -3297,40 +3602,19 @@ function generarPDF(key) {
 
   // Gastos moto rows
   let gmRows = (data.gastosMoto||[]).slice().reverse().map(g =>
-    `<tr><td style="padding:7px 12px;font-weight:600">${g.desc}</td><td style="padding:7px 12px;color:#666;font-size:11px">${g.fecha}</td><td style="padding:7px 12px;color:#111;font-weight:700;text-align:right">${fmt(g.monto)}</td></tr>`
+    `<tr><td style="padding:7px 12px;font-weight:600">${esc(g.desc)}</td><td style="padding:7px 12px;color:#666;font-size:11px">${g.fecha}</td><td style="padding:7px 12px;color:#111;font-weight:700;text-align:right">${fmt(g.monto)}</td></tr>`
   ).join('') || '<tr><td colspan="3" style="padding:7px 12px;color:#666">Sin gastos</td></tr>';
 
   // Gastos personales rows
   const gpList = data.gastosPersonales || [];
   let gpRows = gpList.slice().sort((a,b)=>b.fecha.localeCompare(a.fecha)).map(g =>
-    `<tr><td style="padding:7px 12px;font-weight:600">${g.desc}</td><td style="padding:7px 12px;color:#666;font-size:11px">${GP_CAT_LABELS[g.cat]||g.cat} · ${fmtFechaCorta(g.fecha)}</td><td style="padding:7px 12px;color:#111;font-weight:700;text-align:right">${fmt(g.monto)}</td></tr>`
+    `<tr><td style="padding:7px 12px;font-weight:600">${esc(g.desc)}</td><td style="padding:7px 12px;color:#666;font-size:11px">${GP_CAT_LABELS[g.cat]||g.cat} · ${fmtFechaCorta(g.fecha)}</td><td style="padding:7px 12px;color:#111;font-weight:700;text-align:right">${fmt(g.monto)}</td></tr>`
   ).join('') || '<tr><td colspan="3" style="padding:7px 12px;color:#666">Sin gastos</td></tr>';
   const totalGP = gpList.reduce((a,g)=>a+g.monto,0);
 
-  // Gastos fijos rows
-  const fijos = APP_DATA.gastosFijos || [];
-  let fijosPagado = 0, fijosPendiente = 0;
-  let fijosRows = fijos.length
-    ? fijos.map(x => {
-        const estado = x.pagado ? '✔' : '✘';
-        const estadoColor = x.pagado ? '#059669' : '#dc2626';
-        const cuotasText = x.cuotas ? x.cuotas + ' restantes' : '—';
-        const venceText = x.vence ? 'Día ' + x.vence : '—';
-        if (x.pagado) fijosPagado += x.monto;
-        else fijosPendiente += x.monto;
-        return `<tr>
-          <td style="padding:7px 10px;text-align:center;font-weight:bold;font-size:15px;color:${estadoColor}">${estado}</td>
-          <td style="padding:7px 10px;font-weight:${x.pagado ? 'normal' : '600'};color:${x.pagado ? '#666' : '#111'};text-decoration:${x.pagado ? 'line-through' : 'none'}">${x.nombre}</td>
-          <td style="padding:7px 10px;color:#666">${venceText}</td>
-          <td style="padding:7px 10px;color:#666">${cuotasText}</td>
-          <td style="padding:7px 10px;text-align:right;font-weight:700">${fmt(x.monto)}</td>
-        </tr>`;
-      }).join('')
-    : '<tr><td colspan="5" style="padding:7px 10px;color:#888">Sin gastos fijos registrados</td></tr>';
-
   // Depósitos rows
   let depRows = deps.length
-    ? deps.map(d=>`<tr><td style="padding:7px 12px;color:#111;font-weight:700">${fmt(d.monto)}</td><td style="padding:7px 12px;color:#666">${d.nota||'—'}</td></tr>`).join('')
+    ? deps.map(d=>`<tr><td style="padding:7px 12px;color:#111;font-weight:700">${fmt(d.monto)}</td><td style="padding:7px 12px;color:#666">${esc(d.nota||'—')}</td></tr>`).join('')
     : '<tr><td colspan="2" style="padding:7px 12px;color:#666">Sin depósitos</td></tr>';
 
   const html = `<!DOCTYPE html>
@@ -3435,23 +3719,12 @@ function generarPDF(key) {
     </table>
   </div>
 
-  <div class="section">
-    <div class="section-title">💳 Gastos fijos del mes</div>
-    <table>
-      <thead><tr><th style="width:36px">Estado</th><th>Nombre</th><th>Vence</th><th>Cuotas</th><th style="text-align:right">Monto</th></tr></thead>
-      <tbody>${fijosRows}
-        <tr class="total-row">
-          <td colspan="4" style="padding:8px 12px">Total pagado / Total pendiente</td>
-          <td style="padding:8px 12px;text-align:right;font-weight:bold">${fmt(fijosPagado)} / ${fmt(fijosPendiente)}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  ${htmlCuentasPDF(key)}
 
-  <div class="footer">Moto Pro · ${currentUser} · ${mesLabel}</div>
+  <div class="footer">Delivery Pro · ${esc(currentUser)} · ${mesLabel} · generado el ${fmtFechaHora(new Date().toISOString())}</div>
 </div>
 <script>window.onload=function(){window.print();}<\/script>
-</body></html>\`;
+</body></html>`;
 
   const blob = new Blob([html], { type: 'text/html' });
   const url = URL.createObjectURL(blob);
@@ -3461,141 +3734,694 @@ function generarPDF(key) {
 
 
 /* ═══════════════════════════════════════════
-   GASTOS FIJOS
+   CUENTAS (pagos mensuales, cuotas y deudas)
+   Modelo por cuenta:
+   { id, nombre, monto, vence (día 1-31 o null), tipo: 'mensual'|'cuotas',
+     cuotasTotal, cuotasPrevias, inicio: 'YYYY-MM', pagos: [
+       { id, periodo:'YYYY-MM', fecha: ISO (fecha/hora real del pago), registrado: ISO, monto, cuota, nota } ],
+     v: 2 }
 ═══════════════════════════════════════════ */
-function loadGastosFijos() { return APP_DATA.gastosFijos || []; }
-function saveGastosFijos(lista) { APP_DATA.gastosFijos = lista; save(); }
+const MESES_CORTO = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+const DIA_MS = 86400000;
+let cuentasTab = 'mes';
+let cuentaDetalleId = null;
+let pagoEnCurso = null;      // { cuentaId, periodo }
+let cuentaFiltroHist = 'todas';
 
-function guardarGastoFijo() {
-  const nombre = document.getElementById('fijo-nombre').value.trim();
-  const monto = parseInput('fijo-monto');
-  const vence = parseInt(document.getElementById('fijo-vence').value) || null;
-  const cuotas = parseInt(document.getElementById('fijo-cuotas').value) || null;
-  if (!nombre) { alert('Ingresá el nombre'); return; }
-  if (!monto) { alert('Ingresá el monto'); return; }
-  const lista = loadGastosFijos();
-  lista.push({ id: Date.now(), nombre, monto, vence, cuotas, pagado: false });
-  saveGastosFijos(lista);
-  closeModal('modal-nuevo-fijo');
-  ['fijo-nombre','fijo-monto','fijo-vence','fijo-cuotas'].forEach(id => document.getElementById(id).value = '');
-  renderGastosFijos();
+/* ── Fechas ── */
+function periodoDe(d) { return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0'); }
+function sumarMes(key, n) {
+  const [y, m] = key.split('-').map(Number);
+  const d = new Date(y, m - 1 + n, 1);
+  return periodoDe(d);
 }
-function abrirEdicionFijo(id) {
-  const item = loadGastosFijos().find(x => x.id === id);
-  if (!item) return;
-  document.getElementById('edit-fijo-id').value = id;
-  document.getElementById('edit-fijo-nombre').value = item.nombre;
-  document.getElementById('edit-fijo-monto').value = item.monto.toLocaleString('es-PY');
-  document.getElementById('edit-fijo-vence').value = item.vence || '';
-  document.getElementById('edit-fijo-cuotas').value = item.cuotas || '';
-  openModal('modal-editar-fijo');
+function diasDelMes(key) { const [y, m] = key.split('-').map(Number); return new Date(y, m, 0).getDate(); }
+function inicioDia(d) { const x = new Date(d); x.setHours(0,0,0,0); return x; }
+function fechaVence(c, periodo) {
+  const [y, m] = periodo.split('-').map(Number);
+  const dia = c.vence ? Math.min(c.vence, diasDelMes(periodo)) : diasDelMes(periodo);
+  return new Date(y, m - 1, dia);
 }
-function guardarEdicionFijo() {
-  const id = parseInt(document.getElementById('edit-fijo-id').value);
-  const nombre = document.getElementById('edit-fijo-nombre').value.trim();
-  const monto = parseInput('edit-fijo-monto');
-  const vence = parseInt(document.getElementById('edit-fijo-vence').value) || null;
-  const cuotas = parseInt(document.getElementById('edit-fijo-cuotas').value) || null;
-  if (!nombre || !monto) { alert('Completá los campos'); return; }
-  const lista = loadGastosFijos();
-  const idx = lista.findIndex(x => x.id === id);
-  if (idx !== -1) { lista[idx] = { ...lista[idx], nombre, monto, vence, cuotas }; saveGastosFijos(lista); }
-  closeModal('modal-editar-fijo');
-  renderGastosFijos();
+function nombrePeriodo(key) { const [y, m] = key.split('-'); return MESES_NOMBRES[parseInt(m)-1] + ' ' + y; }
+function fmtFechaHora(iso) {
+  if (!iso) return '—';
+  const d = new Date(iso);
+  return d.getDate() + ' ' + MESES_CORTO[d.getMonth()] + ' ' + d.getFullYear() + ' · ' +
+    String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
 }
-function togglePagoFijo(id) {
-  const lista = loadGastosFijos();
-  const item = lista.find(x => x.id === id);
-  if (!item) return;
-  const marcandoPagado = !item.pagado;
-  item.pagado = marcandoPagado;
-  // Descontar cuota solo al MARCAR como pagado, no al destildar
-  if (marcandoPagado && item.cuotas !== null && item.cuotas !== undefined) {
-    item.cuotas = Math.max(0, item.cuotas - 1);
-    if (item.cuotas === 0) {
-      showToast('✅ ' + item.nombre + ' — cuotas finalizadas');
-      // Eliminar al mes siguiente (no ahora, para que quede visible este mes)
-      item._eliminarAlReset = true;
+function fmtFechaCortaHora(iso) { // "20 sep · 10:00" (sin año si es este año)
+  const d = new Date(iso);
+  return d.getDate() + ' ' + MESES_CORTO[d.getMonth()] + (d.getFullYear() !== new Date().getFullYear() ? ' ' + d.getFullYear() : '') +
+    ' · ' + String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+}
+function fmtFechaLarga(d) {
+  const dias = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+  return dias[d.getDay()] + ' ' + d.getDate() + ' de ' + MESES_NOMBRES[d.getMonth()].toLowerCase();
+}
+function isoLocalInput(d) { // valor para <input type="datetime-local">
+  const p = n => String(n).padStart(2,'0');
+  return d.getFullYear() + '-' + p(d.getMonth()+1) + '-' + p(d.getDate()) + 'T' + p(d.getHours()) + ':' + p(d.getMinutes());
+}
+function plural(n, s, p) { return n + ' ' + (n === 1 ? s : (p || s + 's')); }
+
+/* ── Datos ── */
+function getCuentas() {
+  if (!APP_DATA.gastosFijos) APP_DATA.gastosFijos = [];
+  return APP_DATA.gastosFijos;
+}
+function getCuenta(id) { return getCuentas().find(c => c.id === id); }
+function nuevoId() { return Date.now() + Math.floor(Math.random() * 1000); }
+
+// Convierte los "gastos fijos" viejos (pagado true/false + cuotas restantes) al modelo nuevo sin perder nada
+function normalizarCuentas() {
+  const lista = getCuentas();
+  const periodoViejo = APP_DATA._ultimoReset || getMesKey();
+  lista.forEach(x => {
+    if (x.v === 2) { if (!x.pagos) x.pagos = []; return; }
+    x.pagos = x.pagos || [];
+    const pagadoAntes = !!x.pagado;
+    if (pagadoAntes && !x.pagos.some(p => p.periodo === periodoViejo)) {
+      const f = APP_DATA._savedAt || new Date().toISOString();
+      x.pagos.push({ id: nuevoId(), periodo: periodoViejo, fecha: f, registrado: f, monto: x.monto, migrado: true });
+    }
+    if (x.cuotas !== null && x.cuotas !== undefined) {
+      x.tipo = 'cuotas';
+      x.cuotasTotal = Math.max(0, x.cuotas) + (pagadoAntes ? 1 : 0);
+      x.cuotasPrevias = 0;
     } else {
-      showToast('🔢 ' + item.nombre + ' — ' + item.cuotas + ' cuota' + (item.cuotas !== 1 ? 's' : '') + ' restante' + (item.cuotas !== 1 ? 's' : ''));
+      x.tipo = 'mensual';
+      x.cuotasTotal = null; x.cuotasPrevias = 0;
+    }
+    x.inicio = periodoViejo;
+    x.pagos.forEach((p, i) => { if (x.tipo === 'cuotas' && !p.cuota) p.cuota = i + 1; });
+    delete x.pagado; delete x.cuotas; delete x._eliminarAlReset;
+    x.v = 2;
+  });
+}
+
+/* Calcula TODO el estado de una cuenta a una fecha */
+function estadoCuenta(c, ahora) {
+  ahora = ahora || new Date();
+  const hoy0 = inicioDia(ahora);
+  const periodoHoy = periodoDe(ahora);
+  const pagos = (c.pagos || []).slice().sort((a,b) => a.periodo.localeCompare(b.periodo) || a.fecha.localeCompare(b.fecha));
+  const pagados = new Set(pagos.map(p => p.periodo));
+  const esCuotas = c.tipo === 'cuotas' && c.cuotasTotal;
+  const previas = esCuotas ? (c.cuotasPrevias || 0) : 0;
+  const cuotasPagadas = previas + pagos.length;
+  const cuotasRestantes = esCuotas ? Math.max(0, c.cuotasTotal - cuotasPagadas) : null;
+  const finalizada = esCuotas && cuotasRestantes === 0;
+  const montoPagadoApp = pagos.reduce((a,p) => a + (p.monto || 0), 0);
+  const montoPagado = montoPagadoApp + previas * c.monto;
+  const saldo = esCuotas ? cuotasRestantes * c.monto : null;
+
+  // Períodos que ya deberían estar pagos (desde el inicio hasta este mes) y no lo están
+  const pendientes = [];
+  if (!finalizada) {
+    let p = c.inicio || periodoHoy;
+    let cupo = esCuotas ? cuotasRestantes : Infinity;
+    let guard = 0;
+    while (p <= periodoHoy && cupo > 0 && guard++ < 600) {
+      if (!pagados.has(p)) { pendientes.push(p); cupo--; }
+      p = sumarMes(p, 1);
     }
   }
-  saveGastosFijos(lista); renderGastosFijos();
-}
-function eliminarGastoFijo(id) {
-  
-  saveGastosFijos(loadGastosFijos().filter(x => x.id !== id));
-  renderGastosFijos();
+  const atrasados = pendientes.filter(p => inicioDia(fechaVence(c, p)) < hoy0);
+  const diasAtraso = atrasados.length ? Math.round((hoy0 - inicioDia(fechaVence(c, atrasados[0]))) / DIA_MS) : 0;
+  const pagoEsteMes = pagos.filter(p => p.periodo === periodoHoy).pop() || null;
+  const correspondeEsteMes = (c.inicio || periodoHoy) <= periodoHoy && (!finalizada || !!pagoEsteMes);
+
+  // Próximo período a pagar: el más viejo pendiente, o el siguiente sin pagar (adelanto)
+  let proximo = pendientes[0] || null;
+  if (!proximo && !finalizada) {
+    let p = (c.inicio && c.inicio > periodoHoy) ? c.inicio : periodoHoy;
+    let guard = 0;
+    while (pagados.has(p) && guard++ < 600) p = sumarMes(p, 1);
+    proximo = p;
+  }
+  const venceEsteMes = correspondeEsteMes ? fechaVence(c, periodoHoy) : null;
+  const diasParaVencer = venceEsteMes ? Math.round((inicioDia(venceEsteMes) - hoy0) / DIA_MS) : null;
+
+  let estado; // pagado | atrasado | hoy | pronto | pendiente | futuro | finalizada
+  if (atrasados.length) estado = 'atrasado';
+  else if (pagoEsteMes) estado = 'pagado';
+  else if (finalizada) estado = 'finalizada';
+  else if (!correspondeEsteMes) estado = 'futuro';
+  else if (diasParaVencer === 0) estado = 'hoy';
+  else if (diasParaVencer !== null && diasParaVencer <= 5) estado = 'pronto';
+  else estado = 'pendiente';
+
+  const numeroCuota = periodo => {
+    if (!esCuotas) return null;
+    const idx = pagos.findIndex(p => p.periodo === periodo);
+    if (idx !== -1) return previas + idx + 1;
+    return cuotasPagadas + 1;
+  };
+
+  return { pagos, esCuotas, cuotasPagadas, cuotasRestantes, finalizada, montoPagado, saldo,
+           pendientes, atrasados, diasAtraso, deudaAtrasada: atrasados.length * c.monto,
+           pagoEsteMes, correspondeEsteMes, proximo, venceEsteMes, diasParaVencer, estado, numeroCuota };
 }
 
-function renderGastosFijos() {
-  const lista = loadGastosFijos();
+/* Estado de una cuenta en un mes concreto (para PDF e historial) */
+function estadoCuentaEnPeriodo(c, periodo, ahora) {
+  ahora = ahora || new Date();
+  if ((c.inicio || periodo) > periodo) return null;
+  const st = estadoCuenta(c, ahora);
+  const pago = st.pagos.filter(p => p.periodo === periodo).pop();
+  if (pago) return { tipo: 'pagado', pago, cuota: st.numeroCuota(periodo) };
+  // ¿el plan ya había terminado antes de este mes?
+  if (st.esCuotas) {
+    const pagosAntes = st.pagos.filter(p => p.periodo < periodo).length + (c.cuotasPrevias || 0);
+    if (pagosAntes >= c.cuotasTotal) return null;
+    if (st.finalizada) return null;
+  }
+  const vence = fechaVence(c, periodo);
+  const hoy0 = inicioDia(ahora);
+  if (inicioDia(vence) < hoy0) return { tipo: 'atrasado', dias: Math.round((hoy0 - inicioDia(vence)) / DIA_MS), vence };
+  return { tipo: 'pendiente', vence };
+}
+
+function resumenCuentas(ahora) {
+  const lista = getCuentas().map(c => ({ c, st: estadoCuenta(c, ahora) }));
+  const delMes = lista.filter(x => x.st.correspondeEsteMes);
+  const pagadoMes = delMes.filter(x => x.st.pagoEsteMes).reduce((a,x) => a + (x.st.pagoEsteMes.monto || 0), 0);
+  const totalMes = delMes.reduce((a,x) => a + (x.st.pagoEsteMes ? (x.st.pagoEsteMes.monto || 0) : x.c.monto), 0);
+  const atrasadas = lista.filter(x => x.st.atrasados.length);
+  const deudaAtrasada = atrasadas.reduce((a,x) => a + x.st.deudaAtrasada, 0);
+  const saldoCuotas = lista.reduce((a,x) => a + (x.st.saldo || 0), 0);
+  const urgentes = lista.filter(x => ['atrasado','hoy'].includes(x.st.estado)).length;
+  return { lista, delMes, pagadoMes, totalMes, pendienteMes: Math.max(0, totalMes - pagadoMes),
+           atrasadas, deudaAtrasada, saldoCuotas, urgentes,
+           pagadasMes: delMes.filter(x => x.st.pagoEsteMes).length };
+}
+
+/* ── Chip de estado ── */
+function chipEstado(c, st) {
+  switch (st.estado) {
+    case 'atrasado': {
+      const meses = st.atrasados.length;
+      return `<span class="cta-chip red">⚠️ Atrasado ${plural(st.diasAtraso, 'día')}${meses > 1 ? ' · ' + meses + ' meses sin pagar' : ''}</span>`;
+    }
+    case 'pagado':   return `<span class="cta-chip green">✓ Pagado ${fmtFechaCortaHora(st.pagoEsteMes.fecha)}</span>`;
+    case 'hoy':      return `<span class="cta-chip red pulse">⏰ Vence HOY</span>`;
+    case 'pronto':   return `<span class="cta-chip gold">🔔 Vence en ${plural(st.diasParaVencer, 'día')} · ${st.venceEsteMes.getDate()} ${MESES_CORTO[st.venceEsteMes.getMonth()]}</span>`;
+    case 'pendiente':return `<span class="cta-chip">📅 ${c.vence ? 'Vence el ' + st.venceEsteMes.getDate() + ' ' + MESES_CORTO[st.venceEsteMes.getMonth()] : 'Pendiente este mes'}</span>`;
+    case 'futuro':   return `<span class="cta-chip blue">🗓️ Empieza en ${nombrePeriodo(c.inicio)}</span>`;
+    case 'finalizada': return `<span class="cta-chip green">🏁 Plan terminado</span>`;
+  }
+  return '';
+}
+
+/* ── Render principal ── */
+function renderCuentas() {
+  const r = resumenCuentas();
+  const pct = r.totalMes > 0 ? Math.round(r.pagadoMes / r.totalMes * 100) : 0;
+  document.getElementById('cta-mes-label').textContent = nombrePeriodo(getMesKey());
+  document.getElementById('cta-pagado').textContent = fmt(r.pagadoMes);
+  document.getElementById('cta-total').textContent = 'de ' + fmt(r.totalMes);
+  document.getElementById('cta-prog').style.width = pct + '%';
+  document.getElementById('cta-pct').textContent = r.delMes.length
+    ? `${r.pagadasMes} de ${r.delMes.length} pagadas · ${pct}%` : 'Sin cuentas este mes';
+  document.getElementById('cta-pendiente').textContent = fmt(r.pendienteMes);
+  document.getElementById('cta-atrasado').textContent = fmt(r.deudaAtrasada);
+  document.getElementById('cta-saldo').textContent = fmt(r.saldoCuotas);
+
+  const alerta = document.getElementById('cta-alerta');
+  if (r.atrasadas.length) {
+    const peor = r.atrasadas.slice().sort((a,b) => b.st.diasAtraso - a.st.diasAtraso)[0];
+    alerta.innerHTML = `<div class="cta-alert" role="alert">
+      <div class="cta-alert-ico">⚠️</div>
+      <div><div class="cta-alert-t">${plural(r.atrasadas.length, 'cuenta atrasada', 'cuentas atrasadas')} · ${fmt(r.deudaAtrasada)}</div>
+      <div class="cta-alert-s">La más atrasada: <b>${esc(peor.c.nombre)}</b>, ${plural(peor.st.diasAtraso, 'día')} de atraso</div></div>
+    </div>`;
+  } else alerta.innerHTML = '';
+
+  document.querySelectorAll('#cta-tabs .stats-tab').forEach(b => b.classList.toggle('active', b.dataset.tab === cuentasTab));
   const el = document.getElementById('lista-fijos');
-  if (!lista.length) {
-    el.innerHTML = `<div class="empty-state"><div class="empty-icon">💳</div><div>No hay gastos fijos aún</div></div>`;
-    document.getElementById('fijos-total').textContent = '₲ 0';
-    document.getElementById('fijos-pagado').textContent = '₲ 0';
-    document.getElementById('fijos-pendiente').textContent = '₲ 0';
-    document.getElementById('fijos-prog-bar').style.width = '0%';
-    document.getElementById('fijos-pct-label').textContent = '0%';
+  if (cuentasTab === 'historial') { el.innerHTML = htmlHistorialPagos(); return; }
+
+  const activas = r.lista.filter(x => cuentasTab === 'finalizadas' ? (x.st.finalizada && !x.st.atrasados.length) : !(x.st.finalizada && !x.st.pagoEsteMes && !x.st.atrasados.length));
+  if (!getCuentas().length) {
+    el.innerHTML = `<div class="empty-state"><div class="empty-icon">💳</div>
+      <div style="font-weight:600;color:var(--text2);margin-bottom:4px">No tenés cuentas cargadas</div>
+      <div style="font-size:12px;max-width:260px;margin:0 auto 14px">Es opcional. Cargá acá tus cuotas, préstamos o pagos mensuales y la app te avisa cuándo vencen y cuánto falta.</div>
+      <button class="btn btn-gold btn-sm" onclick="abrirNuevaCuenta()">+ Agregar cuenta</button></div>`;
     return;
   }
-  const total = lista.reduce((a,x) => a + x.monto, 0);
-  const pagado = lista.filter(x => x.pagado).reduce((a,x) => a + x.monto, 0);
-  const pendiente = total - pagado;
-  const pct = total > 0 ? Math.round((pagado / total) * 100) : 0;
-  document.getElementById('fijos-total').textContent = fmt(total);
-  document.getElementById('fijos-pagado').textContent = fmt(pagado);
-  document.getElementById('fijos-pendiente').textContent = fmt(pendiente);
-  document.getElementById('fijos-prog-bar').style.width = pct + '%';
-  document.getElementById('fijos-pct-label').textContent = pct + '% pagado';
-
-  const hoy = new Date().getDate();
-  const ordenados = [...lista].sort((a,b) => {
-    if (a.pagado !== b.pagado) return a.pagado ? 1 : -1;
-    return (a.vence||99) - (b.vence||99);
-  });
-  el.innerHTML = ordenados.map(x => {
-    const venceHoy  = x.vence === hoy;
-    const venceProx = x.vence && !x.pagado && x.vence >= hoy && x.vence <= hoy + 3;
-    const vencido   = x.vence && !x.pagado && x.vence < hoy;
-
-    // Días vencido
-    const diasVencido = vencido ? hoy - x.vence : 0;
-
-    // Deuda total restante (cuotas que quedan x monto)
-    const deudaTotal = (x.cuotas && x.cuotas > 0) ? x.cuotas * x.monto : 0;
-
-    const venceMeta = x.vence
-      ? `📅 Día ${x.vence}${venceHoy ? ' <span class="badge red" style="font-size:9px">HOY</span>' : venceProx ? ' <span class="badge gold" style="font-size:9px">PRONTO</span>' : vencido ? ` <span class="badge red" style="font-size:9px">VENCIDO ${diasVencido}d</span>` : ''}` : '';
-
-    const cuotasMeta = x.cuotas
-      ? `🔢 ${x.cuotas} cuota${x.cuotas !== 1 ? 's' : ''} restante${x.cuotas !== 1 ? 's' : ''}`
-      : '';
-
-    const deudaMeta = deudaTotal > 0
-      ? `<div style="font-size:11px;color:var(--red);font-weight:600;margin-top:3px">💸 Deuda total: ${fmt(deudaTotal)}</div>`
-      : '';
-
-    return `<div class="fijo-item ${x.pagado ? 'pagado' : ''}">
-      <div class="fijo-top">
-        <button class="fijo-check ${x.pagado ? 'done' : ''}" onclick="togglePagoFijo(${x.id})">${x.pagado ? '✓' : ''}</button>
-        <div class="fijo-info">
-          <div class="fijo-nombre">${x.nombre}</div>
-          <div class="fijo-meta">${venceMeta}${cuotasMeta ? (x.vence ? ' · ' : '') + cuotasMeta : ''}</div>
-          ${deudaMeta}
-        </div>
-        <div class="fijo-right">
-          <div class="fijo-monto">${fmt(x.monto)}</div>
-          <div class="fijo-actions">
-            <button class="icon-btn" onclick="abrirEdicionFijo(${x.id})" title="Editar">✏️</button>
-            <button class="icon-btn" onclick="eliminarGastoFijo(${x.id})" title="Eliminar">🗑️</button>
-          </div>
-        </div>
-      </div>
-    </div>`;
-  }).join('');
+  if (!activas.length) {
+    el.innerHTML = `<div class="empty-state"><div class="empty-icon">${cuentasTab === 'finalizadas' ? '🏁' : '🎉'}</div><div>${cuentasTab === 'finalizadas' ? 'Todavía no terminaste ningún plan de cuotas' : 'No hay cuentas activas'}</div></div>`;
+    return;
+  }
+  const orden = { atrasado: 0, hoy: 1, pronto: 2, pendiente: 3, futuro: 4, pagado: 5, finalizada: 6 };
+  activas.sort((a,b) => (orden[a.st.estado] - orden[b.st.estado]) || ((a.c.vence||99) - (b.c.vence||99)));
+  el.innerHTML = activas.map(({c, st}) => htmlTarjetaCuenta(c, st)).join('');
 }
+
+function htmlTarjetaCuenta(c, st) {
+  const cls = st.estado === 'atrasado' || st.estado === 'hoy' ? 'is-late' : st.estado === 'pagado' ? 'is-paid' : st.estado === 'pronto' ? 'is-soon' : st.finalizada ? 'is-done' : '';
+  const inicial = esc((c.nombre || '?').trim()[0] || '?').toUpperCase();
+  const barra = st.esCuotas ? `
+    <div class="cta-plan">
+      <div class="prog-wrap" style="height:6px"><div class="prog-bar ${st.finalizada ? 'green' : 'gold'}" style="width:${Math.round(st.cuotasPagadas / c.cuotasTotal * 100)}%"></div></div>
+      <div class="cta-plan-row">
+        <span><b>${st.cuotasPagadas}</b> de ${c.cuotasTotal} cuotas</span>
+        <span>${st.finalizada ? 'Plan completo' : 'Faltan <b>' + st.cuotasRestantes + '</b> · ' + fmt(st.saldo)}</span>
+      </div>
+    </div>` : '';
+  let accion;
+  if (st.estado === 'atrasado') {
+    accion = `<button class="cta-pay late" onclick="event.stopPropagation();abrirPago(${c.id})">Pagar ${nombrePeriodo(st.proximo).split(' ')[0]} · ${fmt(c.monto)}</button>`;
+  } else if (st.pagoEsteMes) {
+    accion = `<div class="cta-paid-row"><span class="cta-paid-check">✓</span><span>Pagado · ${fmt(st.pagoEsteMes.monto)}${st.esCuotas && st.numeroCuota(getMesKey()) ? ' · cuota ' + st.numeroCuota(getMesKey()) + '/' + c.cuotasTotal : ''}</span></div>`;
+  } else if (st.finalizada) {
+    accion = `<div class="cta-paid-row"><span class="cta-paid-check">🏁</span><span>Pagaste las ${c.cuotasTotal} cuotas · ${fmt(st.montoPagado)}</span></div>`;
+  } else if (st.estado === 'futuro') {
+    accion = `<button class="cta-pay ghost" onclick="event.stopPropagation();abrirPago(${c.id})">Adelantar pago · ${fmt(c.monto)}</button>`;
+  } else {
+    accion = `<button class="cta-pay" onclick="event.stopPropagation();abrirPago(${c.id})">Pagar ${fmt(c.monto)}</button>`;
+  }
+  return `<div class="cta-card ${cls}" onclick="abrirDetalleCuenta(${c.id})" role="button" tabindex="0" aria-label="${esc(c.nombre)}">
+    <div class="cta-top">
+      <div class="cta-avatar">${inicial}</div>
+      <div class="cta-info">
+        <div class="cta-name">${esc(c.nombre)}</div>
+        ${chipEstado(c, st)}
+      </div>
+      <div class="cta-amount">${fmt(c.monto)}<small>${st.esCuotas ? 'por cuota' : 'por mes'}</small></div>
+    </div>
+    ${barra}
+    ${accion}
+  </div>`;
+}
+
+function htmlHistorialPagos() {
+  const cuentas = getCuentas();
+  const todos = [];
+  cuentas.forEach(c => {
+    const st = estadoCuenta(c);
+    st.pagos.forEach(p => todos.push({ c, p, cuota: st.esCuotas ? st.numeroCuota(p.periodo) : null }));
+  });
+  const filtrados = todos.filter(x => cuentaFiltroHist === 'todas' || String(x.c.id) === String(cuentaFiltroHist))
+                         .sort((a,b) => b.p.fecha.localeCompare(a.p.fecha));
+  const opciones = `<option value="todas">Todas las cuentas</option>` +
+    cuentas.map(c => `<option value="${c.id}" ${String(c.id) === String(cuentaFiltroHist) ? 'selected' : ''}>${esc(c.nombre)}</option>`).join('');
+  const total = filtrados.reduce((a,x) => a + (x.p.monto || 0), 0);
+  let html = `<div class="field" style="margin-bottom:10px"><select id="cta-hist-filtro" onchange="cuentaFiltroHist=this.value;renderCuentas()" aria-label="Filtrar por cuenta">${opciones}</select></div>
+    <div class="cta-hist-total"><span>${plural(filtrados.length, 'pago registrado', 'pagos registrados')}</span><b>${fmt(total)}</b></div>`;
+  if (!filtrados.length) return html + `<div class="empty-state"><div class="empty-icon">🧾</div><div>Todavía no registraste pagos</div></div>`;
+  let mesActualGrupo = '';
+  filtrados.forEach(({c, p, cuota}) => {
+    const g = periodoDe(new Date(p.fecha));
+    if (g !== mesActualGrupo) { mesActualGrupo = g; html += `<div class="cta-hist-group">${nombrePeriodo(g)}</div>`; }
+    html += htmlFilaPago(c, p, cuota, true);
+  });
+  return html;
+}
+
+function htmlFilaPago(c, p, cuota, conNombre) {
+  const atraso = p.migrado ? '' : (() => {
+    const v = inicioDia(fechaVence(c, p.periodo)), f = inicioDia(new Date(p.fecha));
+    const d = Math.round((f - v) / DIA_MS);
+    return d > 0 ? `<span class="badge red" style="font-size:9px">${plural(d,'día')} tarde</span>` : `<span class="badge green" style="font-size:9px">a tiempo</span>`;
+  })();
+  return `<div class="cta-pago-row">
+    <div class="cta-pago-ico">✓</div>
+    <div class="cta-pago-info">
+      <div class="cta-pago-t">${conNombre ? esc(c.nombre) + ' · ' : ''}${cuota ? 'Cuota ' + cuota + (c.cuotasTotal ? '/' + c.cuotasTotal : '') : nombrePeriodo(p.periodo)} ${atraso}</div>
+      <div class="cta-pago-s">🕒 ${fmtFechaHora(p.fecha)}${cuota ? ' · mes ' + nombrePeriodo(p.periodo) : ''}${p.migrado ? ' · fecha aprox.' : ''}</div>
+      ${p.nota ? `<div class="cta-pago-s">📝 ${esc(p.nota)}</div>` : ''}
+    </div>
+    <div class="cta-pago-m">${fmt(p.monto)}
+      <button class="icon-btn" style="opacity:.7;display:block;margin-left:auto;margin-top:4px;font-size:12px" aria-label="Anular pago"
+        onclick="event.stopPropagation();anularPago(${c.id},${p.id})">↩︎ Anular</button></div>
+  </div>`;
+}
+
+function cambiarTabCuentas(tab) { cuentasTab = tab; renderCuentas(); }
+
+/* ── Detalle ── */
+function abrirDetalleCuenta(id) {
+  cuentaDetalleId = id;
+  renderDetalleCuenta();
+  openModal('modal-cuenta-detalle');
+}
+function renderDetalleCuenta() {
+  const c = getCuenta(cuentaDetalleId);
+  if (!c) { closeModal('modal-cuenta-detalle'); return; }
+  const st = estadoCuenta(c);
+  document.getElementById('cta-det-titulo').textContent = c.nombre;
+  const pendientesHTML = st.atrasados.length ? `
+    <div class="cta-alert" style="margin:0 0 12px"><div class="cta-alert-ico">⚠️</div><div>
+      <div class="cta-alert-t">${plural(st.atrasados.length, 'mes', 'meses')} sin pagar · ${fmt(st.deudaAtrasada)}</div>
+      <div class="cta-alert-s">${st.atrasados.map(p => nombrePeriodo(p) + ' (venció el ' + fechaVence(c, p).getDate() + ' ' + MESES_CORTO[fechaVence(c,p).getMonth()] + ')').join(' · ')}</div>
+    </div></div>` : '';
+  const plan = st.esCuotas ? `
+    <div class="stat-row cols-2" style="margin-bottom:10px">
+      <div class="stat-tile"><div class="stat-tile-label">Cuotas pagadas</div><div class="stat-tile-val green">${st.cuotasPagadas} / ${c.cuotasTotal}</div></div>
+      <div class="stat-tile"><div class="stat-tile-label">Cuotas que faltan</div><div class="stat-tile-val ${st.cuotasRestantes ? 'gold' : 'green'}">${st.cuotasRestantes}</div></div>
+      <div class="stat-tile"><div class="stat-tile-label">Ya pagaste</div><div class="stat-tile-val green">${fmt(st.montoPagado)}</div></div>
+      <div class="stat-tile"><div class="stat-tile-label">Te falta pagar</div><div class="stat-tile-val red">${fmt(st.saldo)}</div></div>
+    </div>
+    <div class="prog-wrap" style="margin-bottom:6px"><div class="prog-bar ${st.finalizada ? 'green' : 'gold'}" style="width:${Math.round(st.cuotasPagadas / c.cuotasTotal * 100)}%"></div></div>
+    <div style="font-size:11px;color:var(--text3);margin-bottom:12px">${st.finalizada ? '🏁 Plan terminado' : 'Última cuota estimada: ' + nombrePeriodo(sumarMes(st.proximo, st.cuotasRestantes - 1))}</div>` : `
+    <div class="stat-row cols-2" style="margin-bottom:12px">
+      <div class="stat-tile"><div class="stat-tile-label">Pagos registrados</div><div class="stat-tile-val green">${st.pagos.length}</div></div>
+      <div class="stat-tile"><div class="stat-tile-label">Total pagado</div><div class="stat-tile-val green">${fmt(st.montoPagado)}</div></div>
+    </div>`;
+  let boton = '';
+  if (!st.finalizada) {
+    const adelanto = !st.pendientes.length && st.pagoEsteMes;
+    boton = `<button class="cta-pay ${st.atrasados.length ? 'late' : adelanto ? 'ghost' : ''}" style="margin:0 0 14px" onclick="abrirPago(${c.id})">
+      ${adelanto ? 'Adelantar ' + nombrePeriodo(st.proximo) : 'Pagar ' + nombrePeriodo(st.proximo)} · ${fmt(c.monto)}</button>`;
+  }
+  const hist = st.pagos.length
+    ? st.pagos.slice().sort((a,b) => b.fecha.localeCompare(a.fecha)).map(p => htmlFilaPago(c, p, st.esCuotas ? st.numeroCuota(p.periodo) : null, false)).join('')
+    : `<div class="text-muted" style="font-size:12px;padding:8px 0">Todavía no hay pagos registrados</div>`;
+  document.getElementById('cta-det-body').innerHTML = `
+    <div class="cta-det-head">
+      <div><div class="cta-det-monto">${fmt(c.monto)}</div>
+      <div style="font-size:12px;color:var(--text3)">${st.esCuotas ? 'por cuota' : 'por mes'}${c.vence ? ' · vence el día ' + c.vence : ''} · desde ${nombrePeriodo(c.inicio)}</div></div>
+      ${chipEstado(c, st)}
+    </div>
+    ${pendientesHTML}${plan}${boton}
+    <div class="card-label" style="margin-bottom:6px">🧾 Historial de pagos</div>
+    ${hist}
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px">
+      <button class="btn btn-ghost" onclick="abrirEditarCuenta(${c.id})">✏️ Editar</button>
+      <button class="btn btn-danger" onclick="eliminarCuenta(${c.id})">🗑️ Eliminar</button>
+    </div>`;
+}
+
+/* ── Pagar ── */
+function abrirPago(id) {
+  const c = getCuenta(id); if (!c) return;
+  const st = estadoCuenta(c);
+  if (st.finalizada) { showToast('Este plan ya está terminado'); return; }
+  pagoEnCurso = { cuentaId: id, periodo: st.proximo };
+  const cuota = st.esCuotas ? st.numeroCuota(st.proximo) : null;
+  const vence = fechaVence(c, st.proximo);
+  const dias = Math.round((inicioDia(new Date()) - inicioDia(vence)) / DIA_MS);
+  document.getElementById('pago-cuenta').textContent = c.nombre;
+  document.getElementById('pago-detalle').innerHTML =
+    `${cuota ? '<b>Cuota ' + cuota + ' de ' + c.cuotasTotal + '</b> · ' : ''}Mes de <b>${nombrePeriodo(st.proximo)}</b><br>` +
+    `Vencimiento: ${vence.getDate()} ${MESES_CORTO[vence.getMonth()]} ${vence.getFullYear()}` +
+    (dias > 0 ? ` · <span class="text-red fw7">${plural(dias, 'día')} de atraso</span>` : dias === 0 ? ' · <span class="text-gold fw7">vence hoy</span>' : '');
+  document.getElementById('pago-monto').value = Math.round(c.monto).toLocaleString('es-PY');
+  document.getElementById('pago-fecha').value = isoLocalInput(new Date());
+  document.getElementById('pago-nota').value = '';
+  openModal('modal-pagar');
+}
+function confirmarPago() {
+  if (!pagoEnCurso) return;
+  const c = getCuenta(pagoEnCurso.cuentaId); if (!c) return;
+  const monto = parseInput('pago-monto');
+  const fechaVal = document.getElementById('pago-fecha').value;
+  if (!monto) { showToast('Ingresá el monto pagado'); return; }
+  const fecha = fechaVal ? new Date(fechaVal) : new Date();
+  if (isNaN(fecha)) { showToast('Fecha no válida'); return; }
+  if (fecha.getTime() > Date.now() + 5 * 60000) { showToast('La fecha del pago no puede ser futura'); return; }
+  const st = estadoCuenta(c);
+  if (c.pagos.some(p => p.periodo === pagoEnCurso.periodo)) { showToast('Ese mes ya estaba pagado'); closeModal('modal-pagar'); return; }
+  const pago = { id: nuevoId(), periodo: pagoEnCurso.periodo, fecha: fecha.toISOString(), registrado: new Date().toISOString(),
+                 monto, cuota: st.esCuotas ? st.numeroCuota(pagoEnCurso.periodo) : null,
+                 nota: document.getElementById('pago-nota').value.trim() };
+  c.pagos.push(pago);
+  save();
+  closeModal('modal-pagar');
+  mostrarRecibo(c, pago);
+  refrescarCuentasUI();
+  if (navigator.vibrate) try { navigator.vibrate([30, 40, 30]); } catch(e){}
+}
+function mostrarRecibo(c, pago) {
+  const st = estadoCuenta(c);
+  document.getElementById('recibo-body').innerHTML = `
+    <div class="recibo-check">✓</div>
+    <div class="recibo-titulo">¡Pago registrado!</div>
+    <div class="recibo-monto">${fmt(pago.monto)}</div>
+    <div class="recibo-tabla">
+      <div><span>Cuenta</span><b>${esc(c.nombre)}</b></div>
+      <div><span>Corresponde a</span><b>${nombrePeriodo(pago.periodo)}</b></div>
+      ${pago.cuota ? `<div><span>Cuota</span><b>${pago.cuota} de ${c.cuotasTotal}</b></div>` : ''}
+      <div><span>Fecha del pago</span><b>${fmtFechaHora(pago.fecha)}</b></div>
+      ${pago.nota ? `<div><span>Nota</span><b>${esc(pago.nota)}</b></div>` : ''}
+      ${st.esCuotas ? `<div><span>Cuotas que faltan</span><b>${st.cuotasRestantes}</b></div><div><span>Saldo restante</span><b>${fmt(st.saldo)}</b></div>` : ''}
+      <div><span>N° de registro</span><b style="font-family:var(--ff-mono)">${String(pago.id).slice(-8)}</b></div>
+    </div>
+    ${st.finalizada ? '<div class="cta-chip green" style="margin-top:12px">🏁 ¡Terminaste de pagar este plan!</div>' : ''}
+    ${st.atrasados.length ? `<div class="cta-chip red" style="margin-top:12px">Todavía ${st.atrasados.length === 1 ? 'queda 1 mes atrasado' : 'quedan ' + st.atrasados.length + ' meses atrasados'}</div>` : ''}`;
+  openModal('modal-recibo');
+}
+function anularPago(cuentaId, pagoId) {
+  const c = getCuenta(cuentaId); if (!c) return;
+  const p = c.pagos.find(x => x.id === pagoId); if (!p) return;
+  confirmarAccion('¿Anular este pago?',
+    `${esc(c.nombre)} · ${nombrePeriodo(p.periodo)} · ${fmt(p.monto)}<br>pagado el ${fmtFechaHora(p.fecha)}.<br>Ese mes vuelve a quedar pendiente.`,
+    'Anular pago', () => {
+      c.pagos = c.pagos.filter(x => x.id !== pagoId);
+      save(); refrescarCuentasUI();
+      showToast('↩︎ Pago anulado');
+    });
+}
+
+/* ── Crear / editar ── */
+function abrirNuevaCuenta() {
+  document.getElementById('cta-form-titulo').textContent = '💳 Nueva cuenta';
+  document.getElementById('cta-form-id').value = '';
+  ['cta-f-nombre','cta-f-monto','cta-f-vence','cta-f-total','cta-f-previas','cta-f-nota'].forEach(id => { const e = document.getElementById(id); if (e) e.value = ''; });
+  document.getElementById('cta-f-inicio').value = getMesKey();
+  setTipoCuenta('mensual');
+  actualizarAyudaInicio();
+  openModal('modal-cuenta-form');
+}
+function abrirEditarCuenta(id) {
+  const c = getCuenta(id); if (!c) return;
+  document.getElementById('cta-form-titulo').textContent = '✏️ Editar cuenta';
+  document.getElementById('cta-form-id').value = id;
+  document.getElementById('cta-f-nombre').value = c.nombre;
+  document.getElementById('cta-f-monto').value = Math.round(c.monto).toLocaleString('es-PY');
+  document.getElementById('cta-f-vence').value = c.vence || '';
+  document.getElementById('cta-f-inicio').value = c.inicio || getMesKey();
+  document.getElementById('cta-f-total').value = c.cuotasTotal || '';
+  document.getElementById('cta-f-previas').value = c.cuotasPrevias || '';
+  setTipoCuenta(c.tipo === 'cuotas' ? 'cuotas' : 'mensual');
+  actualizarAyudaInicio();
+  openModal('modal-cuenta-form');
+}
+function setTipoCuenta(tipo) {
+  document.getElementById('cta-f-tipo').value = tipo;
+  document.querySelectorAll('#cta-f-seg button').forEach(b => b.classList.toggle('active', b.dataset.tipo === tipo));
+  document.getElementById('cta-f-cuotas-box').style.display = tipo === 'cuotas' ? '' : 'none';
+}
+function actualizarAyudaInicio() {
+  const v = parseInt(document.getElementById('cta-f-vence').value) || null;
+  const ini = document.getElementById('cta-f-inicio').value;
+  const ayuda = document.getElementById('cta-f-ayuda');
+  if (!ini) { ayuda.textContent = ''; return; }
+  const venc = fechaVence({ vence: v }, ini);
+  const pasado = inicioDia(venc) < inicioDia(new Date());
+  ayuda.innerHTML = `Primer vencimiento: <b>${venc.getDate()} ${MESES_CORTO[venc.getMonth()]} ${venc.getFullYear()}</b>` +
+    (pasado ? ' · <span class="text-red">ya pasó: si lo pagaste, registrá el pago después de guardar</span>' : '');
+}
+function guardarCuenta() {
+  const idVal = document.getElementById('cta-form-id').value;
+  const nombre = document.getElementById('cta-f-nombre').value.trim();
+  const monto = parseInput('cta-f-monto');
+  const venceRaw = parseInt(document.getElementById('cta-f-vence').value);
+  const vence = venceRaw >= 1 && venceRaw <= 31 ? venceRaw : null;
+  const tipo = document.getElementById('cta-f-tipo').value;
+  const inicio = document.getElementById('cta-f-inicio').value || getMesKey();
+  const cuotasTotal = tipo === 'cuotas' ? (parseInt(document.getElementById('cta-f-total').value) || 0) : null;
+  const cuotasPrevias = tipo === 'cuotas' ? Math.max(0, parseInt(document.getElementById('cta-f-previas').value) || 0) : 0;
+  if (!nombre) { showToast('Poné un nombre a la cuenta'); return; }
+  if (!monto) { showToast('Ingresá el monto'); return; }
+  if (document.getElementById('cta-f-vence').value && !vence) { showToast('El día de vencimiento va de 1 a 31'); return; }
+  if (tipo === 'cuotas' && cuotasTotal < 1) { showToast('Indicá cuántas cuotas tiene en total'); return; }
+  if (tipo === 'cuotas' && cuotasPrevias >= cuotasTotal) { showToast('Las cuotas ya pagadas no pueden ser igual o más que el total'); return; }
+  const lista = getCuentas();
+  if (idVal) {
+    const c = getCuenta(Number(idVal));
+    if (c) {
+      if (tipo === 'cuotas' && cuotasPrevias + c.pagos.length > cuotasTotal) {
+        showToast('Ya hay más pagos registrados que ese total de cuotas'); return;
+      }
+      Object.assign(c, { nombre, monto, vence, tipo, inicio, cuotasTotal, cuotasPrevias });
+      c.pagos.forEach(p => { if (p.periodo < inicio) c.inicio = p.periodo; });
+    }
+    showToast('✓ Cuenta actualizada');
+  } else {
+    lista.push({ id: nuevoId(), nombre, monto, vence, tipo, inicio, cuotasTotal, cuotasPrevias, pagos: [], creado: new Date().toISOString(), v: 2 });
+    showToast('✓ Cuenta agregada');
+  }
+  save();
+  closeModal('modal-cuenta-form');
+  refrescarCuentasUI();
+}
+function eliminarCuenta(id) {
+  const c = getCuenta(id); if (!c) return;
+  confirmarAccion('¿Eliminar "' + esc(c.nombre) + '"?',
+    `Se borra la cuenta y sus ${plural((c.pagos||[]).length, 'pago registrado', 'pagos registrados')}. Esta acción se puede deshacer por unos segundos.`,
+    'Eliminar', () => {
+      const lista = getCuentas();
+      const idx = lista.findIndex(x => x.id === id);
+      const [borrada] = lista.splice(idx, 1);
+      save(); closeModal('modal-cuenta-detalle'); refrescarCuentasUI();
+      toastDeshacer('Cuenta eliminada', () => { lista.splice(idx, 0, borrada); save(); refrescarCuentasUI(); });
+    });
+}
+
+/* ── Refrescos y avisos globales ── */
+function refrescarCuentasUI() {
+  if (currentPage === 'fijos') renderCuentas();
+  if (document.getElementById('modal-cuenta-detalle').classList.contains('open')) renderDetalleCuenta();
+  if (currentPage === 'dashboard') renderDashCuentas();
+  actualizarBadgeCuentas();
+}
+function actualizarBadgeCuentas() {
+  const b = document.getElementById('nav-cuentas-badge');
+  if (!b) return;
+  const n = currentUser ? resumenCuentas().urgentes : 0;
+  b.textContent = n; b.style.display = n ? '' : 'none';
+}
+function renderDashCuentas() {
+  const el = document.getElementById('dash-cuentas');
+  if (!el) return;
+  if (!getCuentas().length) { el.innerHTML = ''; return; }
+  const r = resumenCuentas();
+  const pct = r.totalMes > 0 ? Math.round(r.pagadoMes / r.totalMes * 100) : 0;
+  const prox = r.lista.filter(x => ['hoy','pronto','pendiente'].includes(x.st.estado))
+                      .sort((a,b) => a.st.diasParaVencer - b.st.diasParaVencer)[0];
+  el.innerHTML = `<div class="dash-cta ${r.atrasadas.length ? 'late' : ''}" onclick="showPage('fijos')" role="button" tabindex="0">
+    <div class="flex-between" style="margin-bottom:8px">
+      <div class="maintenance-title" style="margin:0">💳 Cuentas de ${MESES_NOMBRES[new Date().getMonth()].toLowerCase()}</div>
+      <span style="color:var(--gold);font-size:18px">›</span>
+    </div>
+    <div class="flex-between" style="font-size:13px;margin-bottom:6px">
+      <span>${r.pagadasMes} de ${r.delMes.length} pagadas</span><b class="text-green">${fmt(r.pagadoMes)}</b>
+    </div>
+    <div class="prog-wrap" style="margin-bottom:8px"><div class="prog-bar green" style="width:${pct}%"></div></div>
+    ${r.atrasadas.length
+      ? `<div class="cta-chip red">⚠️ ${plural(r.atrasadas.length, 'atrasada', 'atrasadas')} · ${fmt(r.deudaAtrasada)} · hasta ${plural(Math.max(...r.atrasadas.map(x => x.st.diasAtraso)), 'día')}</div>`
+      : prox ? `<div class="cta-chip ${prox.st.estado === 'hoy' ? 'red' : prox.st.estado === 'pronto' ? 'gold' : ''}">Próximo: ${esc(prox.c.nombre)} · ${prox.st.diasParaVencer === 0 ? 'hoy' : 'en ' + plural(prox.st.diasParaVencer, 'día')}</div>`
+      : `<div class="cta-chip green">✓ Todo pagado este mes</div>`}
+  </div>`;
+}
+
+/* ── Confirmación y deshacer ── */
+let _accionConfirmar = null;
+function confirmarAccion(titulo, texto, boton, fn) {
+  document.getElementById('confirm-titulo').innerHTML = titulo;
+  document.getElementById('confirm-texto').innerHTML = texto;
+  document.getElementById('confirm-ok').textContent = boton;
+  _accionConfirmar = fn;
+  openModal('modal-confirmar');
+}
+function ejecutarConfirmacion() {
+  closeModal('modal-confirmar');
+  const fn = _accionConfirmar; _accionConfirmar = null;
+  if (fn) fn();
+}
+function toastDeshacer(msg, onUndo, duration = 5000) {
+  const c = document.getElementById('toast-container');
+  const t = document.createElement('div');
+  t.className = 'toast toast-undo';
+  t.innerHTML = `<span>${esc(msg)}</span>`;
+  const b = document.createElement('button');
+  b.textContent = 'Deshacer';
+  let usado = false;
+  b.onclick = () => { if (usado) return; usado = true; onUndo(); t.remove(); showToast('↩︎ Restaurado'); };
+  t.appendChild(b);
+  c.appendChild(t);
+  setTimeout(() => {
+    t.style.animation = 'toastOut .3s ease forwards';
+    t.addEventListener('animationend', () => t.remove());
+  }, duration);
+}
+
+/* ── PDF e historial del mes ── */
+function filasCuentasPeriodo(periodo) {
+  const ahora = new Date();
+  return getCuentas().map(c => ({ c, e: estadoCuentaEnPeriodo(c, periodo, ahora), st: estadoCuenta(c, ahora) })).filter(x => x.e);
+}
+function pagosHechosEnMes(periodo) {
+  const out = [];
+  getCuentas().forEach(c => {
+    const st = estadoCuenta(c);
+    st.pagos.forEach(p => { if (periodoDe(new Date(p.fecha)) === periodo) out.push({ c, p, cuota: st.esCuotas ? st.numeroCuota(p.periodo) : null }); });
+  });
+  return out.sort((a,b) => a.p.fecha.localeCompare(b.p.fecha));
+}
+function htmlCuentasPDF(periodo) {
+  const filas = filasCuentasPeriodo(periodo);
+  const pagos = pagosHechosEnMes(periodo);
+  if (!filas.length && !pagos.length) return '';
+  let pagado = 0, pendiente = 0, atrasado = 0;
+  const rows = filas.map(({c, e, st}) => {
+    let estado, color;
+    if (e.tipo === 'pagado') { estado = '✔ Pagado<br><span style="font-weight:400;color:#555;font-size:10px">' + fmtFechaHora(e.pago.fecha) + '</span>'; color = '#059669'; pagado += e.pago.monto || 0; }
+    else if (e.tipo === 'atrasado') { estado = '✘ Atrasado ' + plural(e.dias, 'día'); color = '#dc2626'; atrasado += c.monto; }
+    else { estado = '○ Pendiente'; color = '#b45309'; pendiente += c.monto; }
+    const cuotaTxt = st.esCuotas ? (e.tipo === 'pagado' ? 'Cuota ' + e.cuota + '/' + c.cuotasTotal : 'Faltan ' + st.cuotasRestantes + '/' + c.cuotasTotal) : 'Mensual';
+    const venceTxt = e.vence ? e.vence.getDate() + ' ' + MESES_CORTO[e.vence.getMonth()] : fechaVence(c, periodo).getDate() + ' ' + MESES_CORTO[fechaVence(c, periodo).getMonth()];
+    return `<tr>
+      <td style="padding:7px 10px;font-weight:600">${esc(c.nombre)}</td>
+      <td style="padding:7px 10px;color:#666">${venceTxt}</td>
+      <td style="padding:7px 10px;color:#666">${cuotaTxt}${st.esCuotas && st.saldo ? '<br><span style="font-size:10px">Saldo: ' + fmt(st.saldo) + '</span>' : ''}</td>
+      <td style="padding:7px 10px;color:${color};font-weight:700">${estado}</td>
+      <td style="padding:7px 10px;text-align:right;font-weight:700">${fmt(e.tipo === 'pagado' ? e.pago.monto : c.monto)}</td>
+    </tr>`;
+  }).join('') || '<tr><td colspan="5" style="padding:7px 10px;color:#888">Sin cuentas en este mes</td></tr>';
+  const pagosRows = pagos.map(({c, p, cuota}) => `<tr>
+      <td style="padding:6px 10px">${fmtFechaHora(p.fecha)}</td>
+      <td style="padding:6px 10px;font-weight:600">${esc(c.nombre)}</td>
+      <td style="padding:6px 10px;color:#666">${cuota ? 'Cuota ' + cuota + '/' + c.cuotasTotal + ' · ' : ''}${nombrePeriodo(p.periodo)}${p.nota ? ' · ' + esc(p.nota) : ''}</td>
+      <td style="padding:6px 10px;text-align:right;font-weight:700">${fmt(p.monto)}</td></tr>`).join('')
+    || '<tr><td colspan="4" style="padding:7px 10px;color:#888">No se registraron pagos en este mes</td></tr>';
+  const totalPagosMes = pagos.reduce((a,x) => a + (x.p.monto || 0), 0);
+  return `
+  <div class="section">
+    <div class="section-title">💳 Cuentas y cuotas — estado de ${nombrePeriodo(periodo)}</div>
+    <table>
+      <thead><tr><th>Cuenta</th><th>Vence</th><th>Cuotas</th><th>Estado</th><th style="text-align:right">Monto</th></tr></thead>
+      <tbody>${rows}
+        <tr class="total-row"><td colspan="5" style="padding:8px 12px">
+          Pagado: <b>${fmt(pagado)}</b> · Pendiente: <b>${fmt(pendiente)}</b> · Atrasado: <b style="color:#dc2626">${fmt(atrasado)}</b>
+        </td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="section">
+    <div class="section-title">🧾 Pagos realizados en ${nombrePeriodo(periodo)} (fecha exacta)</div>
+    <table>
+      <thead><tr><th>Fecha y hora</th><th>Cuenta</th><th>Detalle</th><th style="text-align:right">Monto</th></tr></thead>
+      <tbody>${pagosRows}
+        <tr class="total-row"><td colspan="3" style="padding:8px 12px">Total pagado en el mes</td><td style="padding:8px 12px;text-align:right;font-weight:bold">${fmt(totalPagosMes)}</td></tr>
+      </tbody>
+    </table>
+  </div>`;
+}
+function htmlCuentasHistorialMes(periodo) {
+  const filas = filasCuentasPeriodo(periodo);
+  const pagos = pagosHechosEnMes(periodo);
+  if (!filas.length && !pagos.length) return '';
+  const filasHTML = filas.map(({c, e, st}) => {
+    const der = e.tipo === 'pagado'
+      ? `<div class="text-green fw7">${fmt(e.pago.monto)}</div><div style="font-size:11px;color:var(--text3)">${fmtFechaHora(e.pago.fecha)}</div>`
+      : `<div class="${e.tipo === 'atrasado' ? 'text-red' : 'text-gold'} fw7">${fmt(c.monto)}</div><div style="font-size:11px;color:${e.tipo === 'atrasado' ? 'var(--red)' : 'var(--text3)'}">${e.tipo === 'atrasado' ? 'Atrasado ' + plural(e.dias, 'día') : 'Pendiente'}</div>`;
+    return `<div style="display:flex;justify-content:space-between;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px">
+      <div><div style="font-weight:600">${e.tipo === 'pagado' ? '✅' : e.tipo === 'atrasado' ? '⚠️' : '⏳'} ${esc(c.nombre)}</div>
+      <div style="font-size:11px;color:var(--text3)">${st.esCuotas ? (e.tipo === 'pagado' ? 'Cuota ' + e.cuota + '/' + c.cuotasTotal : 'Faltan ' + st.cuotasRestantes + ' cuotas') : 'Mensual'}</div></div>
+      <div style="text-align:right">${der}</div></div>`;
+  }).join('');
+  const total = pagos.reduce((a,x) => a + (x.p.monto || 0), 0);
+  return `<div class="card" style="margin-bottom:10px">
+    <div class="card-label" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center" onclick="toggleSection(this)">
+      <span>💳 Cuentas <span style="font-size:11px;color:var(--green);font-weight:700">${fmt(total)} pagado</span></span><span style="color:var(--gold);font-size:18px">›</span>
+    </div>
+    <div class="section-body">${filasHTML || '<div style="color:var(--text3);font-size:12px;padding:6px 0">Sin cuentas en este mes</div>'}</div>
+  </div>`;
+}
+
 
 /* ═══════════════════════════════════════════
    RIPPLE UTILITY
@@ -3611,6 +4437,10 @@ function addRipple(el, e) {
 }
 document.addEventListener('DOMContentLoaded', () => {
   initTheme();
+  // Si ya había iniciado sesión en este teléfono, entrar directo
+  let savedUser = null, savedToken = null;
+  try { savedUser = localStorage.getItem('dp_user'); savedToken = localStorage.getItem('dp_token'); } catch(e){}
+  if (savedUser && savedToken) { sessionToken = savedToken; loginSuccess(savedUser); }
   document.querySelectorAll('.btn-gold,.btn-green,.nav-item').forEach(el => {
     el.classList.add('ripple-host');
     el.addEventListener('click', e => addRipple(el, e));
@@ -3638,8 +4468,13 @@ const FAB_PAGES = {
   combustible: () => openModal('modal-carga'),
   gastos: () => openModal('modal-gasto-moto'),
   'gastos-personales': () => openModal('modal-nuevo-gasto-personal'),
-  fijos: () => openModal('modal-nuevo-fijo'),
+  fijos: () => abrirNuevaCuenta(),
 };
+function irDesdeMas(pagina) {
+  closeModal('modal-mas');
+  if (pagina === 'cuenta') { promptLogout(); return; }
+  showPage(pagina);
+}
 function fabAction() {
   if (FAB_PAGES[currentPage]) FAB_PAGES[currentPage]();
 }
