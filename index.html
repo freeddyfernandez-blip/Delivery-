@@ -842,6 +842,68 @@ input, select, textarea { -webkit-appearance: none; }
 .alert-banner.danger { background: rgba(255,107,107,0.1); border: 1px solid rgba(255,107,107,0.2); color: var(--red); }
 .alert-banner.ok { background: rgba(45,212,164,0.1); border: 1px solid rgba(45,212,164,0.2); color: var(--green); }
 
+/* ═══ REPUESTOS Y DESGASTE ═══ */
+.rep-head { display:flex; align-items:flex-end; justify-content:space-between; gap:10px; margin:22px 2px 10px; }
+.rep-head-title { font-family: var(--ff-display); font-size: 18px; font-weight: 800; color: var(--text); }
+.rep-head-sub { font-size: 12px; color: var(--text2); margin-top: 2px; }
+.rep-resumen { display:flex; gap:8px; margin: 0 0 14px; flex-wrap: wrap; }
+.rep-resumen .badge { font-size: 11px; padding: 5px 10px; }
+.rep-grupo { font-size: 12px; font-weight: 600; color: var(--text3); margin: 16px 4px 8px; }
+.rep-item {
+  background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+  padding: 12px 12px 12px 14px; margin-bottom: 8px;
+  display: grid; grid-template-columns: 42px 1fr auto; gap: 12px; align-items: center;
+  -webkit-tap-highlight-color: transparent; cursor: pointer; transition: border-color .2s;
+}
+.rep-item:active { border-color: var(--border-hi); }
+.rep-item.alerta { border-color: rgba(255,107,107,0.35); }
+.rep-item.aviso { border-color: rgba(245,166,35,0.35); }
+.rep-icon {
+  width: 42px; height: 42px; border-radius: 12px; background: var(--bg3);
+  display:flex; align-items:center; justify-content:center; font-size: 21px;
+}
+.rep-item.ok .rep-icon { background: var(--green-dim); }
+.rep-item.aviso .rep-icon { background: var(--gold-dim); }
+.rep-item.alerta .rep-icon { background: var(--red-dim); }
+.rep-info { min-width: 0; }
+.rep-nombre { font-size: 14px; font-weight: 700; color: var(--text); line-height: 1.25; }
+.rep-meta { font-size: 12px; color: var(--text2); margin-top: 3px; line-height: 1.35; }
+.rep-meta strong { color: var(--text); font-weight: 700; }
+.rep-meta.vacio { color: var(--text3); }
+.rep-item .prog-wrap { height: 4px; margin-top: 7px; }
+.rep-check {
+  border: 1px solid rgba(245,166,35,0.35); background: var(--gold-dim); color: var(--gold);
+  border-radius: 99px; padding: 8px 12px; font-size: 12px; font-weight: 700; cursor: pointer;
+  font-family: var(--ff-body); white-space: nowrap; -webkit-tap-highlight-color: transparent;
+}
+.rep-check:active { transform: scale(.95); }
+.rep-agregar {
+  width: 100%; margin-top: 6px; padding: 13px; border-radius: 14px; cursor: pointer;
+  background: none; border: 1px dashed var(--border-hi); color: var(--text2);
+  font-family: var(--ff-body); font-size: 13px; font-weight: 600;
+}
+.rep-stats { display:grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 4px 0 16px; }
+.rep-stat { background: var(--bg3); border-radius: 12px; padding: 11px 12px; }
+.rep-stat-label { font-size: 11px; color: var(--text3); }
+.rep-stat-val { font-size: 15px; font-weight: 800; color: var(--text); margin-top: 3px; }
+.rep-stat-sub { font-size: 11px; color: var(--text2); margin-top: 2px; }
+.rep-hist { border-top: 1px solid var(--border); }
+.rep-hist-row { display:flex; align-items:flex-start; justify-content:space-between; gap:10px; padding: 11px 0; border-bottom: 1px solid var(--border); }
+.rep-hist-fecha { font-size: 14px; font-weight: 700; }
+.rep-hist-det { font-size: 12px; color: var(--text2); margin-top: 2px; }
+.rep-hist-duro { font-size: 12px; font-weight: 700; color: var(--green); margin-top: 3px; }
+.rep-rapido { display:flex; gap:6px; flex-wrap:wrap; margin-top: 6px; }
+.rep-rapido button {
+  background: var(--bg3); border: 1px solid var(--border-hi); color: var(--text);
+  border-radius: 99px; padding: 6px 11px; font-size: 12px; font-family: var(--ff-body); cursor: pointer;
+}
+.rep-rapido button.on { background: var(--gold-dim); border-color: rgba(245,166,35,0.4); color: var(--gold); }
+.rep-iconos { display:flex; gap:6px; flex-wrap:wrap; }
+.rep-iconos button { width: 40px; height: 40px; border-radius: 10px; background: var(--bg3); border: 1px solid var(--border-hi); font-size: 19px; cursor: pointer; }
+.rep-iconos button.on { border-color: var(--gold); background: var(--gold-dim); }
+.rep-toggle { display:flex; align-items:center; gap:10px; font-size: 13px; color: var(--text2); margin: 2px 0 16px; cursor: pointer; }
+.rep-toggle input { width: 20px; height: 20px; accent-color: var(--gold); -webkit-appearance: auto; }
+
 /* ═══════════════════════════════════════════
    GASTOS FIJOS PAGE
 ═══════════════════════════════════════════ */
@@ -1515,6 +1577,17 @@ body.light input[type="month"], body.light input[type="datetime-local"] { color-
         <div style="font-size:11px;color:var(--text3);margin-top:5px" id="trans-label"></div>
         <button class="btn btn-gold btn-sm mt-12" onclick="openModal('modal-transmision')">⚙️ Registrar cambio de transmisión</button>
       </div>
+
+      <!-- REPUESTOS Y DESGASTE -->
+      <div class="rep-head">
+        <div>
+          <div class="rep-head-title">Repuestos y desgaste</div>
+          <div class="rep-head-sub">Marcá cada cambio y la app calcula cuánto te dura</div>
+        </div>
+      </div>
+      <div class="rep-resumen" id="rep-resumen"></div>
+      <div id="rep-lista"></div>
+      <button class="rep-agregar" onclick="abrirNuevoRepuesto()">+ Agregar otro repuesto</button>
     </div>
 
     <!-- ═══ GASTOS MOTO ═══ -->
@@ -1841,6 +1914,67 @@ body.light input[type="month"], body.light input[type="datetime-local"] { color-
       <div class="field"><label class="field-label">Fecha</label>
         <input type="date" id="trans-fecha"></div>
       <button class="btn btn-gold btn-full" onclick="guardarTransmision()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal MARCAR CAMBIO DE REPUESTO -->
+<div class="modal-overlay" id="modal-rep-cambio">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-body">
+      <div class="modal-title">
+        <span id="rep-cambio-titulo">Registrar cambio</span>
+        <button class="modal-close" onclick="closeModal('modal-rep-cambio')">✕</button>
+      </div>
+      <div class="field"><label class="field-label">¿Cuándo lo cambiaste?</label>
+        <input type="date" id="rep-cambio-fecha">
+        <div class="rep-rapido" id="rep-cambio-rapido">
+          <button type="button" data-d="0" onclick="repFechaRapida(0)">Hoy</button>
+          <button type="button" data-d="1" onclick="repFechaRapida(1)">Ayer</button>
+          <button type="button" data-d="7" onclick="repFechaRapida(7)">Hace 1 semana</button>
+        </div>
+      </div>
+      <div class="field"><label class="field-label">Kilometraje de la moto</label>
+        <input type="text" inputmode="numeric" id="rep-cambio-km" placeholder="Ej: 98.958" oninput="fmtInput(this)"></div>
+      <div class="field"><label class="field-label">Costo (opcional)</label>
+        <input type="text" inputmode="numeric" id="rep-cambio-costo" placeholder="₲ 0" oninput="fmtInput(this); repSyncGasto()"></div>
+      <label class="rep-toggle" id="rep-cambio-gasto-wrap"><input type="checkbox" id="rep-cambio-gasto"> Sumar este costo a Gastos Moto</label>
+      <div class="field"><label class="field-label">Nota (opcional)</label>
+        <input type="text" id="rep-cambio-nota" placeholder="Ej: marca, taller, garantía…"></div>
+      <button class="btn btn-gold btn-full" onclick="guardarCambioRepuesto()">✓ Guardar cambio</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal DETALLE DE REPUESTO -->
+<div class="modal-overlay" id="modal-rep-detalle">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-body">
+      <div class="modal-title">
+        <span id="rep-detalle-titulo">Repuesto</span>
+        <button class="modal-close" onclick="closeModal('modal-rep-detalle')">✕</button>
+      </div>
+      <div id="rep-detalle-body"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal NUEVO REPUESTO PERSONALIZADO -->
+<div class="modal-overlay" id="modal-rep-nuevo">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-body">
+      <div class="modal-title">
+        <span>Agregar repuesto</span>
+        <button class="modal-close" onclick="closeModal('modal-rep-nuevo')">✕</button>
+      </div>
+      <div class="field"><label class="field-label">Nombre</label>
+        <input type="text" id="rep-nuevo-nombre" placeholder="Ej: Cable de embrague, espejo, faro…" maxlength="40"></div>
+      <div class="field"><label class="field-label">Ícono</label>
+        <div class="rep-iconos" id="rep-nuevo-iconos"></div></div>
+      <button class="btn btn-gold btn-full" onclick="guardarNuevoRepuesto()">Agregar</button>
     </div>
   </div>
 </div>
@@ -2407,6 +2541,19 @@ function combinarDatos(base, otro) {
   });
   const kmR = parseFloat(r.moto && r.moto.km) || 0, kmO = parseFloat(otro.moto && otro.moto.km) || 0;
   if (kmR === 0 && kmO > 0) r.moto = JSON.parse(JSON.stringify(otro.moto));
+  // Repuestos: sumar los registros que estén en la otra copia y no en esta
+  if (r.moto && otro.moto && otro.moto.repuestos && typeof otro.moto.repuestos === 'object') {
+    r.moto.repuestos = r.moto.repuestos || {};
+    Object.keys(otro.moto.repuestos).forEach(id => {
+      const mios = r.moto.repuestos[id] || [];
+      const claves = new Set(mios.map(x => (x.creado || '') + '|' + x.fecha));
+      (otro.moto.repuestos[id] || []).forEach(x => { if (!claves.has((x.creado || '') + '|' + x.fecha)) mios.push(x); });
+      r.moto.repuestos[id] = mios;
+    });
+    const extras = r.moto.repuestosExtra || [];
+    (otro.moto.repuestosExtra || []).forEach(x => { if (!extras.some(e => e.id === x.id)) extras.push(x); });
+    r.moto.repuestosExtra = extras;
+  }
   ['gastosFijos', 'depositos', 'gastosPersonales'].forEach(k => {
     if (listaVacia(r[k]) && !listaVacia(otro[k])) r[k] = JSON.parse(JSON.stringify(otro[k]));
   });
@@ -2441,6 +2588,8 @@ function asegurarEstructura() {
   if (!APP_DATA.moto) APP_DATA.moto = { km:0, aceite:{ kmCambio:0, intervalo:3000, fecha:'' }, transmision:{ kmCambio:0, intervalo:5000, fecha:'' }};
   if (!APP_DATA.moto.aceite) APP_DATA.moto.aceite = { kmCambio:0, intervalo:3000, fecha:'' };
   if (!APP_DATA.moto.transmision) APP_DATA.moto.transmision = { kmCambio:0, intervalo:5000, fecha:'' };
+  if (!APP_DATA.moto.repuestos || typeof APP_DATA.moto.repuestos !== 'object') APP_DATA.moto.repuestos = {};
+  if (!Array.isArray(APP_DATA.moto.repuestosExtra)) APP_DATA.moto.repuestosExtra = [];
   if (!APP_DATA.gastosFijos) APP_DATA.gastosFijos = [];
   if (!APP_DATA.depositos) APP_DATA.depositos = {};
   normalizarCuentas(); // convierte los gastos fijos viejos al modelo con historial de pagos
@@ -3064,6 +3213,7 @@ function renderMoto() {
     alertEl.innerHTML = `<div class="alert-banner warn">⚠️ Configura el cambio de aceite para ver el estado.</div>`;
   }
   renderTransmision();
+  renderRepuestos();
 }
 function guardarKm() {
   const km = parseInput('km-valor');
@@ -3171,6 +3321,285 @@ function renderGastosMoto() {
       </div>
     </div>`).join('');
 }
+/* ═══════════════════════════════════════════
+   REPUESTOS Y DESGASTE
+   Cada cambio queda registrado con fecha y km. Con dos o más cambios,
+   la app calcula cuánto te dura cada repuesto (tiempo y km).
+═══════════════════════════════════════════ */
+const REPUESTOS_BASE = [
+  { id:'cubierta_del',  icon:'🛞', nombre:'Cubierta delantera',            grupo:'Ruedas' },
+  { id:'cubierta_tra',  icon:'🛞', nombre:'Cubierta trasera',              grupo:'Ruedas' },
+  { id:'camara_del',    icon:'⭕', nombre:'Cámara delantera',              grupo:'Ruedas' },
+  { id:'camara_tra',    icon:'⭕', nombre:'Cámara trasera',                grupo:'Ruedas' },
+  { id:'ruleman_del',   icon:'⚙️', nombre:'Rulemán delantero',             grupo:'Rulemanes' },
+  { id:'ruleman_tra',   icon:'⚙️', nombre:'Rulemán trasero',               grupo:'Rulemanes' },
+  { id:'pastilla_del',  icon:'🛑', nombre:'Pastillas de freno delanteras', grupo:'Frenos' },
+  { id:'pastilla_tra',  icon:'🛑', nombre:'Pastillas o zapatas traseras',  grupo:'Frenos' },
+  { id:'liquido_freno', icon:'💧', nombre:'Líquido de freno',              grupo:'Frenos' },
+  { id:'kit_arrastre',  icon:'⛓️', nombre:'Kit de arrastre (cadena, corona, piñón)', grupo:'Motor y transmisión' },
+  { id:'bujia',         icon:'⚡', nombre:'Bujía',                         grupo:'Motor y transmisión' },
+  { id:'filtro_aire',   icon:'🌬️', nombre:'Filtro de aire',                grupo:'Motor y transmisión' },
+  { id:'bateria',       icon:'🔋', nombre:'Batería',                       grupo:'Eléctrico' },
+  { id:'lampara',       icon:'💡', nombre:'Lámpara / foco',                grupo:'Eléctrico' }
+];
+const REP_ICONOS = ['🔧','🔩','⚙️','🛞','🛑','⛓️','🔋','💡','🪞','🧰','🪛','📦'];
+let repActual = null;
+let repNuevoIcono = '🔧';
+
+function repEstructura() {
+  if (!MOTO.repuestos || typeof MOTO.repuestos !== 'object') MOTO.repuestos = {};
+  if (!Array.isArray(MOTO.repuestosExtra)) MOTO.repuestosExtra = [];
+}
+function repCatalogo() {
+  repEstructura();
+  return REPUESTOS_BASE.concat(MOTO.repuestosExtra.map(x => ({ ...x, grupo: 'Otros', extra: true })));
+}
+function repDias(f1, f2) {
+  const a = new Date(f1 + 'T00:00:00'), b = new Date(f2 + 'T00:00:00');
+  return Math.round((b - a) / 86400000);
+}
+// 0 → "menos de un día", 45 → "1 mes y 15 días", 400 → "1 año y 1 mes"
+function repDuracion(dias) {
+  dias = Math.max(0, Math.round(dias));
+  if (dias === 0) return 'menos de un día';
+  if (dias < 30) return dias + (dias === 1 ? ' día' : ' días');
+  const meses = Math.floor(dias / 30.44), resto = Math.round(dias - meses * 30.44);
+  if (meses < 12) {
+    const m = meses + (meses === 1 ? ' mes' : ' meses');
+    return resto > 0 ? m + ' y ' + resto + (resto === 1 ? ' día' : ' días') : m;
+  }
+  const anios = Math.floor(meses / 12), mr = meses % 12;
+  const a = anios + (anios === 1 ? ' año' : ' años');
+  return mr > 0 ? a + ' y ' + mr + (mr === 1 ? ' mes' : ' meses') : a;
+}
+function repStats(id) {
+  repEstructura();
+  const hist = (MOTO.repuestos[id] || []).slice().sort((a, b) => a.fecha.localeCompare(b.fecha));
+  if (!hist.length) return { hist, n: 0 };
+  const ultimo = hist[hist.length - 1];
+  const hoy = hoyLocal();
+  const diasDesde = Math.max(0, repDias(ultimo.fecha, hoy));
+  const kmDesde = (ultimo.km && MOTO.km >= ultimo.km) ? MOTO.km - ultimo.km : null;
+  const durDias = [], durKm = [];
+  for (let i = 1; i < hist.length; i++) {
+    durDias.push(repDias(hist[i-1].fecha, hist[i].fecha));
+    if (hist[i].km && hist[i-1].km && hist[i].km >= hist[i-1].km) durKm.push(hist[i].km - hist[i-1].km);
+  }
+  const prom = arr => arr.length ? arr.reduce((s, v) => s + v, 0) / arr.length : null;
+  const promDias = prom(durDias), promKm = prom(durKm);
+  let pct = null;
+  if (promDias && promDias > 0) pct = diasDesde / promDias * 100;
+  if (promKm && promKm > 0 && kmDesde !== null) pct = Math.max(pct || 0, kmDesde / promKm * 100);
+  const gasto = hist.reduce((s, h) => s + (h.costo || 0), 0);
+  return { hist, n: hist.length, ultimo, diasDesde, kmDesde, durDias, durKm, promDias, promKm, pct, gasto,
+           ultimaDuracion: durDias.length ? durDias[durDias.length - 1] : null };
+}
+function repEstado(st) {
+  if (!st.n) return '';
+  if (st.pct === null) return 'ok';
+  return st.pct >= 100 ? 'alerta' : st.pct >= 85 ? 'aviso' : 'ok';
+}
+
+function renderRepuestos() {
+  const lista = document.getElementById('rep-lista');
+  if (!lista) return;
+  repEstructura();
+  const cat = repCatalogo();
+  let registrados = 0, revisar = 0, html = '', grupoActual = '';
+  // Primero los que tienen registros, después el resto; dentro de cada grupo se respeta el orden
+  const grupos = {};
+  cat.forEach(r => { (grupos[r.grupo] = grupos[r.grupo] || []).push(r); });
+  Object.keys(grupos).forEach(g => {
+    html += `<div class="rep-grupo">${esc(g)}</div>`;
+    grupos[g].forEach(r => {
+      const st = repStats(r.id);
+      const estado = repEstado(st);
+      if (st.n) registrados++;
+      if (estado === 'aviso' || estado === 'alerta') revisar++;
+      let meta;
+      if (!st.n) {
+        meta = `<div class="rep-meta vacio">Sin registrar todavía</div>`;
+      } else {
+        const hace = st.diasDesde === 0 ? '<strong>Cambiado hoy</strong>' : `Cambiado hace <strong>${repDuracion(st.diasDesde)}</strong>`;
+        const km = st.kmDesde !== null && st.kmDesde > 0 ? ` · ${fmtNum(st.kmDesde)} km` : '';
+        let extra;
+        if (st.promDias !== null) {
+          extra = `Te dura en promedio <strong>${repDuracion(st.promDias)}</strong>${st.promKm ? ' (≈ ' + fmtNum(st.promKm) + ' km)' : ''}`;
+          if (estado === 'alerta') extra = `⚠️ Ya pasó lo que te suele durar (${repDuracion(st.promDias)})`;
+          else if (estado === 'aviso') extra = `🔔 Se acerca al cambio · suele durar ${repDuracion(st.promDias)}`;
+        } else {
+          extra = 'Al próximo cambio vas a ver cuánto te duró';
+        }
+        meta = `<div class="rep-meta">${hace}${km}</div><div class="rep-meta">${extra}</div>`;
+        if (st.pct !== null) {
+          const pct = Math.min(100, st.pct);
+          meta += `<div class="prog-wrap"><div class="prog-bar ${estado === 'alerta' ? 'red' : estado === 'aviso' ? 'gold' : 'green'}" style="width:${pct}%"></div></div>`;
+        }
+      }
+      html += `<div class="rep-item ${estado}" onclick="abrirDetalleRepuesto('${r.id}')">
+        <div class="rep-icon">${r.icon}</div>
+        <div class="rep-info"><div class="rep-nombre">${esc(r.nombre)}</div>${meta}</div>
+        <button class="rep-check" onclick="event.stopPropagation(); abrirCambioRepuesto('${r.id}')">✓ Cambié</button>
+      </div>`;
+    });
+  });
+  lista.innerHTML = html;
+  const res = document.getElementById('rep-resumen');
+  if (res) {
+    res.innerHTML = `<span class="badge green">${registrados} con registro</span>` +
+      (revisar ? `<span class="badge gold">${revisar} para revisar</span>` : '');
+  }
+}
+
+function repBuscar(id) { return repCatalogo().find(r => r.id === id); }
+
+function abrirCambioRepuesto(id) {
+  const r = repBuscar(id); if (!r) return;
+  repActual = id;
+  document.getElementById('rep-cambio-titulo').textContent = r.icon + ' ' + r.nombre;
+  repFechaRapida(0);
+  const km = document.getElementById('rep-cambio-km');
+  km.value = MOTO.km ? fmtNum(MOTO.km) : '';
+  document.getElementById('rep-cambio-costo').value = '';
+  document.getElementById('rep-cambio-nota').value = '';
+  document.getElementById('rep-cambio-gasto').checked = false;
+  document.getElementById('rep-cambio-gasto-wrap').style.display = 'none';
+  closeModal('modal-rep-detalle');
+  openModal('modal-rep-cambio');
+}
+function repFechaRapida(d) {
+  const f = new Date(); f.setDate(f.getDate() - d);
+  const v = f.getFullYear() + '-' + String(f.getMonth() + 1).padStart(2, '0') + '-' + String(f.getDate()).padStart(2, '0');
+  document.getElementById('rep-cambio-fecha').value = v;
+  document.querySelectorAll('#rep-cambio-rapido button').forEach(b => b.classList.toggle('on', +b.dataset.d === d));
+}
+function repSyncGasto() {
+  const tiene = parseInput('rep-cambio-costo') > 0;
+  const wrap = document.getElementById('rep-cambio-gasto-wrap');
+  if (tiene && wrap.style.display === 'none') document.getElementById('rep-cambio-gasto').checked = true;
+  wrap.style.display = tiene ? 'flex' : 'none';
+}
+function guardarCambioRepuesto() {
+  const r = repBuscar(repActual); if (!r) return;
+  const fecha = document.getElementById('rep-cambio-fecha').value || hoyLocal();
+  if (fecha > hoyLocal()) { alert('La fecha no puede ser futura'); return; }
+  const km = parseInput('rep-cambio-km') || 0;
+  const costo = parseInput('rep-cambio-costo') || 0;
+  const nota = document.getElementById('rep-cambio-nota').value.trim().slice(0, 120);
+  repEstructura();
+  if (!MOTO.repuestos[r.id]) MOTO.repuestos[r.id] = [];
+  MOTO.repuestos[r.id].push({ fecha, km, costo, nota, creado: new Date().toISOString() });
+  if (km > (MOTO.km || 0)) MOTO.km = km;
+  if (costo > 0 && document.getElementById('rep-cambio-gasto').checked) {
+    const mes = fecha.slice(0, 7);
+    const destino = mes === mesActual ? DB : (APP_DATA.meses[mes] || DB);
+    if (!destino.gastosMoto) destino.gastosMoto = [];
+    destino.gastosMoto.push({ desc: 'Cambio: ' + r.nombre, monto: costo, cat: 'mecanico', fecha });
+  }
+  APP_DATA.moto = MOTO; save();
+  closeModal('modal-rep-cambio');
+  renderMoto();
+  const st = repStats(r.id);
+  showToast(st.ultimaDuracion !== null && st.ultimo.fecha === fecha
+    ? `✓ ${r.nombre}: el anterior te duró ${repDuracion(st.ultimaDuracion)}`
+    : `✓ Cambio de ${r.nombre.toLowerCase()} registrado`, 3200);
+}
+
+function abrirDetalleRepuesto(id) {
+  const r = repBuscar(id); if (!r) return;
+  repActual = id;
+  const st = repStats(id);
+  document.getElementById('rep-detalle-titulo').textContent = r.icon + ' ' + r.nombre;
+  let h = '';
+  if (!st.n) {
+    h += `<div class="alert-banner warn">Todavía no registraste ningún cambio. Marcá el primero y, desde el segundo, la app te dice cuánto te dura.</div>`;
+  } else {
+    h += `<div class="rep-stats">
+      <div class="rep-stat"><div class="rep-stat-label">Último cambio</div>
+        <div class="rep-stat-val">${st.diasDesde === 0 ? 'Hoy' : 'Hace ' + repDuracion(st.diasDesde)}</div>
+        <div class="rep-stat-sub">${fmtFechaCorta(st.ultimo.fecha)}${st.ultimo.km ? ' · ' + fmtNum(st.ultimo.km) + ' km' : ''}</div></div>
+      <div class="rep-stat"><div class="rep-stat-label">Te dura en promedio</div>
+        <div class="rep-stat-val">${st.promDias !== null ? repDuracion(st.promDias) : '—'}</div>
+        <div class="rep-stat-sub">${st.promKm ? '≈ ' + fmtNum(st.promKm) + ' km' : (st.promDias !== null ? '' : 'Falta otro cambio')}</div></div>
+      <div class="rep-stat"><div class="rep-stat-label">Veces cambiado</div>
+        <div class="rep-stat-val">${st.n}</div>
+        <div class="rep-stat-sub">${st.durDias.length ? 'Más corto: ' + repDuracion(Math.min(...st.durDias)) : ''}</div></div>
+      <div class="rep-stat"><div class="rep-stat-label">Gastado en total</div>
+        <div class="rep-stat-val">${st.gasto ? fmt(st.gasto) : '—'}</div>
+        <div class="rep-stat-sub">${st.durDias.length ? 'Más largo: ' + repDuracion(Math.max(...st.durDias)) : ''}</div></div>
+    </div>`;
+    h += `<div class="field-label">Historial</div><div class="rep-hist">`;
+    const orden = st.hist.map((x, i) => ({ x, i })).reverse();
+    orden.forEach(({ x, i }) => {
+      const sig = st.hist[i + 1];
+      let duro;
+      if (sig) {
+        const d = repDias(x.fecha, sig.fecha);
+        const k = sig.km && x.km && sig.km >= x.km ? ' · ' + fmtNum(sig.km - x.km) + ' km' : '';
+        duro = `Duró ${repDuracion(d)}${k}`;
+      } else {
+        duro = st.diasDesde === 0 ? 'Puesto hoy' : `En uso hace ${repDuracion(st.diasDesde)}`;
+      }
+      const det = [x.km ? fmtNum(x.km) + ' km' : '', x.costo ? fmt(x.costo) : '', x.nota ? esc(x.nota) : ''].filter(Boolean).join(' · ');
+      h += `<div class="rep-hist-row"><div>
+          <div class="rep-hist-fecha">${fmtFechaCorta(x.fecha)}</div>
+          ${det ? `<div class="rep-hist-det">${det}</div>` : ''}
+          <div class="rep-hist-duro"${sig ? '' : ' style="color:var(--gold)"'}>${duro}</div>
+        </div>
+        <button class="btn-danger" onclick="eliminarCambioRepuesto('${id}', '${x.creado || ''}', '${x.fecha}')">Borrar</button></div>`;
+    });
+    h += `</div>`;
+  }
+  h += `<button class="btn btn-gold btn-full mt-12" onclick="abrirCambioRepuesto('${id}')">✓ Marcar nuevo cambio</button>`;
+  if (r.extra) h += `<button class="btn btn-ghost btn-full mt-12" onclick="eliminarRepuestoExtra('${id}')">Quitar este repuesto de la lista</button>`;
+  document.getElementById('rep-detalle-body').innerHTML = h;
+  openModal('modal-rep-detalle');
+}
+function eliminarCambioRepuesto(id, creado, fecha) {
+  const arr = MOTO.repuestos[id] || [];
+  const idx = arr.findIndex(x => (creado ? x.creado === creado : x.fecha === fecha));
+  if (idx < 0) return;
+  const [v] = arr.splice(idx, 1);
+  APP_DATA.moto = MOTO; save(); renderMoto(); abrirDetalleRepuesto(id);
+  toastDeshacer('Cambio borrado', () => { arr.splice(idx, 0, v); APP_DATA.moto = MOTO; save(); renderMoto(); abrirDetalleRepuesto(id); });
+}
+
+function abrirNuevoRepuesto() {
+  repNuevoIcono = '🔧';
+  document.getElementById('rep-nuevo-nombre').value = '';
+  document.getElementById('rep-nuevo-iconos').innerHTML = REP_ICONOS.map(i =>
+    `<button type="button" class="${i === repNuevoIcono ? 'on' : ''}" onclick="repElegirIcono(this, '${i}')">${i}</button>`).join('');
+  openModal('modal-rep-nuevo');
+}
+function repElegirIcono(btn, i) {
+  repNuevoIcono = i;
+  document.querySelectorAll('#rep-nuevo-iconos button').forEach(b => b.classList.toggle('on', b === btn));
+}
+function guardarNuevoRepuesto() {
+  const nombre = document.getElementById('rep-nuevo-nombre').value.trim().slice(0, 40);
+  if (!nombre) { alert('Escribí el nombre del repuesto'); return; }
+  repEstructura();
+  const id = 'extra_' + Date.now().toString(36);
+  MOTO.repuestosExtra.push({ id, nombre, icon: repNuevoIcono });
+  APP_DATA.moto = MOTO; save();
+  closeModal('modal-rep-nuevo');
+  renderMoto();
+  showToast('✓ ' + nombre + ' agregado');
+}
+function eliminarRepuestoExtra(id) {
+  const st = repStats(id);
+  if (st.n && !confirm('Este repuesto tiene ' + st.n + ' cambio(s) registrados. ¿Quitarlo igual?')) return;
+  const i = MOTO.repuestosExtra.findIndex(x => x.id === id);
+  if (i < 0) return;
+  const [v] = MOTO.repuestosExtra.splice(i, 1);
+  const hist = MOTO.repuestos[id]; delete MOTO.repuestos[id];
+  APP_DATA.moto = MOTO; save(); closeModal('modal-rep-detalle'); renderMoto();
+  toastDeshacer('Repuesto quitado', () => {
+    MOTO.repuestosExtra.splice(i, 0, v); if (hist) MOTO.repuestos[id] = hist;
+    APP_DATA.moto = MOTO; save(); renderMoto();
+  });
+}
+
 function guardarGastoMoto() {
   const desc = document.getElementById('gmoto-desc').value.trim();
   const monto = parseInput('gmoto-monto');
