@@ -3313,7 +3313,11 @@ function renderGastosMoto() {
     const d = new Date(g.fecha); return d.getMonth() === mes && d.getFullYear() === anio;
   });
   document.getElementById('gmoto-mes').textContent = fmt(delMes.reduce((a,g) => a + g.monto, 0));
-  document.getElementById('gmoto-total').textContent = fmt(DB.gastosMoto.reduce((a,g) => a + g.monto, 0));
+  // Histórico: suma de los gastos de moto de todos los meses
+  APP_DATA.meses[mesActual] = DB;
+  const historico = Object.values(APP_DATA.meses || {}).reduce((t, m) =>
+    t + ((m && m.gastosMoto) || []).reduce((a, g) => a + (g.monto || 0), 0), 0);
+  document.getElementById('gmoto-total').textContent = fmt(historico);
   const lista = document.getElementById('lista-gastos-moto');
   if (!DB.gastosMoto.length) {
     lista.innerHTML = `<div class="empty-state"><div class="empty-icon">🔧</div><div>Sin gastos registrados</div></div>`;
