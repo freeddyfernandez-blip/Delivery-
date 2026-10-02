@@ -1,3 +1,19 @@
+# Delivery Pro — versión BLINDADA
+
+## Qué cambió en esta versión
+- **La app ya no sube nada al servidor sin haber leído antes lo que hay allá.** Si no hay conexión, guarda en el teléfono y reintenta sola cada 20 segundos, al volver internet y al abrir la app.
+- **Aviso naranja visible** abajo mientras haya cambios guardados solo en el teléfono, con botón **Reintentar**.
+- **Al juntar la copia del teléfono con la del servidor no se pierde ningún mes con datos**, ni el kilometraje, ni cuentas, depósitos o gastos.
+- **Rescate automático** de copias guardadas en el teléfono por versiones anteriores de la app.
+- **Respaldo local** de la última copia buena del servidor.
+- El SQL `supabase/seguridad-delivery-pro.sql` ahora incluye el **guardado blindado** y el **historial automático**. Si alguna vez lo volvés a correr, no se pierde la protección.
+- **No borres la tabla vieja `datos_usuario`**: queda como respaldo de emergencia.
+
+Para subir: en GitHub **Add file → Upload files**, arrastrá `index.html` y `sw-delivery.js` (y la carpeta `supabase`) → **Commit changes**.
+El blindaje del servidor ya está instalado en Supabase; no hace falta correr SQL.
+
+---
+
 # Delivery Pro — guía para subir esta versión
 
 ## Novedades de esta versión: CUENTAS

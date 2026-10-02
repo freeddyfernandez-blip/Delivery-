@@ -243,6 +243,18 @@ body {
   display: none;
 }
 .save-pill.show { display: block; }
+.sync-aviso {
+  display: none; position: fixed; left: 12px; right: 12px; bottom: 96px; z-index: 900;
+  background: #3a2a10; color: #ffd28a; border: 1px solid rgba(245,166,35,0.45);
+  border-radius: 14px; padding: 12px 14px; font-size: 13px; line-height: 1.35;
+  align-items: center; gap: 10px; box-shadow: 0 6px 24px rgba(0,0,0,0.35);
+}
+.sync-aviso.show { display: flex; }
+.sync-aviso span { flex: 1; }
+.sync-aviso button {
+  background: var(--gold, #f5a623); color: #1a1300; border: 0; border-radius: 10px;
+  padding: 8px 12px; font-weight: 700; font-size: 13px; cursor: pointer;
+}
 .user-chip {
   display: flex; align-items: center; gap: 6px;
   background: var(--bg3);
@@ -1273,6 +1285,7 @@ body.light input[type="month"], body.light input[type="datetime-local"] { color-
     </div>
     <div class="app-header-right">
       <div class="save-pill" id="save-pill">✓ Guardado</div>
+      <div class="sync-aviso" id="sync-aviso" role="status"><span id="sync-aviso-txt">⚠️ Hay cambios guardados solo en este teléfono. Reintentando subirlos…</span><button type="button" onclick="sincronizar(true)">Reintentar</button></div>
       <button id="theme-btn" onclick="toggleTheme()" style="background:none;border:none;cursor:pointer;font-size:20px;padding:4px 6px;border-radius:10px;transition:all .2s;line-height:1" title="Cambiar tema">🌙</button>
       <div class="user-chip" onclick="promptLogout()">
         <div class="user-chip-avatar" id="user-avatar-initial">U</div>
@@ -2296,7 +2309,8 @@ async function cambiarPassword() {
 // Vuelve al login sin borrar los datos guardados en el teléfono
 function forzarLogin(msg) {
   try { localStorage.removeItem('dp_token'); localStorage.removeItem('dp_user'); } catch(e){}
-  sessionToken = null; currentUser = null;
+  sessionToken = null; currentUser = null; remoteOk = false;
+  actualizarAvisoSync();
   document.querySelectorAll('.modal-overlay.open').forEach(m => closeModal(m.id));
   document.getElementById('login-screen').classList.remove('hidden');
   document.getElementById('app-shell').classList.remove('visible');
@@ -2311,6 +2325,8 @@ async function doLogout() {
   if (sessionToken && sessionToken !== LEGACY) { try { await rpc('dp_logout', { p_token: sessionToken }); } catch(e){} }
   sessionToken = null;
   currentUser = null;
+  remoteOk = false;
+  actualizarAvisoSync();
   try { localStorage.removeItem('dp_user'); localStorage.removeItem('dp_token'); } catch(e){}
   APP_DATA = { meses:{}, moto:{ km:0, aceite:{ kmCambio:0, intervalo:3000, fecha:'' }}, gastosFijos:[], depositos:{} };
   DB = { semanas:{}, cargas:[], gastosMoto:[], gastosPersonales:[] };
@@ -2359,56 +2375,71 @@ function lsLoad() {
   try { const r = localStorage.getItem(LS_KEY + currentUser); return r ? JSON.parse(r) : null; } catch(e){ return null; }
 }
 
-async function save() {
-  if (!currentUser) return;
-  APP_DATA.meses[mesActual] = DB;
-  APP_DATA.moto = MOTO;
-  lsSave();
-  showSavePill('💾 Guardando...', 'gold');
-  try {
-    if (sessionToken === LEGACY) await legacyGuardar();
-    else await rpc('dp_guardar', { p_token: sessionToken, p_data: APP_DATA });
-    setPending(false); showSavePill('✓ Guardado', 'green');
-  } catch(e) {
-    setPending(true); showSavePill('📱 Local', 'gold');
-    if (isSesionInvalida(e)) forzarLogin('Tu sesión venció. Ingresá de nuevo: tus datos quedaron guardados en el teléfono.');
-  }
-}
-function setPending(v) {
-  try { v ? localStorage.setItem('dp_pending_' + currentUser, '1') : localStorage.removeItem('dp_pending_' + currentUser); } catch(e){}
-}
-function hasPending() {
-  try { return localStorage.getItem('dp_pending_' + currentUser) === '1'; } catch(e){ return false; }
-}
-// Al recuperar la conexión, subir lo que quedó guardado solo en el teléfono
-window.addEventListener('online', () => { if (currentUser && hasPending()) save(); });
+/* ── BLINDAJE DE DATOS ──
+   1) Nunca se sube al servidor si no se pudo leer primero lo que hay allá.
+   2) Al juntar copia del teléfono y del servidor, ningún mes con datos se pierde.
+   3) Se rescatan copias viejas guardadas en el teléfono por versiones anteriores.
+   4) Aviso visible mientras haya cambios sin subir, con reintento automático. */
+let remoteOk = false;      // ¿ya se leyó bien la copia del servidor en esta sesión?
+let sincronizando = false;
 
-async function load() {
-  if (!currentUser) return;
-  let remoteData = null;
+function mesTieneDatos(m) {
+  if (!m) return false;
+  if ((m.cargas || []).length || (m.gastosMoto || []).length || (m.gastosPersonales || []).length) return true;
+  return Object.values(m.semanas || {}).some(sem =>
+    Object.values(sem || {}).some(d => d && (((d.ingresos || []).length) || ((d.gastos || []).length))));
+}
+function listaVacia(x) {
+  if (!x) return true;
+  if (Array.isArray(x)) return x.length === 0;
+  if (typeof x === 'object') return Object.keys(x).length === 0;
+  return false;
+}
+// Toma "base" como principal y le completa con "otro" todo lo que a base le falte o tenga vacío
+function combinarDatos(base, otro) {
+  if (!otro || typeof otro !== 'object') return base;
+  if (!base || typeof base !== 'object') return JSON.parse(JSON.stringify(otro));
+  const r = JSON.parse(JSON.stringify(base));
+  r.meses = r.meses || {};
+  Object.keys(otro.meses || {}).forEach(k => {
+    const m = otro.meses[k];
+    if (!r.meses[k] || (!mesTieneDatos(r.meses[k]) && mesTieneDatos(m))) r.meses[k] = JSON.parse(JSON.stringify(m));
+  });
+  const kmR = parseFloat(r.moto && r.moto.km) || 0, kmO = parseFloat(otro.moto && otro.moto.km) || 0;
+  if (kmR === 0 && kmO > 0) r.moto = JSON.parse(JSON.stringify(otro.moto));
+  ['gastosFijos', 'depositos', 'gastosPersonales'].forEach(k => {
+    if (listaVacia(r[k]) && !listaVacia(otro[k])) r[k] = JSON.parse(JSON.stringify(otro[k]));
+  });
+  return r;
+}
+// Busca en el teléfono copias de versiones anteriores de la app para este usuario
+function rescatarCopiasLocales(datos) {
+  let res = datos;
   try {
-    if (sessionToken === LEGACY) {
-      // Si el SQL ya se corrió, pasar a modo seguro pidiendo login de nuevo
-      let sqlListo = false;
-      try { await rpc('dp_ping', {}); sqlListo = true; } catch(e) {}
-      if (sqlListo) { const e = new Error('sesion_invalida'); e.server = true; throw e; }
-      remoteData = await legacyCargar();
-    } else {
-      remoteData = await rpc('dp_cargar', { p_token: sessionToken });
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (!k || k === LS_KEY + currentUser || k.indexOf(currentUser) === -1) continue;
+      if (!/^dp_v\d+_|^dp_respaldo_|delivery/i.test(k)) continue;
+      let v; try { v = JSON.parse(localStorage.getItem(k)); } catch(e) { continue; }
+      if (v && typeof v === 'object' && v.meses) res = combinarDatos(res, v);
     }
-  } catch(e) {
-    if (isSesionInvalida(e)) throw e; // sesión vencida → loginSuccess manda al login
+  } catch(e) {}
+  return res;
+}
+async function cargarRemoto() {
+  if (sessionToken === LEGACY) {
+    let sqlListo = false;
+    try { await rpc('dp_ping', {}); sqlListo = true; } catch(e) {}
+    if (sqlListo) { const e = new Error('sesion_invalida'); e.server = true; throw e; }
+    return await legacyCargar();
   }
-  const localData = lsLoad();
-  if (remoteData && localData) {
-    const rt = remoteData._savedAt ? new Date(remoteData._savedAt).getTime() : 0;
-    const lt = localData._savedAt ? new Date(localData._savedAt).getTime() : 0;
-    APP_DATA = lt > rt ? localData : remoteData;
-  } else {
-    APP_DATA = remoteData || localData || APP_DATA;
-  }
+  return await rpc('dp_cargar', { p_token: sessionToken });
+}
+function asegurarEstructura() {
+  if (!APP_DATA || typeof APP_DATA !== 'object') APP_DATA = {};
   if (!APP_DATA.meses) APP_DATA.meses = {};
   if (!APP_DATA.moto) APP_DATA.moto = { km:0, aceite:{ kmCambio:0, intervalo:3000, fecha:'' }, transmision:{ kmCambio:0, intervalo:5000, fecha:'' }};
+  if (!APP_DATA.moto.aceite) APP_DATA.moto.aceite = { kmCambio:0, intervalo:3000, fecha:'' };
   if (!APP_DATA.moto.transmision) APP_DATA.moto.transmision = { kmCambio:0, intervalo:5000, fecha:'' };
   if (!APP_DATA.gastosFijos) APP_DATA.gastosFijos = [];
   if (!APP_DATA.depositos) APP_DATA.depositos = {};
@@ -2418,6 +2449,112 @@ async function load() {
   DB = APP_DATA.meses[mesActual];
   if (!DB.gastosPersonales) DB.gastosPersonales = [];
   MOTO = APP_DATA.moto;
+}
+
+async function save() {
+  if (!currentUser) return;
+  APP_DATA.meses[mesActual] = DB;
+  APP_DATA.moto = MOTO;
+  lsSave();
+  if (!remoteOk) {
+    // Todavía no se pudo leer el servidor: guardar solo en el teléfono y reintentar después
+    setPending(true); showSavePill('📱 Solo en el teléfono', 'gold');
+    programarReintento();
+    return;
+  }
+  showSavePill('💾 Guardando...', 'gold');
+  try {
+    if (sessionToken === LEGACY) await legacyGuardar();
+    else await rpc('dp_guardar', { p_token: sessionToken, p_data: APP_DATA });
+    setPending(false); showSavePill('✓ Guardado', 'green');
+  } catch(e) {
+    setPending(true); showSavePill('📱 Solo en el teléfono', 'gold');
+    if (isSesionInvalida(e)) forzarLogin('Tu sesión venció. Ingresá de nuevo: tus datos quedaron guardados en el teléfono.');
+    else programarReintento();
+  }
+}
+function setPending(v) {
+  try { v ? localStorage.setItem('dp_pending_' + currentUser, '1') : localStorage.removeItem('dp_pending_' + currentUser); } catch(e){}
+  actualizarAvisoSync();
+}
+function hasPending() {
+  try { return localStorage.getItem('dp_pending_' + currentUser) === '1'; } catch(e){ return false; }
+}
+function actualizarAvisoSync() {
+  const el = document.getElementById('sync-aviso');
+  if (!el) return;
+  el.classList.toggle('show', !!currentUser && hasPending());
+}
+let reintentoTimer = null;
+function programarReintento() {
+  if (reintentoTimer) return;
+  reintentoTimer = setTimeout(() => { reintentoTimer = null; sincronizar(false); }, 20000);
+}
+// Lee el servidor (si hace falta), junta sin perder nada y sube
+async function sincronizar(manual) {
+  if (!currentUser || !sessionToken || sincronizando) return;
+  sincronizando = true;
+  const txt = document.getElementById('sync-aviso-txt');
+  if (manual && txt) txt.textContent = '⏳ Subiendo cambios…';
+  try {
+    if (!remoteOk) {
+      const remoto = await cargarRemoto();
+      APP_DATA.meses[mesActual] = DB; APP_DATA.moto = MOTO;
+      APP_DATA = combinarDatos(APP_DATA, remoto); // lo del teléfono manda, el servidor completa lo que falte
+      asegurarEstructura();
+      remoteOk = true;
+      if (typeof showPage === 'function' && typeof currentPage !== 'undefined') showPage(currentPage);
+    }
+    await save();
+  } catch(e) {
+    if (isSesionInvalida(e)) { forzarLogin('Tu sesión venció. Ingresá de nuevo: tus datos quedaron guardados en el teléfono.'); }
+    else programarReintento();
+  } finally {
+    sincronizando = false;
+    if (txt) txt.textContent = '⚠️ Hay cambios guardados solo en este teléfono. Reintentando subirlos…';
+    if (manual && !hasPending()) showToast('✓ Todo subido al servidor');
+  }
+}
+// Al recuperar la conexión o volver a abrir la app, subir lo que quedó en el teléfono
+window.addEventListener('online', () => { if (currentUser && (hasPending() || !remoteOk)) sincronizar(false); });
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && currentUser && (hasPending() || !remoteOk)) sincronizar(false);
+});
+
+async function load() {
+  if (!currentUser) return;
+  let remoteData = null;
+  remoteOk = false;
+  try {
+    remoteData = await cargarRemoto();
+    remoteOk = true; // el servidor respondió (aunque no tenga datos todavía)
+  } catch(e) {
+    if (isSesionInvalida(e)) throw e; // sesión vencida → loginSuccess manda al login
+  }
+  if (remoteOk && remoteData) {
+    try { localStorage.setItem('dp_respaldo_' + currentUser, JSON.stringify(remoteData)); } catch(e){}
+  }
+  const localData = lsLoad();
+  let datos;
+  if (remoteData && localData) {
+    const rt = remoteData._savedAt ? new Date(remoteData._savedAt).getTime() : 0;
+    const lt = localData._savedAt ? new Date(localData._savedAt).getTime() : 0;
+    // La más nueva manda, pero la otra completa todo lo que falte: ningún mes con datos se pierde
+    datos = lt > rt ? combinarDatos(localData, remoteData) : combinarDatos(remoteData, localData);
+  } else {
+    datos = remoteData || localData || APP_DATA;
+  }
+  const antes = JSON.stringify(datos);
+  datos = rescatarCopiasLocales(datos);
+  const rescatado = JSON.stringify(datos) !== antes;
+  APP_DATA = datos;
+  asegurarEstructura();
+  if (rescatado) {
+    setPending(true);
+    setTimeout(() => showToast('🛟 Se recuperaron datos guardados en el teléfono'), 1200);
+  }
+  if (!remoteOk) { setPending(true); programarReintento(); }
+  actualizarAvisoSync();
 }
 
 /* ═══════════════════════════════════════════
