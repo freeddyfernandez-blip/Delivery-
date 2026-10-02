@@ -1938,8 +1938,8 @@ body.light input[type="month"], body.light input[type="datetime-local"] { color-
       <div class="field"><label class="field-label">Kilometraje de la moto</label>
         <input type="text" inputmode="numeric" id="rep-cambio-km" placeholder="Ej: 98.958" oninput="fmtInput(this)"></div>
       <div class="field"><label class="field-label">Costo (opcional)</label>
-        <input type="text" inputmode="numeric" id="rep-cambio-costo" placeholder="₲ 0" oninput="fmtInput(this); repSyncGasto()"></div>
-      <label class="rep-toggle" id="rep-cambio-gasto-wrap"><input type="checkbox" id="rep-cambio-gasto"> Sumar este costo a Gastos Moto</label>
+        <input type="text" inputmode="numeric" id="rep-cambio-costo" placeholder="₲ 0" oninput="fmtInput(this)">
+        <div style="font-size:12px;color:var(--text3);margin-top:6px">Solo para tu control: no se suma a tus gastos ni cambia tu resumen.</div></div>
       <div class="field"><label class="field-label">Nota (opcional)</label>
         <input type="text" id="rep-cambio-nota" placeholder="Ej: marca, taller, garantía…"></div>
       <button class="btn btn-gold btn-full" onclick="guardarCambioRepuesto()">✓ Guardar cambio</button>
@@ -2590,6 +2590,16 @@ function asegurarEstructura() {
   if (!APP_DATA.moto.transmision) APP_DATA.moto.transmision = { kmCambio:0, intervalo:5000, fecha:'' };
   if (!APP_DATA.moto.repuestos || typeof APP_DATA.moto.repuestos !== 'object') APP_DATA.moto.repuestos = {};
   if (!Array.isArray(APP_DATA.moto.repuestosExtra)) APP_DATA.moto.repuestosExtra = [];
+  // El costo de los repuestos es solo informativo: quitar los gastos que la versión anterior sumó solos
+  if (!APP_DATA._repGastosLimpios) {
+    const reps = APP_DATA.moto.repuestos;
+    const esDeRepuesto = g => g && typeof g.desc === 'string' && g.desc.indexOf('Cambio: ') === 0 &&
+      Object.values(reps).some(arr => (arr || []).some(x => x.fecha === g.fecha && (x.costo || 0) === g.monto));
+    Object.values(APP_DATA.meses || {}).forEach(m => {
+      if (m && Array.isArray(m.gastosMoto)) m.gastosMoto = m.gastosMoto.filter(g => !esDeRepuesto(g));
+    });
+    APP_DATA._repGastosLimpios = true;
+  }
   if (!APP_DATA.gastosFijos) APP_DATA.gastosFijos = [];
   if (!APP_DATA.depositos) APP_DATA.depositos = {};
   normalizarCuentas(); // convierte los gastos fijos viejos al modelo con historial de pagos
@@ -3462,8 +3472,6 @@ function abrirCambioRepuesto(id) {
   km.value = MOTO.km ? fmtNum(MOTO.km) : '';
   document.getElementById('rep-cambio-costo').value = '';
   document.getElementById('rep-cambio-nota').value = '';
-  document.getElementById('rep-cambio-gasto').checked = false;
-  document.getElementById('rep-cambio-gasto-wrap').style.display = 'none';
   closeModal('modal-rep-detalle');
   openModal('modal-rep-cambio');
 }
@@ -3472,12 +3480,6 @@ function repFechaRapida(d) {
   const v = f.getFullYear() + '-' + String(f.getMonth() + 1).padStart(2, '0') + '-' + String(f.getDate()).padStart(2, '0');
   document.getElementById('rep-cambio-fecha').value = v;
   document.querySelectorAll('#rep-cambio-rapido button').forEach(b => b.classList.toggle('on', +b.dataset.d === d));
-}
-function repSyncGasto() {
-  const tiene = parseInput('rep-cambio-costo') > 0;
-  const wrap = document.getElementById('rep-cambio-gasto-wrap');
-  if (tiene && wrap.style.display === 'none') document.getElementById('rep-cambio-gasto').checked = true;
-  wrap.style.display = tiene ? 'flex' : 'none';
 }
 function guardarCambioRepuesto() {
   const r = repBuscar(repActual); if (!r) return;
@@ -3490,12 +3492,6 @@ function guardarCambioRepuesto() {
   if (!MOTO.repuestos[r.id]) MOTO.repuestos[r.id] = [];
   MOTO.repuestos[r.id].push({ fecha, km, costo, nota, creado: new Date().toISOString() });
   if (km > (MOTO.km || 0)) MOTO.km = km;
-  if (costo > 0 && document.getElementById('rep-cambio-gasto').checked) {
-    const mes = fecha.slice(0, 7);
-    const destino = mes === mesActual ? DB : (APP_DATA.meses[mes] || DB);
-    if (!destino.gastosMoto) destino.gastosMoto = [];
-    destino.gastosMoto.push({ desc: 'Cambio: ' + r.nombre, monto: costo, cat: 'mecanico', fecha });
-  }
   APP_DATA.moto = MOTO; save();
   closeModal('modal-rep-cambio');
   renderMoto();
