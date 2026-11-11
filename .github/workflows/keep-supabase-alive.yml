@@ -11,6 +11,6 @@ jobs:
     steps:
       - name: Ping Supabase
         run: |
-          curl -s "https://ictognjxntmklzhkronv.supabase.co/rest/v1/usuarios?limit=1" \
+          curl --fail-with-body --silent --show-error --max-time 20 "https://ictognjxntmklzhkronv.supabase.co/rest/v1/usuarios?limit=1" \
             -H "apikey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImljdG9nbmp4bnRta2x6aGtyb252Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1MTA2ODgsImV4cCI6MjA4OTA4NjY4OH0.utxIgFu6GJjmwlUrKtSYogBCpaTZN4ZafaUG4A40rV0"
           echo "Ping OK"
