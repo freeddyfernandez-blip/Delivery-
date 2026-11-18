@@ -1427,6 +1427,7 @@ body.light input[type="month"], body.light input[type="datetime-local"] { color-
         <div class="maintenance-title">🏍️ Estado de la moto</div>
         <div id="dash-moto-estado"><div class="text-muted fs-13">Sin datos configurados</div></div>
       </div>
+      <div id="dash-vehicle-control"></div>
 
       <!-- Mini chart últimas semanas -->
       <div class="dash-chart-card">
@@ -3009,6 +3010,7 @@ function renderDashboard() {
       <div class="moto-dash-row"><span class="moto-dash-label">Km actuales</span><span class="moto-dash-val">${fmtNum(MOTO.km)} km</span></div>
       <div class="moto-dash-row"><span class="moto-dash-label">Próximo aceite</span><span class="moto-dash-val" style="color:${color}">${restantes > 0 ? fmtNum(restantes) + ' km restantes' : '⚠️ CAMBIAR YA'}</span></div>`;
   }
+  if (typeof autoRenderHomeCompact === 'function') autoRenderHomeCompact();
 }
 
 /* ═══════════════════════════════════════════
@@ -3263,6 +3265,7 @@ function guardarKm() {
   if (!km) { alert('Ingresá el kilometraje'); return; }
   MOTO.km = km; APP_DATA.moto = MOTO; save();
   closeModal('modal-km');
+  if (typeof autoRenderHomeCompact === 'function') autoRenderHomeCompact();
   document.getElementById('km-valor').value = '';
   renderMoto();
 }
