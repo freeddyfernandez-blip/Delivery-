@@ -121,7 +121,7 @@ begin
     if km_old > 0 and km_new = 0 then
       v_new := jsonb_set(v_new, '{moto}', v_old->'moto', true);
     end if;
-    foreach k in array array['gastosFijos', 'depositos', 'gastosPersonales'] loop
+    foreach k in array array['gastosFijos', 'depositos', 'gastosPersonales', 'autos'] loop
       if jsonb_typeof(v_old->k) in ('array', 'object')
          and length((v_old->k)::text) > 2
          and (not (v_new ? k) or length(coalesce((v_new->k)::text, '')) <= 2) then
