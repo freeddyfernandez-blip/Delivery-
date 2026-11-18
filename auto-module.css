@@ -1,0 +1,65 @@
+
+/* DELIVERY PRO — Módulo independiente de control de vehículos */
+.auto-shell { padding-bottom: 30px; }
+.auto-head { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:14px; }
+.auto-title { font-family:var(--ff-display); font-size:22px; font-weight:800; letter-spacing:-.03em; }
+.auto-subtitle { color:var(--text3); font-size:12px; margin-top:4px; line-height:1.45; }
+.auto-select { width:100%; min-width:0; background:var(--bg2); color:var(--text); border:1px solid var(--border-hi); border-radius:12px; padding:12px; font:600 13px var(--ff-body); }
+.auto-card { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:14px; margin-bottom:12px; }
+.auto-hero { background:linear-gradient(135deg,rgba(245,166,35,.14),rgba(96,165,250,.06)); border-color:rgba(245,166,35,.22); }
+.auto-vehicle-line { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+.auto-vehicle-name { font-family:var(--ff-display); font-size:19px; font-weight:800; }
+.auto-muted { color:var(--text3); font-size:12px; line-height:1.5; }
+.auto-plate { border:1px solid var(--border-hi); border-radius:8px; padding:5px 9px; color:var(--text2); font:700 11px var(--ff-mono); white-space:nowrap; }
+.auto-kpis { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px; margin:12px 0; }
+.auto-kpi { background:var(--bg2); border:1px solid var(--border); border-radius:13px; padding:12px; min-width:0; }
+.auto-kpi-label { color:var(--text3); text-transform:uppercase; letter-spacing:.07em; font-size:10px; font-weight:700; margin-bottom:7px; }
+.auto-kpi-value { font-family:var(--ff-display); font-size:18px; font-weight:800; overflow-wrap:anywhere; }
+.auto-kpi-note { color:var(--text3); font-size:10px; margin-top:3px; }
+.auto-actions { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px; margin:12px 0; }
+.auto-action { display:flex; align-items:center; justify-content:center; gap:8px; width:100%; min-height:46px; padding:11px 10px; border-radius:12px; border:1px solid var(--border-hi); background:var(--bg2); color:var(--text); font:700 12px var(--ff-body); cursor:pointer; }
+.auto-action.primary { background:var(--gold-dim); color:var(--gold); border-color:rgba(245,166,35,.32); }
+.auto-action:active { transform:scale(.98); }
+.auto-section-head { display:flex; justify-content:space-between; align-items:center; gap:10px; margin:16px 0 9px; }
+.auto-section-title { font-family:var(--ff-display); font-size:14px; font-weight:800; }
+.auto-alert { border:1px solid var(--border); border-radius:12px; padding:11px 12px; margin-bottom:8px; background:var(--bg2); }
+.auto-alert.danger { border-color:rgba(255,107,107,.35); background:var(--red-dim); }
+.auto-alert.warn { border-color:rgba(245,166,35,.35); background:var(--gold-dim); }
+.auto-alert.ok { border-color:rgba(45,212,164,.25); background:var(--green-dim); }
+.auto-alert-title { font-size:12px; font-weight:800; margin-bottom:3px; }
+.auto-alert-detail { color:var(--text2); font-size:11px; line-height:1.5; }
+.auto-record { border:1px solid var(--border); background:var(--card); border-radius:13px; padding:12px; margin-bottom:9px; }
+.auto-record-top { display:flex; justify-content:space-between; gap:10px; align-items:flex-start; }
+.auto-record-title { font-size:13px; font-weight:800; line-height:1.35; }
+.auto-record-meta { color:var(--text3); font-size:10px; line-height:1.55; margin-top:5px; }
+.auto-record-cost { color:var(--green); font-family:var(--ff-display); font-weight:800; font-size:14px; white-space:nowrap; }
+.auto-tag { display:inline-flex; border-radius:99px; padding:4px 8px; background:var(--bg2); color:var(--text2); font-size:10px; font-weight:700; margin:6px 4px 0 0; }
+.auto-record-actions { display:flex; gap:7px; margin-top:10px; }
+.auto-mini-btn { border:1px solid var(--border); background:var(--bg2); color:var(--text2); border-radius:9px; padding:7px 10px; font:700 11px var(--ff-body); cursor:pointer; }
+.auto-mini-btn.danger { color:var(--red); }
+.auto-form { background:var(--card); border:1px solid var(--border-hi); border-radius:16px; padding:14px; margin-bottom:14px; }
+.auto-form-title { font-family:var(--ff-display); font-size:17px; font-weight:800; margin-bottom:5px; }
+.auto-form-help { color:var(--text3); font-size:11px; line-height:1.5; margin-bottom:14px; }
+.auto-form-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+.auto-field { min-width:0; }
+.auto-field.full { grid-column:1/-1; }
+.auto-field label { display:block; color:var(--text2); font-size:11px; font-weight:700; margin:0 0 6px; }
+.auto-field input, .auto-field select, .auto-field textarea { width:100%; min-width:0; background:var(--bg2); color:var(--text); border:1px solid var(--border-hi); border-radius:10px; padding:11px 10px; font:13px var(--ff-body); outline:none; }
+.auto-field textarea { min-height:74px; resize:vertical; }
+.auto-field input:focus, .auto-field select:focus, .auto-field textarea:focus { border-color:var(--gold); }
+.auto-total-box { grid-column:1/-1; display:flex; justify-content:space-between; align-items:center; gap:10px; border:1px solid rgba(45,212,164,.25); background:var(--green-dim); border-radius:12px; padding:12px; }
+.auto-total-box span { color:var(--text2); font-size:12px; font-weight:700; }
+.auto-total-box strong { color:var(--green); font-family:var(--ff-display); font-size:20px; }
+.auto-form-buttons { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:14px; }
+.auto-empty { text-align:center; padding:24px 15px; border:1px dashed var(--border-hi); border-radius:14px; color:var(--text3); font-size:12px; line-height:1.6; }
+.auto-filter-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:10px; }
+.auto-status { font-size:10px; font-weight:800; border-radius:99px; padding:4px 8px; }
+.auto-status.danger { background:var(--red-dim); color:var(--red); }
+.auto-status.warn { background:var(--gold-dim); color:var(--gold); }
+.auto-status.ok { background:var(--green-dim); color:var(--green); }
+.auto-hidden { display:none !important; }
+@media (max-width:380px) {
+  .auto-form-grid { grid-template-columns:1fr; }
+  .auto-field.full, .auto-total-box { grid-column:auto; }
+  .auto-actions { grid-template-columns:1fr 1fr; }
+}
