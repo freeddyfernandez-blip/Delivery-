@@ -93,7 +93,7 @@ function autoRenderHome(v) {
     return '<option value="' + autoEsc(item.id) + '"' + (item.id === v.id ? " selected" : "") + '>' +
       autoEsc(autoVehicleLabel(item) + (item.plate ? " · " + item.plate : "") + (item.archived ? " · Archivado" : "")) + '</option>';
   }).join("");
-  var alerts = pending.length ? pending.map(function(a){
+  var alerts = pending.length ? pending.slice(0,8).map(function(a){
     return '<div class="auto-alert ' + a.level + '"><div class="auto-alert-title">' + autoEsc(a.title) +
       ' <span class="auto-status ' + a.level + '">' + autoEsc(a.status) + '</span></div><div class="auto-alert-detail">' +
       autoEsc(a.detail) + '</div></div>';
@@ -139,7 +139,7 @@ function autoMaintenanceAlerts(v) {
     if (dayLeft !== null) detail.push(dayLeft <= 0 ? "Fecha prevista vencida" : "Faltan " + dayLeft + " días");
     return {level:overdue ? "danger" : "warn",status:overdue ? "VENCIDO" : "PRÓXIMO",title:r.item,detail:detail.join(" · ") + " · Último registro: " + (r.date || "sin fecha")};
   }).filter(Boolean);
-  return list.slice(0,8);
+  return list;
 }
 function autoRecordCard(r) {
   return '<div class="auto-record"><div class="auto-record-top"><div style="min-width:0;flex:1"><div class="auto-record-title">' +
@@ -216,7 +216,7 @@ function autoGuardarVehiculo() {
     acquisitionDate:document.getElementById("auto-v-date").value,
     vin:document.getElementById("auto-v-vin").value.trim(),
     notes:document.getElementById("auto-v-notes").value.trim(),
-    archived:false, updatedAt:now, createdAt:existing ? existing.createdAt : now
+    archived:existing ? !!existing.archived : false, updatedAt:now, createdAt:existing ? existing.createdAt : now
   });
   if (existing) d.vehicles[d.vehicles.findIndex(function(x){return x.id === id;})] = v;
   else d.vehicles.push(v);
@@ -316,8 +316,8 @@ function autoGuardarRegistro() {
   var otherCost = autoNum(document.getElementById("auto-r-other").value);
   var nextKm = autoNum(document.getElementById("auto-r-next-km").value);
   var nextDate = document.getElementById("auto-r-next-date").value;
-  if (!date || !category || !item || km < 0 || partCost < 0 || labor < 0 || otherCost < 0) {
-    alert("Completá la fecha, el kilometraje, la categoría, la pieza y verificá que los importes no sean negativos."); return;
+  if (!date || !category || !item || date > autoLocalDate() || km < 0 || partCost < 0 || labor < 0 || otherCost < 0) {
+    alert("Completá la fecha (no futura), el kilometraje, la categoría, la pieza y verificá que los importes no sean negativos."); return;
   }
   if (nextKm && nextKm <= km) { alert("El próximo kilometraje debe ser mayor que el kilometraje de este trabajo."); return; }
   if (nextDate && nextDate < date) { alert("La fecha del próximo mantenimiento no puede ser anterior al trabajo."); return; }
@@ -414,19 +414,26 @@ function autoPDF() {
   if (!v) { alert("No hay un vehículo seleccionado."); return; }
   var f = AUTO_UI.filters;
   var records = autoRecords(v.id).filter(function(r){
-    return (!f.from || String(r.date || "") >= f.from) && (!f.to || String(r.date || "") <= f.to);
+    var hay = [r.item,r.category,r.description,r.workshop,r.partBrand,r.partReference,r.receipt,r.notes].join(" ").toLowerCase();
+    return (!f.from || String(r.date || "") >= f.from) && (!f.to || String(r.date || "") <= f.to) &&
+      (!f.category || r.category === f.category) && (!f.q || hay.indexOf(f.q.toLowerCase()) >= 0);
   });
   var total = records.reduce(function(s,r){return s + (Number(r.total)||0);},0);
   var rows = records.map(function(r){
     return '<tr><td>' + autoEsc(r.date) + '</td><td>' + autoEsc(Math.round(Number(r.km)||0).toLocaleString("es-PY")) + ' km</td>' +
       '<td><b>' + autoEsc(r.item) + '</b><br><small>' + autoEsc(r.category) + '</small>' +
-      (r.description ? '<br><small>' + autoEsc(r.description) + '</small>' : '') + '</td>' +
+      (r.description ? '<br><small>' + autoEsc(r.description) + '</small>' : '') +
+      (r.partBrand || r.partReference ? '<br><small>Repuesto: ' + autoEsc([r.partBrand,r.partReference].filter(Boolean).join(" / ")) + '</small>' : '') +
+      (r.notes ? '<br><small>Observaciones: ' + autoEsc(r.notes) + '</small>' : '') +
+      (r.receipt ? '<br><small>Comprobante: ' + autoEsc(r.receipt) + '</small>' : '') + '</td>' +
       '<td>' + autoEsc(r.workshop || "—") + '</td><td class="money">' + autoEsc(autoMoney(r.total)) + '</td></tr>';
   }).join("");
   var w = window.open("","_blank");
   if (!w) { alert("El navegador bloqueó el informe. Permití ventanas emergentes para Delivery Pro y volvé a tocar Descargar PDF."); return; }
   var title = autoVehicleLabel(v);
   var dateRange = (f.from || f.to) ? ((f.from || "Inicio") + " a " + (f.to || "Hoy")) : "Historial completo";
+  if (f.category) dateRange += " · " + f.category;
+  if (f.q) dateRange += " · Búsqueda: " + f.q;
   var html = '<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">' +
     '<title>Delivery Pro - Informe Auto - ' + autoEsc(title) + '</title><style>' +
     'body{font-family:Arial,sans-serif;color:#20242c;margin:28px;font-size:11px}h1{font-size:21px;margin:0 0 4px}h2{font-size:13px;margin:0 0 10px;color:#555} .brand{font-size:10px;letter-spacing:2px;color:#a36a12;font-weight:bold;margin-bottom:12px} .meta{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:18px 0;padding:12px;border:1px solid #ddd;border-radius:8px} .meta b{display:block;color:#777;font-size:9px;text-transform:uppercase;margin-bottom:3px} .summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0} .tile{border:1px solid #ddd;border-radius:8px;padding:9px} .tile span{display:block;color:#666;font-size:9px;text-transform:uppercase} .tile strong{font-size:15px} table{width:100%;border-collapse:collapse;margin-top:12px}th{background:#252b36;color:white;text-align:left;padding:8px 6px;font-size:9px}td{border-bottom:1px solid #ddd;padding:8px 6px;vertical-align:top}small{color:#666;font-size:9px}.money{text-align:right;font-weight:bold;white-space:nowrap}.total{margin:14px 0;text-align:right;font-size:16px;font-weight:bold}.footer{margin-top:24px;padding-top:8px;border-top:1px solid #ddd;color:#777;font-size:9px} .empty{padding:18px;text-align:center;color:#666;border:1px dashed #ccc} @page{size:A4;margin:12mm} @media print{body{margin:0}.no-print{display:none!important}}' +
