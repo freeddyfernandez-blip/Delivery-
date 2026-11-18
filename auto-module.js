@@ -53,7 +53,7 @@ function autoVehiculo() {
   return d.vehicles.find(function(v){return v.id === d.activeVehicleId;}) || null;
 }
 function autoRecords(vehicleId) {
-  return autoData().records.filter(function(r){return r.vehicleId === vehicleId;})
+  return autoData().records.filter(function(r){return r.vehicleId === vehicleId && !r.deletedAt;})
     .sort(function(a,b){return String(b.date || "").localeCompare(String(a.date || "")) || (Number(b.km)||0)-(Number(a.km)||0);});
 }
 function autoTotal(vehicleId) {
@@ -247,7 +247,7 @@ function autoNuevoRegistro() {
   AUTO_UI.form = "record"; AUTO_UI.editingId = null; autoRender();
 }
 function autoEditarRegistro(id) {
-  var r = autoData().records.find(function(x){return x.id === id;});
+  var r = autoData().records.find(function(x){return x.id === id && !x.deletedAt;});
   if (!r) return;
   if (r.vehicleId !== (autoVehiculo() || {}).id) { alert("El registro pertenece a otro vehículo."); return; }
   AUTO_UI.form = "record"; AUTO_UI.editingId = id; autoRender();
@@ -354,8 +354,9 @@ function autoEliminarRegistro(id) {
   var r = d.records.find(function(x){return x.id === id;});
   if (!r) return;
   if (!window.confirm("¿Eliminar el registro de " + r.item + "? Esta acción no se puede deshacer.")) return;
-  d.records = d.records.filter(function(x){return x.id !== id;});
-  save().then(function(){showToast("Registro eliminado.");autoRender();});
+  r.deletedAt = new Date().toISOString();
+  r.updatedAt = r.deletedAt;
+  save().then(function(){showToast("Registro eliminado del historial.");autoRender();});
 }
 function autoArchivarVehiculo() {
   var v = autoVehiculo(); if (!v) return;
