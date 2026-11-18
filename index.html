@@ -12,6 +12,7 @@
 <title>Delivery Pro</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link rel="stylesheet" href="./auto-module.css">
 <style>
 /* ═══════════════════════════════════════════
    DESIGN SYSTEM
@@ -1641,6 +1642,9 @@ body.light input[type="month"], body.light input[type="datetime-local"] { color-
       <div id="lista-gastos-personales"></div>
     </div>
 
+    <!-- ═══ CONTROL AUTO ═══ -->
+    <div class="page" id="page-auto"><div id="auto-content"></div></div>
+
     <!-- ═══ HISTORIAL ═══ -->
     <div class="page" id="page-historial">
       <div class="sec-head">
@@ -2189,6 +2193,7 @@ body.light input[type="month"], body.light input[type="datetime-local"] { color-
       <div class="mas-grid">
         <button class="mas-item" onclick="irDesdeMas('combustible')"><span class="mi">⛽</span>Combustible</button>
         <button class="mas-item" onclick="irDesdeMas('moto')"><span class="mi">🏍️</span>Moto</button>
+        <button class="mas-item" onclick="irDesdeMas('auto')"><span class="mi">🚗</span>Auto</button>
         <button class="mas-item" onclick="irDesdeMas('gastos')"><span class="mi">🔧</span>Gastos moto</button>
         <button class="mas-item" onclick="irDesdeMas('historial')"><span class="mi">📅</span>Historial</button>
         <button class="mas-item" onclick="irDesdeMas('stats')"><span class="mi">📈</span>Estadísticas</button>
@@ -2462,7 +2467,7 @@ async function doLogout() {
   remoteOk = false;
   actualizarAvisoSync();
   try { localStorage.removeItem('dp_user'); localStorage.removeItem('dp_token'); } catch(e){}
-  APP_DATA = { meses:{}, moto:{ km:0, aceite:{ kmCambio:0, intervalo:3000, fecha:'' }}, gastosFijos:[], depositos:{} };
+  APP_DATA = { meses:{}, moto:{ km:0, aceite:{ kmCambio:0, intervalo:3000, fecha:'' }}, gastosFijos:[], depositos:{}, autos:{vehicles:[], records:[], activeVehicleId:null} };
   DB = { semanas:{}, cargas:[], gastosMoto:[], gastosPersonales:[] };
   MOTO = { km:0, aceite:{ kmCambio:0, intervalo:3000, fecha:'' }, transmision:{ kmCambio:0, intervalo:5000, fecha:'' }};
   document.getElementById('login-screen').classList.remove('hidden');
@@ -2484,7 +2489,7 @@ let semanaOffset = 0;
 let diaActual = null;
 
 let APP_DATA = {
-  meses:{}, moto:{ km:0, aceite:{ kmCambio:0, intervalo:3000, fecha:'' }, transmision:{ kmCambio:0, intervalo:5000, fecha:'' }}, gastosFijos:[], depositos:{}
+  meses:{}, moto:{ km:0, aceite:{ kmCambio:0, intervalo:3000, fecha:'' }, transmision:{ kmCambio:0, intervalo:5000, fecha:'' }}, gastosFijos:[], depositos:{}, autos:{vehicles:[], records:[], activeVehicleId:null}
 };
 
 const LS_KEY = 'dp_v10_';
@@ -2529,11 +2534,35 @@ function listaVacia(x) {
   if (typeof x === 'object') return Object.keys(x).length === 0;
   return false;
 }
+function combinarAutosData(base, otro) {
+  const a = base && typeof base === 'object' ? base : {};
+  const b = otro && typeof otro === 'object' ? otro : {};
+  function unir(listaA, listaB) {
+    const mapa = new Map();
+    (Array.isArray(listaA) ? listaA : []).forEach(x => { if (x && x.id) mapa.set(x.id, x); });
+    (Array.isArray(listaB) ? listaB : []).forEach(x => {
+      if (!x || !x.id) return;
+      const old = mapa.get(x.id);
+      const tNew = Date.parse(x.updatedAt || x.createdAt || 0) || 0;
+      const tOld = old ? (Date.parse(old.updatedAt || old.createdAt || 0) || 0) : -1;
+      if (!old || tNew > tOld) mapa.set(x.id, x);
+    });
+    return Array.from(mapa.values());
+  }
+  const vehicles = unir(a.vehicles, b.vehicles);
+  const records = unir(a.records, b.records);
+  const active = vehicles.some(x => x.id === a.activeVehicleId) ? a.activeVehicleId :
+                 (vehicles.some(x => x.id === b.activeVehicleId) ? b.activeVehicleId :
+                 ((vehicles.find(x => !x.archived) || {}).id || null));
+  return { vehicles:vehicles, records:records, activeVehicleId:active };
+}
+
 // Toma "base" como principal y le completa con "otro" todo lo que a base le falte o tenga vacío
 function combinarDatos(base, otro) {
   if (!otro || typeof otro !== 'object') return base;
   if (!base || typeof base !== 'object') return JSON.parse(JSON.stringify(otro));
   const r = JSON.parse(JSON.stringify(base));
+  r.autos = combinarAutosData(r.autos, otro.autos);
   r.meses = r.meses || {};
   Object.keys(otro.meses || {}).forEach(k => {
     const m = otro.meses[k];
@@ -2585,6 +2614,9 @@ async function cargarRemoto() {
 function asegurarEstructura() {
   if (!APP_DATA || typeof APP_DATA !== 'object') APP_DATA = {};
   if (!APP_DATA.meses) APP_DATA.meses = {};
+  if (!APP_DATA.autos || typeof APP_DATA.autos !== 'object') APP_DATA.autos = { vehicles:[], records:[], activeVehicleId:null };
+  if (!Array.isArray(APP_DATA.autos.vehicles)) APP_DATA.autos.vehicles = [];
+  if (!Array.isArray(APP_DATA.autos.records)) APP_DATA.autos.records = [];
   if (!APP_DATA.moto) APP_DATA.moto = { km:0, aceite:{ kmCambio:0, intervalo:3000, fecha:'' }, transmision:{ kmCambio:0, intervalo:5000, fecha:'' }};
   if (!APP_DATA.moto.aceite) APP_DATA.moto.aceite = { kmCambio:0, intervalo:3000, fecha:'' };
   if (!APP_DATA.moto.transmision) APP_DATA.moto.transmision = { kmCambio:0, intervalo:5000, fecha:'' };
@@ -2893,7 +2925,8 @@ function showPage(id) {
     'gastos-personales': renderGastosPersonales,
     historial: renderHistorial,
     fijos: renderCuentas,
-    stats: renderStats
+    stats: renderStats,
+    auto: autoRender
   };
   if (renders[id]) renders[id]();
 }
@@ -5462,5 +5495,6 @@ if ('serviceWorker' in navigator) {
   });
 }
 </script>
+<script src="./auto-module.js"></script>
 </body>
 </html>
