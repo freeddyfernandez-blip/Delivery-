@@ -96,3 +96,22 @@ delete from public.datos_usuario where username like 'delivery\_%';
 | No aparece la pestaña Actions o el robot | Falta la carpeta `.github` (ver Paso 1, punto 6). |
 | La app sigue mostrando la versión vieja | Cerrala del todo y abrila de nuevo (o recargá 2 veces en el navegador). |
 | "Demasiados intentos fallidos" | Esperá 15 minutos. |
+
+---
+
+# Nueva sección AUTO — control de varios vehículos
+
+La versión agrega **Más → Auto**. El módulo permite:
+- Registrar uno o varios vehículos, activar, archivar y reactivar sin borrar sus historiales.
+- Registrar mantenimientos y reparaciones por fecha y kilometraje, con piezas, referencia, cantidad, costos, mano de obra, taller, garantía, comprobante/referencia y notas.
+- Definir el próximo control por kilometraje o por fecha; los avisos se calculan con el kilometraje actual del vehículo.
+- Buscar y filtrar el historial por texto, categoría y período.
+- Descargar un informe del vehículo o del período. En el diálogo de impresión del teléfono, elegir **Guardar como PDF**.
+- Mantener los registros de Auto separados de Moto, Delivery y gastos personales.
+
+Los gastos de Auto no se suman a los gastos de Moto ni alteran el neto de Delivery.
+
+**Datos y sincronización:** Auto se guarda en el bloque `autos` del mismo objeto privado de Delivery Pro. El guardado del servidor combina vehículos y mantenimientos por ID, conserva el historial al guardar desde versiones anteriores y utiliza bajas lógicas para que un mantenimiento eliminado no reaparezca desde una copia antigua.
+
+**Publicación:** subir juntos `index.html`, `auto-module.js`, `auto-module.css` y `sw-delivery.js`. La migración `supabase/preservar-autos-en-guardado.sql` ya está aplicada en el proyecto conectado. El SQL completo de instalación también incluye esta protección.
+
