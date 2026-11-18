@@ -32,8 +32,33 @@ function autoEsc(v) {
     .replace(/"/g,"&quot;").replace(/'/g,"&#39;");
 }
 function autoNum(v) {
-  var n = Number(String(v === undefined || v === null ? "" : v).replace(/[^\d.-]/g,""));
+  var raw = String(v === undefined || v === null ? "" : v).trim();
+  var normalized = raw.replace(/\./g,"").replace(/,/g,"").replace(/[^\d-]/g,"");
+  var n = Number(normalized);
   return Number.isFinite(n) ? n : 0;
+}
+function autoFormatNumber(v) {
+  var digits = String(v === undefined || v === null ? "" : v).replace(/\D/g,"");
+  if (!digits) return "";
+  return String(Number(digits)).replace(/\B(?=(\d{3})+(?!\d))/g,".");
+}
+function autoFormatLive(input) {
+  if (!input) return;
+  var before = input.value, formatted = autoFormatNumber(before);
+  if (formatted !== before) {
+    input.value = formatted;
+    try { input.setSelectionRange(formatted.length,formatted.length); } catch(e) {}
+  }
+}
+function autoAttachThousands(ids) {
+  ids.forEach(function(id) {
+    var el = document.getElementById(id);
+    if (!el || el.dataset.autoThousands === "1") return;
+    el.dataset.autoThousands = "1";
+    el.setAttribute("inputmode","numeric");
+    el.addEventListener("input",function(){autoFormatLive(el);});
+    autoFormatLive(el);
+  });
 }
 function autoMoney(v) {
   return typeof fmt === "function" ? fmt(v) : "Gs. " + Math.round(v || 0).toLocaleString("es-PY");
@@ -126,20 +151,34 @@ function autoRenderHome(v) {
     recent +
     (v.notes ? '<div class="auto-card"><div class="auto-section-title">Observaciones del vehículo</div><div class="auto-muted" style="margin-top:6px">' + autoEsc(v.notes) + '</div></div>' : '');
 }
+function autoLatestMaintenanceRecords(vehicleId) {
+  var latest=new Map();
+  autoData().records.filter(function(r){return r.vehicleId===vehicleId&&!r.deletedAt;}).forEach(function(r){
+    var key=String(r.category||"")+"|"+String(r.item||"").trim().toLowerCase();
+    var stamp=Date.parse(r.updatedAt||r.createdAt||r.date||"")||0;
+    var old=latest.get(key),oldStamp=old?(Date.parse(old.updatedAt||old.createdAt||old.date||"")||0):-1;
+    var date=String(r.date||""),oldDate=old?String(old.date||""):"";
+    var newer=!old||date>oldDate||(date===oldDate&&Number(r.km||0)>Number(old.km||0))||
+      (date===oldDate&&Number(r.km||0)===Number(old.km||0)&&stamp>oldStamp);
+    if(newer)latest.set(key,r);
+  });
+  return Array.from(latest.values());
+}
 function autoMaintenanceAlerts(v) {
-  var today = autoLocalDate();
-  var list = autoRecords(v.id).filter(function(r){return Number(r.nextKm)>0 || !!r.nextDate;}).map(function(r){
-    var kmLeft = Number(r.nextKm)>0 ? Number(r.nextKm) - (Number(v.currentKm)||0) : null;
-    var dayLeft = r.nextDate ? Math.ceil((new Date(r.nextDate + "T00:00:00").getTime() - new Date(today + "T00:00:00").getTime()) / 86400000) : null;
-    var overdue = (kmLeft !== null && kmLeft <= 0) || (dayLeft !== null && dayLeft <= 0);
-    var soon = !overdue && ((kmLeft !== null && kmLeft <= 500) || (dayLeft !== null && dayLeft <= 30));
-    if (!overdue && !soon) return null;
-    var detail = [];
-    if (kmLeft !== null) detail.push(kmLeft <= 0 ? "Kilometraje objetivo superado" : "Restan " + Math.round(kmLeft).toLocaleString("es-PY") + " km");
-    if (dayLeft !== null) detail.push(dayLeft <= 0 ? "Fecha prevista vencida" : "Faltan " + dayLeft + " días");
-    return {level:overdue ? "danger" : "warn",status:overdue ? "VENCIDO" : "PRÓXIMO",title:r.item,detail:detail.join(" · ") + " · Último registro: " + (r.date || "sin fecha")};
+  var today=autoLocalDate();
+  return autoLatestMaintenanceRecords(v.id).filter(function(r){return Number(r.nextKm)>0||!!r.nextDate;}).map(function(r){
+    var kmLeft=Number(r.nextKm)>0?Number(r.nextKm)-(Number(v.currentKm)||0):null;
+    var dayLeft=r.nextDate?Math.ceil((new Date(r.nextDate+"T00:00:00").getTime()-new Date(today+"T00:00:00").getTime())/86400000):null;
+    var overdue=(kmLeft!==null&&kmLeft<=0)||(dayLeft!==null&&dayLeft<=0);
+    var soon=!overdue&&((kmLeft!==null&&kmLeft<=500)||(dayLeft!==null&&dayLeft<=30));
+    if(!overdue&&!soon)return null;
+    var detail=[];
+    if(kmLeft!==null)detail.push(kmLeft<=0?"Superado por "+Math.abs(Math.round(kmLeft)).toLocaleString("es-PY")+" km":"Restan "+Math.round(kmLeft).toLocaleString("es-PY")+" km");
+    if(dayLeft!==null)detail.push(dayLeft<=0?"Fecha vencida hace "+Math.abs(dayLeft)+" días":"Faltan "+dayLeft+" días");
+    return {level:overdue?"danger":"warn",status:overdue?"CONTROLAR AHORA":"PRÓXIMO",title:r.item,
+      detail:detail.join(" · ")+" · Objetivo: "+(r.nextKm?Math.round(r.nextKm).toLocaleString("es-PY")+" km":r.nextDate),
+      vehicleId:v.id,recordId:r.id,kind:"auto"};
   }).filter(Boolean);
-  return list;
 }
 function autoRecordCard(r) {
   return '<div class="auto-record"><div class="auto-record-top"><div style="min-width:0;flex:1"><div class="auto-record-title">' +
@@ -148,7 +187,7 @@ function autoRecordCard(r) {
     (r.workshop ? '<br>Taller: ' + autoEsc(r.workshop) : '') + (r.visit ? '<br>Visita / orden: ' + autoEsc(r.visit) : '') + (r.warranty ? '<br>Garantía: ' + autoEsc(r.warranty) : '') + '</div></div><div class="auto-record-cost">' +
     autoEsc(autoMoney(r.total)) + '</div></div>' +
     (r.description ? '<div class="auto-muted" style="margin-top:7px">' + autoEsc(r.description) + '</div>' : '') +
-    (r.nextKm || r.nextDate ? '<div><span class="auto-tag">Próximo: ' + autoEsc(r.nextKm ? Math.round(r.nextKm).toLocaleString("es-PY") + " km" : "") +
+    (r.nextKm || r.nextDate ? '<div><span class="auto-tag">Próximo: ' + autoEsc(r.nextKm ? Math.round(r.nextKm).toLocaleString("es-PY") + " km" + (r.nextIntervalKm ? " (cada " + Math.round(r.nextIntervalKm).toLocaleString("es-PY") + " km)" : "") : "") +
       (r.nextKm && r.nextDate ? " · " : "") + autoEsc(r.nextDate || "") + '</span></div>' : '') +
     '<div class="auto-record-actions"><button class="auto-mini-btn" onclick="autoEditarRegistro(\'' + autoEsc(r.id) + '\')">Editar</button>' +
     '<button class="auto-mini-btn danger" onclick="autoEliminarRegistro(\'' + autoEsc(r.id) + '\')">Eliminar</button></div></div>';
@@ -190,11 +229,16 @@ function autoRenderVehicleForm() {
     '<div class="auto-field full"><label>Observaciones</label><textarea id="auto-v-notes" maxlength="1000" placeholder="Datos adicionales del vehículo">' + autoEsc(v.notes) + '</textarea></div>' +
     '</div><div class="auto-form-buttons"><button class="auto-action" onclick="autoCancelarForm()">Cancelar</button>' +
     '<button class="auto-action primary" onclick="autoGuardarVehiculo()">' + (v.id ? "Guardar cambios" : "Guardar vehículo") + '</button></div></div>';
+  autoAttachThousands(["auto-v-km"]);
 }
 function autoField(label,id,value,placeholder,type) {
   var t = type || "text";
-  return '<div class="auto-field"><label for="' + id + '">' + autoEsc(label) + '</label><input id="' + id + '" type="' + t +
-    '" value="' + autoEsc(value) + '" placeholder="' + autoEsc(placeholder || "") + '"' + (t === "number" ? ' min="0"' : "") + '></div>';
+  var thousands = t === "number" && (/km/i.test(id) || /part|labor|other/i.test(id));
+  var inputType = thousands ? "text" : t;
+  var displayValue = thousands ? autoFormatNumber(value) : value;
+  return '<div class="auto-field"><label for="' + id + '">' + autoEsc(label) + '</label><input id="' + id + '" type="' + inputType + '"' +
+    (thousands ? ' inputmode="numeric" class="auto-thousands"' : '') +
+    ' value="' + autoEsc(displayValue) + '" placeholder="' + autoEsc(placeholder || "") + '"' + (t === "number" ? ' min="0"' : "") + '></div>';
 }
 function autoGuardarVehiculo() {
   var d = autoData();
@@ -229,8 +273,9 @@ function autoRenderKmForm() {
   var v = autoVehiculo();
   document.getElementById("auto-content").innerHTML =
     '<div class="auto-head"><div><div class="auto-title">Actualizar kilometraje</div><div class="auto-subtitle">' + autoEsc(autoVehicleLabel(v)) + '</div></div></div>' +
-    '<div class="auto-form"><div class="auto-field"><label>Kilometraje actual</label><input id="auto-km-new" type="number" min="0" step="1" value="' + autoEsc(v.currentKm || 0) + '"></div>' +
+    '<div class="auto-form"><div class="auto-field"><label>Kilometraje actual</label><input id="auto-km-new" type="text" inputmode="numeric" class="auto-thousands" value="' + autoEsc(autoFormatNumber(v.currentKm || 0)) + '"></div>' +
     '<div class="auto-form-buttons"><button class="auto-action" onclick="autoCancelarForm()">Cancelar</button><button class="auto-action primary" onclick="autoGuardarKm()">Guardar km</button></div></div>';
+  autoAttachThousands(["auto-km-new"]);
 }
 function autoGuardarKm() {
   var v = autoVehiculo();
@@ -239,7 +284,7 @@ function autoGuardarKm() {
   if (km < (Number(v.currentKm)||0) && !window.confirm("El nuevo kilometraje es menor que el anterior. ¿Confirmás que es una corrección de lectura?")) return;
   v.currentKm = km; v.updatedAt = new Date().toISOString();
   AUTO_UI.form = "";
-  save().then(function(){ showToast("Kilometraje actualizado."); autoRender(); });
+  save().then(function(){ showToast("Kilometraje actualizado."); autoRender(); if(typeof renderDashboard==="function")renderDashboard(); });
 }
 function autoNuevoRegistro() {
   var v = autoVehiculo();
@@ -253,41 +298,58 @@ function autoEditarRegistro(id) {
   AUTO_UI.form = "record"; AUTO_UI.editingId = id; autoRender();
 }
 function autoRenderRecordForm() {
-  var host = document.getElementById("auto-content");
-  var v = autoVehiculo();
-  var r = AUTO_UI.editingId ? autoData().records.find(function(x){return x.id === AUTO_UI.editingId;}) : null;
-  r = r || {};
-  var category = r.category || "Motor";
-  host.innerHTML = '<div class="auto-head"><div><div class="auto-title">' + (r.id ? "Editar mantenimiento" : "Registrar mantenimiento") +
-    '</div><div class="auto-subtitle">' + autoEsc(autoVehicleLabel(v)) + ' · Los costos de Auto no se mezclan con los gastos de Moto o Delivery.</div></div></div>' +
-    '<div class="auto-form"><div class="auto-form-grid">' +
-    '<div class="auto-field"><label>Fecha del trabajo *</label><input id="auto-r-date" type="date" value="' + autoEsc(r.date || autoLocalDate()) + '"></div>' +
-    '<div class="auto-field"><label>Kilometraje del trabajo *</label><input id="auto-r-km" type="number" min="0" step="1" value="' + autoEsc(r.km !== undefined ? r.km : v.currentKm || 0) + '"></div>' +
-    '<div class="auto-field"><label>Categoría *</label><select id="auto-r-category" onchange="autoActualizarCatalogo()">' + autoCategoryOptions(category) + '</select></div>' +
-    '<div class="auto-field"><label>Pieza o mantenimiento *</label><input id="auto-r-item" list="auto-items" maxlength="100" value="' + autoEsc(r.item) + '" placeholder="Elegí o escribí una pieza"><datalist id="auto-items">' +
-    (AUTO_CATALOGO[category] || []).map(function(x){return '<option value="' + autoEsc(x) + '"></option>';}).join("") + '</datalist></div>' +
-    '<div class="auto-field full"><label>Descripción del trabajo</label><textarea id="auto-r-description" maxlength="1000" placeholder="Qué se hizo, diagnóstico o detalle">' + autoEsc(r.description) + '</textarea></div>' +
-    autoField("Marca del repuesto","auto-r-brand",r.partBrand,"Ej.: Bosch / Denso") +
-    autoField("Modelo o referencia","auto-r-ref",r.partReference,"Código o referencia") +
-    autoField("Cantidad","auto-r-qty",r.quantity || 1,"1","number") +
-    autoField("Precio unitario del repuesto (Gs.)","auto-r-part",r.partCost || 0,"0","number") +
-    autoField("Mano de obra (Gs.)","auto-r-labor",r.labor || 0,"0","number") +
-    autoField("Otros gastos (Gs.)","auto-r-other",r.otherCost || 0,"0","number") +
-    '<div class="auto-total-box"><span>Costo total calculado</span><strong id="auto-r-total">' + autoEsc(autoMoney(r.total || 0)) + '</strong></div>' +
-    autoField("Taller o mecánico","auto-r-workshop",r.workshop,"Nombre del taller") +
-    autoField("Próximo cambio por kilometraje","auto-r-next-km",r.nextKm || "","Km objetivo","number") +
-    '<div class="auto-field"><label>Próxima revisión por fecha</label><input id="auto-r-next-date" type="date" value="' + autoEsc(r.nextDate) + '"></div>' +
-    autoField("Garantía","auto-r-warranty",r.warranty,"Ej.: 3 meses / 5.000 km") +
-    autoField("Factura / comprobante","auto-r-receipt",r.receipt,"N.º de factura o referencia") +
-    '<div class="auto-field full"><label>Visita / orden de trabajo (opcional)</label><input id="auto-r-visit" maxlength="80" value="' + autoEsc(r.visit) + '" placeholder="Ej.: Orden 145 o visita del 18/11"></div>' +
-    '<div class="auto-field full"><label>Observaciones</label><textarea id="auto-r-notes" maxlength="1500" placeholder="Notas adicionales">' + autoEsc(r.notes) + '</textarea></div>' +
-    '</div><div class="auto-form-buttons"><button class="auto-action" onclick="autoCancelarForm()">Cancelar</button>' +
-    '<button class="auto-action primary" onclick="autoGuardarRegistro()">Guardar trabajo</button></div>' +
-    '<div class="auto-form-help" style="margin-top:10px">El intervalo del próximo cambio lo definís vos según el manual del vehículo o la indicación del mecánico. No se inventan intervalos.</div></div>';
-  ["auto-r-qty","auto-r-part","auto-r-labor","auto-r-other"].forEach(function(id){
-    var el = document.getElementById(id); if (el) el.addEventListener("input", autoCalcularTotal);
-  });
-  autoCalcularTotal();
+  var host=document.getElementById("auto-content"),v=autoVehiculo();
+  var r=AUTO_UI.editingId?autoData().records.find(function(x){return x.id===AUTO_UI.editingId;}):null;
+  r=r||{};
+  var category=r.category||"Motor";
+  var oldInterval=r.nextIntervalKm!==undefined&&r.nextIntervalKm!==null?Number(r.nextIntervalKm):(Number(r.nextKm)>0&&Number(r.km)>=0?Number(r.nextKm)-Number(r.km):0);
+  host.innerHTML='<div class="auto-head"><div><div class="auto-title">'+(r.id?"Editar mantenimiento":"Registrar mantenimiento")+'</div><div class="auto-subtitle">'+autoEsc(autoVehicleLabel(v))+' · Registro independiente por vehículo.</div></div></div>'+
+  '<div class="auto-form"><div class="auto-cascade-step"><div class="auto-cascade-label">1. Elegí la categoría</div><input id="auto-r-category" type="hidden" value="'+autoEsc(category)+'"><div id="auto-category-carousel" class="auto-category-carousel"></div>'+
+  '<div class="auto-cascade-label" style="margin-top:12px">2. Elegí la pieza o trabajo</div><div id="auto-piece-options" class="auto-piece-options"></div>'+
+  '<div class="auto-field" style="margin-top:9px"><label>Pieza o mantenimiento *</label><input id="auto-r-item" maxlength="100" value="'+autoEsc(r.item)+'" placeholder="Seleccioná arriba o escribí una pieza"></div></div>'+
+  '<details class="auto-accordion" open><summary>3. Datos del trabajo</summary><div class="auto-accordion-body"><div class="auto-form-grid">'+
+  '<div class="auto-field"><label>Fecha del trabajo *</label><input id="auto-r-date" type="date" value="'+autoEsc(r.date||autoLocalDate())+'"></div>'+
+  autoField("Kilometraje al realizar el trabajo *","auto-r-km",r.km!==undefined?r.km:v.currentKm||0,"Ej.: 98.500","number")+
+  '<div class="auto-field full"><label>Descripción del trabajo</label><textarea id="auto-r-description" maxlength="1000" placeholder="Qué se hizo, diagnóstico o detalle">'+autoEsc(r.description)+'</textarea></div></div></div></details>'+
+  '<details class="auto-accordion"><summary>4. Repuestos y costos</summary><div class="auto-accordion-body"><div class="auto-form-grid">'+
+  autoField("Marca del repuesto","auto-r-brand",r.partBrand,"Ej.: Bosch / Denso")+
+  autoField("Modelo o referencia","auto-r-ref",r.partReference,"Código o referencia")+
+  autoField("Cantidad","auto-r-qty",r.quantity||1,"1","number")+
+  autoField("Precio unitario del repuesto (Gs.)","auto-r-part",r.partCost||0,"Ej.: 18.000","number")+
+  autoField("Mano de obra (Gs.)","auto-r-labor",r.labor||0,"0","number")+
+  autoField("Otros gastos (Gs.)","auto-r-other",r.otherCost||0,"0","number")+
+  '<div class="auto-total-box"><span>Costo total calculado</span><strong id="auto-r-total">'+autoEsc(autoMoney(r.total||0))+'</strong></div></div></div></details>'+
+  '<details class="auto-accordion" open><summary>5. Próximo mantenimiento</summary><div class="auto-accordion-body"><div class="auto-form-grid">'+
+  autoField("Intervalo para el próximo cambio (km)","auto-r-next-interval",oldInterval||"","Ej.: 5.000","number")+
+  '<div class="auto-field"><label>Próxima revisión por fecha</label><input id="auto-r-next-date" type="date" value="'+autoEsc(r.nextDate)+'"></div>'+
+  '<div class="auto-total-box auto-next-target"><span>Próximo kilometraje calculado</span><strong id="auto-r-next-display">—</strong></div></div>'+
+  '<div class="auto-form-help" style="margin-top:8px">El sistema suma el intervalo al kilometraje del trabajo. Usá el intervalo recomendado por el fabricante o tu mecánico.</div></div></details>'+
+  '<details class="auto-accordion"><summary>6. Taller, garantía y observaciones</summary><div class="auto-accordion-body"><div class="auto-form-grid">'+
+  autoField("Taller o mecánico","auto-r-workshop",r.workshop,"Nombre del taller")+
+  autoField("Garantía","auto-r-warranty",r.warranty,"Ej.: 3 meses / 5.000 km")+
+  autoField("Factura / comprobante","auto-r-receipt",r.receipt,"N.º de factura o referencia")+
+  '<div class="auto-field full"><label>Visita / orden de trabajo (opcional)</label><input id="auto-r-visit" maxlength="80" value="'+autoEsc(r.visit)+'" placeholder="Ej.: Orden 145"></div>'+
+  '<div class="auto-field full"><label>Observaciones</label><textarea id="auto-r-notes" maxlength="1500" placeholder="Notas adicionales">'+autoEsc(r.notes)+'</textarea></div></div></div></details>'+
+  '<div class="auto-form-buttons"><button class="auto-action" onclick="autoCancelarForm()">Cancelar</button><button class="auto-action primary" onclick="autoGuardarRegistro()">Guardar trabajo</button></div></div>';
+  autoRenderCategoryCascade(category,r.item||"");
+  autoAttachThousands(["auto-r-km","auto-r-part","auto-r-labor","auto-r-other","auto-r-next-interval"]);
+  ["auto-r-qty","auto-r-part","auto-r-labor","auto-r-other"].forEach(function(id){var el=document.getElementById(id);if(el)el.addEventListener("input",autoCalcularTotal);});
+  ["auto-r-km","auto-r-next-interval"].forEach(function(id){var el=document.getElementById(id);if(el)el.addEventListener("input",autoCalcularProximo);});
+  autoCalcularTotal();autoCalcularProximo();
+}
+function autoRenderCategoryCascade(selectedCategory,selectedItem) {
+  var catHost=document.getElementById("auto-category-carousel"),pieceHost=document.getElementById("auto-piece-options");
+  if(!catHost||!pieceHost)return;
+  catHost.innerHTML=Object.keys(AUTO_CATALOGO).map(function(cat){return '<button type="button" class="auto-category-pill'+(cat===selectedCategory?' active':'')+'" onclick="autoSeleccionarCategoria(&quot;'+autoEsc(cat)+'&quot;)">'+autoEsc(cat)+'</button>';}).join("");
+  pieceHost.innerHTML=(AUTO_CATALOGO[selectedCategory]||[]).map(function(item){return '<button type="button" class="auto-piece-pill'+(item===selectedItem?' active':'')+'" onclick="autoSeleccionarPieza(&quot;'+autoEsc(item)+'&quot;)">'+autoEsc(item)+'</button>';}).join("");
+}
+function autoSeleccionarCategoria(category) {
+  var cat=document.getElementById("auto-r-category"),item=document.getElementById("auto-r-item");
+  if(!AUTO_CATALOGO[category])return;cat.value=category;item.value="";autoRenderCategoryCascade(category,"");
+}
+function autoSeleccionarPieza(item) {
+  var field=document.getElementById("auto-r-item");if(!field)return;field.value=item;
+  autoRenderCategoryCascade(document.getElementById("auto-r-category").value,item);
 }
 function autoActualizarCatalogo() {
   var cat = document.getElementById("auto-r-category").value;
@@ -302,6 +364,12 @@ function autoCalcularTotal() {
   var el = document.getElementById("auto-r-total");
   if (el) el.textContent = autoMoney((qty * parts) + labor + other);
 }
+function autoCalcularProximo() {
+  var kmEl=document.getElementById("auto-r-km"),intervalEl=document.getElementById("auto-r-next-interval"),result=document.getElementById("auto-r-next-display");
+  if(!result||!kmEl||!intervalEl)return;
+  var km=autoNum(kmEl.value),interval=autoNum(intervalEl.value);
+  result.textContent=interval>0?(km+interval).toLocaleString("es-PY")+" km":"Sin intervalo definido";
+}
 function autoGuardarRegistro() {
   var d = autoData();
   var v = autoVehiculo();
@@ -314,12 +382,13 @@ function autoGuardarRegistro() {
   var partCost = autoNum(document.getElementById("auto-r-part").value);
   var labor = autoNum(document.getElementById("auto-r-labor").value);
   var otherCost = autoNum(document.getElementById("auto-r-other").value);
-  var nextKm = autoNum(document.getElementById("auto-r-next-km").value);
+  var nextIntervalKm = autoNum(document.getElementById("auto-r-next-interval").value);
+  var nextKm = nextIntervalKm > 0 ? km + nextIntervalKm : null;
   var nextDate = document.getElementById("auto-r-next-date").value;
   if (!date || !category || !item || date > autoLocalDate() || km < 0 || partCost < 0 || labor < 0 || otherCost < 0) {
     alert("Completá la fecha (no futura), el kilometraje, la categoría, la pieza y verificá que los importes no sean negativos."); return;
   }
-  if (nextKm && nextKm <= km) { alert("El próximo kilometraje debe ser mayor que el kilometraje de este trabajo."); return; }
+  if (nextIntervalKm < 0) { alert("El intervalo debe ser un número positivo."); return; }
   if (nextDate && nextDate < date) { alert("La fecha del próximo mantenimiento no puede ser anterior al trabajo."); return; }
   var now = new Date().toISOString();
   var id = AUTO_UI.editingId;
@@ -332,7 +401,7 @@ function autoGuardarRegistro() {
     quantity:quantity, partCost:partCost, labor:labor, otherCost:otherCost,
     total:(quantity * partCost) + labor + otherCost,
     workshop:document.getElementById("auto-r-workshop").value.trim(),
-    nextKm:nextKm || null, nextDate:nextDate || "",
+    nextIntervalKm:nextIntervalKm || null, nextKm:nextKm, nextDate:nextDate || "",
     warranty:document.getElementById("auto-r-warranty").value.trim(),
     receipt:document.getElementById("auto-r-receipt").value.trim(),
     visit:document.getElementById("auto-r-visit").value.trim(),
@@ -346,6 +415,7 @@ function autoGuardarRegistro() {
   save().then(function(){
     showToast(hasPending() ? "Trabajo guardado en el teléfono; falta sincronizar." : "Trabajo guardado.");
     autoRender();
+    if(typeof renderDashboard==="function")renderDashboard();
   });
 }
 function autoCancelarForm() { AUTO_UI.form = ""; AUTO_UI.editingId = null; autoRender(); }
@@ -455,4 +525,69 @@ function autoPDF() {
     '<div class="no-print" style="margin-top:20px"><button onclick="window.print()" style="padding:12px 18px;background:#e3a02f;border:0;border-radius:8px;font-weight:bold">Imprimir / Guardar como PDF</button></div>' +
     '<script>window.onload=function(){setTimeout(function(){window.focus();window.print();},350)};<\/script></body></html>';
   w.document.open(); w.document.write(html); w.document.close();
+}
+
+var AUTO_HOME = {selectedId:"moto",alertsExpanded:false};
+function autoGetAllControlAlerts() {
+  var all=[];
+  autoData().vehicles.filter(function(v){return !v.archived;}).forEach(function(v){
+    autoMaintenanceAlerts(v).forEach(function(a){a.vehicleLabel=autoVehicleLabel(v);all.push(a);});
+  });
+  [["aceite","Aceite"],["transmision","Transmisión"]].forEach(function(pair){
+    var t=MOTO&&MOTO[pair[0]];
+    if(!t||!(Number(t.kmCambio)>0)||!(Number(t.intervalo)>0))return;
+    var target=Number(t.kmCambio)+Number(t.intervalo),left=target-(Number(MOTO.km)||0);
+    if(left>500)return;
+    all.push({kind:"moto",vehicleId:"moto",title:pair[1],status:left<=0?"CONTROLAR AHORA":"PRÓXIMO",
+      level:left<=0?"danger":"warn",detail:(left<=0?"Superado por "+Math.abs(Math.round(left)).toLocaleString("es-PY")+" km":"Restan "+Math.round(left).toLocaleString("es-PY")+" km")+" · Objetivo: "+Math.round(target).toLocaleString("es-PY")+" km",vehicleLabel:"Moto"});
+  });
+  return all.sort(function(a,b){return (a.level==="danger"?0:1)-(b.level==="danger"?0:1);});
+}
+function autoRenderHomeCompact() {
+  var host=document.getElementById("dash-vehicle-control");
+  if(!host||typeof MOTO==="undefined")return;
+  var d=autoData(),vehicles=d.vehicles.filter(function(v){return !v.archived;});
+  var items=[{id:"moto",label:"Moto",name:"Moto",km:Number(MOTO.km)||0}].concat(vehicles.map(function(v){
+    return {id:v.id,label:([v.brand,v.model].filter(Boolean).join(" ")||"Auto"),name:autoVehicleLabel(v),km:Number(v.currentKm)||0};
+  }));
+  if(!items.some(function(x){return x.id===AUTO_HOME.selectedId;}))AUTO_HOME.selectedId="moto";
+  var selected=items.find(function(x){return x.id===AUTO_HOME.selectedId;})||items[0];
+  var alerts=autoGetAllControlAlerts(),urgent=alerts.filter(function(a){return a.level==="danger";}).length,near=alerts.length-urgent;
+  var chips=items.map(function(x){
+    return '<button type="button" class="auto-home-chip'+(x.id===selected.id?' active':'')+'" onclick="autoSelectHomeVehicle(&quot;'+autoEsc(x.id)+'&quot;)"><span>'+(x.id==="moto"?"🏍️":"🚗")+' '+autoEsc(x.label)+'</span><b>'+autoEsc(Math.round(x.km).toLocaleString("es-PY"))+' km</b></button>';
+  }).join("");
+  if(!vehicles.length)chips+='<button type="button" class="auto-home-chip add" onclick="showPage(&quot;auto&quot;)">＋ Agregar auto</button>';
+  var alertText=alerts.length?(urgent?urgent+" control"+(urgent===1?"":"es")+" ahora":"")+(urgent&&near?" · ":"")+(near?near+" próximo"+(near===1?"":"s"):""):"Sin controles pendientes";
+  var details=alerts.length?alerts.slice(0,10).map(function(a){
+    return '<button type="button" class="auto-home-alert '+a.level+'" onclick="autoGoToControl(&quot;'+autoEsc(a.kind)+'&quot;,&quot;'+autoEsc(a.vehicleId)+'&quot;)"><span class="auto-home-alert-main"><b>'+autoEsc(a.vehicleLabel+" · "+a.title)+'</b><small>'+autoEsc(a.detail)+'</small></span><span class="auto-status '+a.level+'">'+(a.level==="danger"?"AHORA":"PRÓXIMO")+'</span></button>';
+  }).join(""):'<div class="auto-home-empty">Todo en orden. No hay mantenimientos próximos.</div>';
+  host.innerHTML='<div class="auto-home-card"><div class="auto-home-head"><div><b>🏍️ Kilometraje y controles</b><small>Actualización rápida de Moto y Auto</small></div><button type="button" class="auto-home-manage" onclick="showPage(&quot;auto&quot;)">Gestionar</button></div>'+
+    '<div class="auto-home-carousel">'+chips+'</div><div class="auto-home-update"><div class="auto-home-update-label"><span>Actualizar · <b>'+autoEsc(selected.name)+'</b></span><small>Actual: '+autoEsc(Math.round(selected.km).toLocaleString("es-PY"))+' km</small></div>'+
+    '<div class="auto-home-update-row"><input id="auto-home-km-input" type="text" inputmode="numeric" value="'+autoEsc(autoFormatNumber(selected.km))+'" placeholder="Nuevo km" oninput="autoFormatLive(this)"><button type="button" onclick="autoGuardarKmHome()">Guardar</button></div></div>'+
+    '<div class="auto-home-alert-summary"><span class="'+(urgent?"has-danger":alerts.length?"has-warn":"has-ok")+'">'+(alerts.length?"⚠️ "+autoEsc(alertText):"✓ "+autoEsc(alertText))+'</span><button type="button" onclick="autoToggleHomeAlerts()">'+(AUTO_HOME.alertsExpanded?"Ocultar":"Ver detalles")+" ⌄</button></div>"+
+    '<div class="auto-home-alert-list" '+(AUTO_HOME.alertsExpanded?"":"hidden")+'>'+details+'</div></div>';
+}
+function autoSelectHomeVehicle(id){AUTO_HOME.selectedId=id;autoRenderHomeCompact();}
+function autoToggleHomeAlerts(){AUTO_HOME.alertsExpanded=!AUTO_HOME.alertsExpanded;autoRenderHomeCompact();}
+async function autoGuardarKmHome() {
+  var input=document.getElementById("auto-home-km-input"),km=autoNum(input&&input.value);
+  if(!input||!String(input.value).trim()){alert("Ingresá un kilometraje válido.");return;}
+  var id=AUTO_HOME.selectedId;
+  if(id==="moto"){
+    if(km<(Number(MOTO.km)||0)&&!window.confirm("El kilometraje es menor al anterior. ¿Querés corregir la lectura?"))return;
+    MOTO.km=km;APP_DATA.moto=MOTO;if(typeof renderMoto==="function")renderMoto();
+  }else{
+    var v=autoData().vehicles.find(function(x){return x.id===id&&!x.archived;});
+    if(!v){alert("No se encontró el vehículo seleccionado.");return;}
+    if(km<(Number(v.currentKm)||0)&&!window.confirm("El kilometraje es menor al anterior. ¿Querés corregir la lectura?"))return;
+    v.currentKm=km;v.updatedAt=new Date().toISOString();
+  }
+  await save();
+  if(typeof renderDashboard==="function"&&currentPage==="dashboard")renderDashboard();else autoRenderHomeCompact();
+  showToast(hasPending()?"Kilometraje guardado en el teléfono; sincronización pendiente.":"Kilometraje actualizado.");
+}
+function autoGoToControl(kind,vehicleId) {
+  if(kind==="moto"){showPage("moto");return;}
+  var v=autoData().vehicles.find(function(x){return x.id===vehicleId&&!x.archived;});
+  if(v){autoData().activeVehicleId=v.id;AUTO_UI.view="historial";AUTO_UI.form="";AUTO_UI.filters={q:"",category:"",from:"",to:""};showPage("auto");}
 }
