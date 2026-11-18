@@ -157,7 +157,10 @@ function autoLatestMaintenanceRecords(vehicleId) {
     var key=String(r.category||"")+"|"+String(r.item||"").trim().toLowerCase();
     var stamp=Date.parse(r.updatedAt||r.createdAt||r.date||"")||0;
     var old=latest.get(key),oldStamp=old?(Date.parse(old.updatedAt||old.createdAt||old.date||"")||0):-1;
-    if(!old||stamp>oldStamp||(stamp===oldStamp&&Number(r.km||0)>Number(old.km||0)))latest.set(key,r);
+    var date=String(r.date||""),oldDate=old?String(old.date||""):"";
+    var newer=!old||date>oldDate||(date===oldDate&&Number(r.km||0)>Number(old.km||0))||
+      (date===oldDate&&Number(r.km||0)===Number(old.km||0)&&stamp>oldStamp);
+    if(newer)latest.set(key,r);
   });
   return Array.from(latest.values());
 }
