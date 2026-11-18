@@ -1,8 +1,8 @@
 // Delivery Pro — Service Worker
 // Red primero (siempre la versión más nueva) y, si no hay internet, usa la copia guardada.
 // Así la app abre aunque el repartidor esté sin señal.
-const CACHE = 'delivery-pro-v106';
-const APP_SHELL = ['./', './index.html', './manifest-delivery.json', './icon-192.png', './icon-512.png'];
+const CACHE = 'delivery-pro-v107-auto';
+const APP_SHELL = ['./', './index.html', './manifest-delivery.json', './icon-192.png', './icon-512.png', './auto-module.js', './auto-module.css'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(APP_SHELL)).then(() => self.skipWaiting()));
