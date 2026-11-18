@@ -108,7 +108,7 @@ function autoRenderHome(v) {
     '<div class="auto-muted">' + autoEsc([v.color,v.fuel].filter(Boolean).join(" · ") || "Datos generales") + '</div></div>' +
     '<div class="auto-plate">' + autoEsc(v.plate || "SIN MATRÍCULA") + '</div></div>' +
     '<div class="auto-record-actions"><button class="auto-mini-btn" onclick="autoEditarVehiculo()">Editar datos</button>' +
-    '<button class="auto-mini-btn" onclick="autoCambiarVista(\\'historial\\')">Historial completo</button>' +
+    '<button class="auto-mini-btn" onclick="autoCambiarVista(\'historial\')">Historial completo</button>' +
     (v.archived ? '<button class="auto-mini-btn" onclick="autoReactivarVehiculo()">Reactivar</button>' : '<button class="auto-mini-btn danger" onclick="autoArchivarVehiculo()">Archivar</button>') +
     '</div></div>' +
     '<div class="auto-kpis">' +
@@ -122,7 +122,7 @@ function autoRenderHome(v) {
     '<button class="auto-action" onclick="autoPDF()">▤ Descargar informe PDF</button>' +
     '</div>' +
     '<div class="auto-section-head"><div class="auto-section-title">Próximos mantenimientos</div></div>' + alerts +
-    '<div class="auto-section-head"><div class="auto-section-title">Últimos trabajos</div><button class="auto-mini-btn" onclick="autoCambiarVista(\\'historial\\')">Ver todos</button></div>' +
+    '<div class="auto-section-head"><div class="auto-section-title">Últimos trabajos</div><button class="auto-mini-btn" onclick="autoCambiarVista(\'historial\')">Ver todos</button></div>' +
     recent +
     (v.notes ? '<div class="auto-card"><div class="auto-section-title">Observaciones del vehículo</div><div class="auto-muted" style="margin-top:6px">' + autoEsc(v.notes) + '</div></div>' : '');
 }
@@ -150,8 +150,8 @@ function autoRecordCard(r) {
     (r.description ? '<div class="auto-muted" style="margin-top:7px">' + autoEsc(r.description) + '</div>' : '') +
     (r.nextKm || r.nextDate ? '<div><span class="auto-tag">Próximo: ' + autoEsc(r.nextKm ? Math.round(r.nextKm).toLocaleString("es-PY") + " km" : "") +
       (r.nextKm && r.nextDate ? " · " : "") + autoEsc(r.nextDate || "") + '</span></div>' : '') +
-    '<div class="auto-record-actions"><button class="auto-mini-btn" onclick="autoEditarRegistro(\\'' + autoEsc(r.id) + '\\')">Editar</button>' +
-    '<button class="auto-mini-btn danger" onclick="autoEliminarRegistro(\\'' + autoEsc(r.id) + '\\')">Eliminar</button></div></div>';
+    '<div class="auto-record-actions"><button class="auto-mini-btn" onclick="autoEditarRegistro(\'' + autoEsc(r.id) + '\')">Editar</button>' +
+    '<button class="auto-mini-btn danger" onclick="autoEliminarRegistro(\'' + autoEsc(r.id) + '\')">Eliminar</button></div></div>';
 }
 function autoCambiarVista(view) {
   AUTO_UI.view = view;
@@ -385,7 +385,7 @@ function autoRenderHistory(v) {
   var recordsHtml = filtered.map(autoRecordCard).join("") || '<div class="auto-empty">No hay registros que coincidan con los filtros.</div>';
   host.innerHTML = '<div class="auto-head"><div><div class="auto-title">Historial del vehículo</div><div class="auto-subtitle">' +
     autoEsc(autoVehicleLabel(v)) + ' · ' + filtered.length + ' de ' + all.length + ' registros</div></div>' +
-    '<button class="auto-mini-btn" onclick="autoCambiarVista(\\'inicio\\')">‹ Volver</button></div>' +
+    '<button class="auto-mini-btn" onclick="autoCambiarVista(\'inicio\')">‹ Volver</button></div>' +
     '<div class="auto-card"><div class="auto-filter-grid">' +
     '<div class="auto-field full"><label>Buscar pieza, descripción o taller</label><input id="auto-filter-q" value="' + autoEsc(f.q) + '" placeholder="Ej.: aceite, frenos, taller"></div>' +
     '<div class="auto-field full"><label>Categoría</label><select id="auto-filter-category">' + cats + '</select></div>' +
