@@ -561,7 +561,7 @@ function autoRenderHomeCompact() {
   host.innerHTML='<div class="auto-home-card"><div class="auto-home-head"><div><b>🏍️ Kilometraje y controles</b><small>Actualización rápida de Moto y Auto</small></div><button type="button" class="auto-home-manage" onclick="showPage(&quot;auto&quot;)">Gestionar</button></div>'+
     '<div class="auto-home-carousel">'+chips+'</div><div class="auto-home-update"><div class="auto-home-update-label"><span>Actualizar · <b>'+autoEsc(selected.name)+'</b></span><small>Actual: '+autoEsc(Math.round(selected.km).toLocaleString("es-PY"))+' km</small></div>'+
     '<div class="auto-home-update-row"><input id="auto-home-km-input" type="text" inputmode="numeric" value="'+autoEsc(autoFormatNumber(selected.km))+'" placeholder="Nuevo km" oninput="autoFormatLive(this)"><button type="button" onclick="autoGuardarKmHome()">Guardar</button></div></div>'+
-    '<div class="auto-home-alert-summary"><span class="'+(urgent?"has-danger":alerts.length?"has-warn":"has-ok")+'">'+(alerts.length?"⚠️ "+autoEsc(alertText):"✓ "+autoEsc(alertText))+'</span><button type="button" onclick="autoToggleHomeAlerts()">'+(AUTO_HOME.alertsExpanded?"Ocultar":"Ver detalles")+" ⌄</button></div>'+
+    '<div class="auto-home-alert-summary"><span class="'+(urgent?"has-danger":alerts.length?"has-warn":"has-ok")+'">'+(alerts.length?"⚠️ "+autoEsc(alertText):"✓ "+autoEsc(alertText))+'</span><button type="button" onclick="autoToggleHomeAlerts()">'+(AUTO_HOME.alertsExpanded?"Ocultar":"Ver detalles")+" ⌄</button></div>"+
     '<div class="auto-home-alert-list" '+(AUTO_HOME.alertsExpanded?"":"hidden")+'>'+details+'</div></div>';
 }
 function autoSelectHomeVehicle(id){AUTO_HOME.selectedId=id;autoRenderHomeCompact();}
