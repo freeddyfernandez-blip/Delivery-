@@ -145,7 +145,7 @@ function autoRecordCard(r) {
   return '<div class="auto-record"><div class="auto-record-top"><div style="min-width:0;flex:1"><div class="auto-record-title">' +
     autoEsc(r.item) + '</div><div class="auto-record-meta">' + autoEsc(r.date || "Sin fecha") + ' · ' +
     autoEsc(Math.round(Number(r.km)||0).toLocaleString("es-PY")) + ' km · ' + autoEsc(r.category || "Sin categoría") +
-    (r.workshop ? '<br>Taller: ' + autoEsc(r.workshop) : '') + '</div></div><div class="auto-record-cost">' +
+    (r.workshop ? '<br>Taller: ' + autoEsc(r.workshop) : '') + (r.visit ? '<br>Visita / orden: ' + autoEsc(r.visit) : '') + (r.warranty ? '<br>Garantía: ' + autoEsc(r.warranty) : '') + '</div></div><div class="auto-record-cost">' +
     autoEsc(autoMoney(r.total)) + '</div></div>' +
     (r.description ? '<div class="auto-muted" style="margin-top:7px">' + autoEsc(r.description) + '</div>' : '') +
     (r.nextKm || r.nextDate ? '<div><span class="auto-tag">Próximo: ' + autoEsc(r.nextKm ? Math.round(r.nextKm).toLocaleString("es-PY") + " km" : "") +
@@ -424,6 +424,7 @@ function autoPDF() {
     return '<tr><td>' + autoEsc(r.date) + '</td><td>' + autoEsc(Math.round(Number(r.km)||0).toLocaleString("es-PY")) + ' km</td>' +
       '<td><b>' + autoEsc(r.item) + '</b><br><small>' + autoEsc(r.category) + '</small>' +
       (r.description ? '<br><small>' + autoEsc(r.description) + '</small>' : '') +
+      (r.visit ? '<br><small>Visita / orden: ' + autoEsc(r.visit) + '</small>' : '') +
       (r.partBrand || r.partReference ? '<br><small>Repuesto: ' + autoEsc([r.partBrand,r.partReference].filter(Boolean).join(" / ")) + '</small>' : '') +
       (r.notes ? '<br><small>Observaciones: ' + autoEsc(r.notes) + '</small>' : '') +
       (r.receipt ? '<br><small>Comprobante: ' + autoEsc(r.receipt) + '</small>' : '') + '</td>' +
