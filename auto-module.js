@@ -412,7 +412,7 @@ function autoLimpiarFiltros() { AUTO_UI.filters = {q:"",category:"",from:"",to:"
 function autoPDF() {
   var v = autoVehiculo();
   if (!v) { alert("No hay un vehículo seleccionado."); return; }
-  var f = AUTO_UI.filters;
+  var f = AUTO_UI.view === "historial" ? AUTO_UI.filters : {q:"",category:"",from:"",to:""};
   var records = autoRecords(v.id).filter(function(r){
     var hay = [r.item,r.category,r.description,r.workshop,r.partBrand,r.partReference,r.receipt,r.notes].join(" ").toLowerCase();
     return (!f.from || String(r.date || "") >= f.from) && (!f.to || String(r.date || "") <= f.to) &&
